@@ -1,8 +1,10 @@
 import React from "react";
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from "reactstrap"
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, Input } from "reactstrap"
 import { IndexLink, Link } from "react-router";
 import { LinkContainer } from 'react-router-bootstrap';
+import { inject } from "mobx-react"
 
+@inject("orderStore")
 export default class Navigation extends React.Component {
   constructor() {
     super()
@@ -19,11 +21,16 @@ export default class Navigation extends React.Component {
     });
   }
 
+  handleSearch(e){
+    this.props.orderStore.filter = e.target.value
+  }
+
   render() {
     return (
       <Navbar inverse toggleable fixed="top" color="primary">
         <NavbarToggler right onClick={this.toggle} />
-        <NavbarBrand href="/">OrderMe</NavbarBrand>
+        <NavbarBrand href="/"><img src="assets/logo.png" width="40px"/></NavbarBrand>
+        <Input name="search" id="searchText" placeholder="Search" onChange={ this.handleSearch.bind(this) } />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
