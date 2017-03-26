@@ -20,6 +20,7 @@ module.exports = {
         description: req.body.description
       }], (err, dish) => {
       if (err) {
+        console.warn(err)
         res.status(500).json({error: err})
       } else {
         res.status(200).json(dish)
@@ -34,8 +35,7 @@ module.exports = {
         description: req.body.description
     }}, {new: true}, (err, dish) => {
       if (err) {
-
-        console.warn("WE got here", err)
+        console.warn(err)
         res.status(500).json({error: err})
       } else {
         res.status(200).json(dish)

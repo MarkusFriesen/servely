@@ -1,5 +1,6 @@
 import { computed, observable } from "mobx"
 import { remove, find, filter } from "lodash"
+import request from 'superagent'
 
 class Dish {
   @observable _id
@@ -25,6 +26,10 @@ class Dish {
 }
 
 export class DishStore {
+  constructor(){
+
+      this.fetchDishes()
+  }
   @observable dishes = [new Dish("Simple Salad", "(Shellsburg, IA) chili, garlic, lime" , "Quick Eats", 6, "58833fdc7bb0c19fc957754b" ),
     new Dish("Orzo Salad", "house pickles, mustard seed, fried chili flake (if fried served w/ blue chz dressing)", "Quick Eats",9.50, "58833ff97bb0c19fc957754c")
   ];
@@ -38,7 +43,7 @@ export class DishStore {
         //TODO:Show error
         console.error(err)
       } else {
-        this.dishes.replace(res.body.map(d => new Dish(d.name, d.description, d.type, d.cost)))
+        this.dishes.replace(res.body.map(d => new Dish(d.name, d.description, d.type, d.cost, d._id)))
       }
     })
   }
@@ -85,5 +90,5 @@ export class DishStore {
     return this.dishes.filter((d) => ids.includes(d._id))
   }
 }
-const store = window.orderStore = new DishStore
+const store = window.dishStore = new DishStore
 export default store

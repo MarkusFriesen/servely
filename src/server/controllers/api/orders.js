@@ -22,15 +22,15 @@ module.exports = {
   },
 
   addOrder(req, res) {
-    Models.Orders.insertMany(
-      [{
+    Models.Orders.create({
         table: req.body.table,
         name: req.body.name,
         dishes: req.body.dishes,
         made: false,
-        payed: false
-      }], (err, order) => {
+        hasPayed: false
+      }, (err, order) => {
       if (err) {
+        console.warn(err)
         res.status(500).json({error: err})
       } else {
         res.status(200).json(order)
@@ -45,10 +45,11 @@ module.exports = {
       name: req.body.name,
       dishes: req.body.dishes,
       made: req.body.made || false,
-      payed: req.body.payed || false
+      hasPayed: req.body.hasPayed || false,
+      amountPayed: req.body.amountPayed || 0
     }}, {new: true},  (err, order) => {
-      console.warn("RESULT", err, order)
     if (err) {
+      console.warn(err)
       res.status(500).json({error: err})
     } else {
       res.status(200).json(order)

@@ -27,6 +27,8 @@ class Order {
 export class OrderStore {
   constructor(){
     this.getOrder = this.getOrder.bind(this)
+
+    this.fetchOrders()
   }
   @observable orders = [new Order(0, "markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)];
   @observable filter = ""
@@ -43,7 +45,7 @@ export class OrderStore {
       if (err) {
         //TODO: Show error
       } else {
-        this.orders.replace(res.body.map(o => new Order(o.table, o.name, o.timestamp, o.dishes, o.made, o.hasPayed, o.amountPayed)))
+        this.orders.replace(res.body.map(o => new Order(o.table, o.name, o.timestamp, o.dishes, o.made, o.hasPayed, o.amountPayed, o._id)))
       }
     })
   }
@@ -63,11 +65,11 @@ export class OrderStore {
       })
   }
 
-  updateOrder(id, table, name, dishes, onSuccess, onFailure){
+  updateOrder(id, table, name, dishes, made, hasPayed, amountPayed, onSuccess, onFailure){
     request
       .put('/api/orders')
       .set('Content-Type', 'application/json')
-      .send({orderId: orderId, table: table, name: name, dishes: dishes, payed: payed})
+      .send({orderId: id, table: table, name: name, dishes: dishes, made: made, hasPayed: hasPayed, amountPayed: parseFloat(amountPayed || 0)})
       .end((err, res) => {
         if (err) {
           onFailure(err)

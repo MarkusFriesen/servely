@@ -74,7 +74,7 @@ export default class OrderModal extends React.Component {
   }
 
   updateOrder(){
-    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, () => { this.close() }, (e) => { console.error(e) })
+    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, false, false, 0, () => { this.close() }, (e) => { console.error(e) })
   }
 
 
