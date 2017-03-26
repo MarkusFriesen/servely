@@ -20,7 +20,6 @@ module.exports = {
       }
     })
   },
-
   addOrder(req, res) {
     Models.Orders.create({
         table: req.body.table,
@@ -37,9 +36,7 @@ module.exports = {
       }
     })
   },
-
   updateOrder(req, res) {
-    console.warn(req.body)
     Models.Orders.findOneAndUpdate({"_id" : req.body.orderId }, {$set: {
       table: req.body.table,
       name: req.body.name,

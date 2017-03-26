@@ -12,13 +12,13 @@ module.exports = {
     })
   },
   addDish(req, res) {
-    Models.Dishes.insertMany(
-      [{
+    Models.Dishes.create(
+      {
         name: req.body.name,
         cost: req.body.cost,
         type: req.body.type,
         description: req.body.description
-      }], (err, dish) => {
+      }, (err, dish) => {
       if (err) {
         console.warn(err)
         res.status(500).json({error: err})
