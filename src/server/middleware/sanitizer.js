@@ -1,10 +1,10 @@
 var sanitizer = require('sanitize-html'),
-    _ = require('underscore')
+    _ = require('lodash')
 
 module.exports = function() {
   return function(req, res, next) {
     if (req.body) {
-      _.each(req.body, (value, key) => {
+      _.forEach(req.body, (value, key) => {
         if (!parseInt(value,10) && value !== null && key != 'description') {
           if (typeof value === 'string') {
             value = value.replace(/&gt;/gi, '>')

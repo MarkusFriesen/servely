@@ -12,10 +12,10 @@ npm-debug.log
 
 #Compiled sources
 build
-server/public/reach
-server/public/upload
+src/server/public/reach
+src/server/public/upload
 
-client.min.js
+src/client/client.min.js
 
 #Secret stuff
 server/config/auth.js

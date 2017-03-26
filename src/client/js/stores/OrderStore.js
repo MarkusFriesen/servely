@@ -1,5 +1,6 @@
 import { autorun, computed, observable } from "mobx"
 import { remove, find, filter } from "lodash"
+import request from 'superagent'
 
 class Order {
   @observable table
@@ -35,19 +36,50 @@ export class OrderStore {
     return filter(this.orders, o => !this.filter || (o.table == this.filter) || matchesFilter.test(o.name));
   }
 
-  createOrder(table, name, dishes, onSuccess, onFailure){
-    this.orders.push(new Order(table, name, Date.now(), dishes, false, false, 0))
+  fetchOrders(){
+    request
+    .get('/api/orders')
+    .end((err, res) => {
+      if (err) {
+        //TODO: Show error
+      } else {
+        this.orders.replace(res.body.map(o => new Order(o.table, o.name, o.timestamp, o.dishes, o.made, o.hasPayed, o.amountPayed)))
+      }
+    })
+  }
 
-    onSuccess()
+  createOrder(table, name, dishes, onSuccess, onFailure){
+    request
+      .post('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send({table: table, name: name, dishes: dishes})
+      .end((err, res) => {
+        if (err) {
+          onFailure(err)
+        } else {
+          this.orders.push(new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed))
+          onSuccess()
+        }
+      })
   }
 
   updateOrder(id, table, name, dishes, onSuccess, onFailure){
-    const order = this.getOrder(id)
-    order.table = table
-    order.name = name
-    order.dishes = dishes
+    request
+      .put('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send({orderId: orderId, table: table, name: name, dishes: dishes, payed: payed})
+      .end((err, res) => {
+        if (err) {
+          onFailure(err)
+        } else {
+          const order = this.getOrder(id)
+          order.table = table
+          order.name = name
+          order.dishes = dishes
 
-    onSuccess()
+          onSuccess()
+        }
+      })
   }
 
   clearPayed= () => {

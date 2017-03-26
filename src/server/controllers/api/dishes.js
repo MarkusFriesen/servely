@@ -27,8 +27,6 @@ module.exports = {
     })
   },
   updateDish(req, res){
-
-    console.warn("WE got here", req.body)
     Models.Dishes.findOneAndUpdate({ "_id": req.body.id }, {$set: {
         name: req.body.name,
         cost: req.body.cost,

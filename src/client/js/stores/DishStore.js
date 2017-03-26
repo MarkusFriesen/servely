@@ -29,17 +29,52 @@ export class DishStore {
     new Dish("Orzo Salad", "house pickles, mustard seed, fried chili flake (if fried served w/ blue chz dressing)", "Quick Eats",9.50, "58833ff97bb0c19fc957754c")
   ];
 
-  createDish(name, cost, description, type, onSuccess, onFailure){
-    this.dishes.push(new Dish(name, description, type, cost))
+  fetchDishes(){
 
-    onSuccess()
+  request
+    .get('/api/dishes')
+    .end((err, res) => {
+      if (err) {
+        //TODO:Show error
+        console.error(err)
+      } else {
+        this.dishes.replace(res.body.map(d => new Dish(d.name, d.description, d.type, d.cost)))
+      }
+    })
+  }
+
+  createDish(name, cost, description, type, onSuccess, onFailure){
+    request
+      .post('/api/dishes')
+      .set('Content-Type', 'application/json')
+      .send({name: name, cost: cost, description: description, type: type})
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          onFailure(err)
+        } else {
+          this.dishes.push(new Dish(res.body.name, res.body.description, res.body.type, res.body.cost))
+          onSuccess()
+        }
+      })
   }
 
   updateDish(id, name, cost, description, type, onSuccess, onFailure){
-    const dish = this.getDish(id)
-    dish.update(name, description, type, cost)
+    request
+      .put('/api/dishes')
+      .set('Content-Type', 'application/json')
+      .send({id: id, name: name, cost: cost, description: description, type: type})
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          onFailure(err)
+        } else {
+          const dish = this.getDish(id)
+          dish.update(res.body.name, res.body.description, res.body.type, res.body.cost)
 
-    onSuccess()
+          onSuccess()
+        }
+      })
   }
 
   getDish(id) {
