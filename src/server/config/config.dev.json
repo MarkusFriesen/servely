@@ -1,0 +1,7 @@
+{
+    "port": 3500,
+    "mongodb": {
+      "db": "reach",
+      "host": "mongodb://localhost/"
+    },
+}

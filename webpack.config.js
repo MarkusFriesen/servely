@@ -7,7 +7,7 @@ module.exports = {
   devtool: debug ? "inline-sourcemap" : false,
   entry: "./client/js/client.js",
   output: {
-    path: debug ? path.join(__dirname, 'src/client/') : path.join(__dirname, './server/public/OrderMe/'),
+    path: debug ? path.join(__dirname, 'src/client/') : path.join(__dirname, 'src/server/public/OrderMe/'),
     filename: "client.min.js"
   },
   module: {
