@@ -1,0 +1,36 @@
+@import 'order';
+@import 'navbar';
+@import 'griddle';
+@import 'orderModal';
+@import 'dishes';
+@import 'dishModal';
+
+.container-fluid{
+  margin-top: 100px;
+}
+
+.card-link:hover, .card-link:active, .card-link:before {
+    color: #5f96f3 !important;
+}
+
+.btn-rnd{
+  width: 2em;
+  height: 2em;
+  font-size: 2em;
+  padding: 0.1em 0 0 0;
+  float:right;
+  position: fixed;
+  border-radius: 50%;
+  color: white;
+  right:20px;
+  bottom: 20px !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
