@@ -15,5 +15,7 @@ build
 server/public/reach
 server/public/upload
 
+client.min.js
+
 #Secret stuff
 server/config/auth.js
