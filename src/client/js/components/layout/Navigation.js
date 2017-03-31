@@ -29,7 +29,7 @@ export default class Navigation extends React.Component {
     return (
       <Navbar inverse toggleable fixed="top" color="primary">
         <NavbarToggler right onClick={this.toggle} />
-        <NavbarBrand href="/"><img src="assets/logo.png" width="40px"/></NavbarBrand>
+        <NavbarBrand href="/"><img src="assets/img/logo.png" width="40px"/></NavbarBrand>
         <Input name="search" id="searchText" placeholder="Search" onChange={ this.handleSearch.bind(this) } />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
