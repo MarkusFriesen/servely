@@ -82,6 +82,21 @@ export class DishStore {
       })
   }
 
+  deleteDish(id, onSuccess, onFailure){
+    request
+      .delete('/api/dishes')
+      .set('Content-Type', 'application/json')
+      .send({dishId: id})
+      .end((err, res) => {
+        if (err){
+          onFailure(err)
+        } else {
+          this.dishes.replace(this.dishes.filter( d => d._id != id))
+          onSuccess()
+        }
+      })
+  }
+
   getDish(id) {
     return find(this.dishes, { _id: id })
   }

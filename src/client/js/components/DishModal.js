@@ -78,6 +78,10 @@ export default class DishModal extends React.Component {
     this.props.dishStore.updateDish(this.props.id, this.state.name, this.state.cost, this.state.description, this.state.type, () => this.close(), (e) => { console.error(e) })
   }
 
+  deleteDish(){
+    this.props.dishStore.deleteDish(this.props.id, () => {}, (e) => console.error(e))
+  }
+
   handleName(e){
     this.setState({
         name: e.target.value
@@ -126,6 +130,7 @@ export default class DishModal extends React.Component {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={ !this.props.id ? this.addDish.bind(this) : this.updateDish.bind(this)}>Save</Button>
+            { this.props.id ? <Button color="danger" onClick={ this.deleteDish.bind(this)}>Delete</Button> : undefined}
             <Button color="secondary" onClick={this.close.bind(this)}>Cancel</Button>
           </ModalFooter>
         </Modal>

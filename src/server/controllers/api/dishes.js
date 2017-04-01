@@ -41,5 +41,15 @@ module.exports = {
         res.status(200).json(dish)
       }
     })
-  }
+  },
+  deleteDish(req, res){
+    Models.Dishes.remove({ "_id" : req.body.dishId }, (err, dish) => {
+      if (err){
+        console.error(err)
+        res.status(500).json({error: err})
+      } else {
+          res.status(200).json(dish)
+      }
+    })
+  },
 }
