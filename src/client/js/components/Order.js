@@ -6,6 +6,7 @@ import { inject, observer } from "mobx-react"
 import OrderModal from "./OrderModal"
 
 @inject('dishStore')
+@inject('orderStore')
 @observer
 export default class Order extends React.Component {
   constructor(){
@@ -45,7 +46,8 @@ export default class Order extends React.Component {
   }
 
   payBill(){
-    this.toggle()
+    //TODO: Store order for reference in the future.
+    this.props.orderStore.deleteOrder(this.props._id, () => {}, (err) => { console.error(err)})
   }
 
   render() {

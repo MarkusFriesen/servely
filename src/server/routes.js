@@ -13,6 +13,8 @@ module.exports.initialize = function(app, router) {
 
   router.post('/api/orders', api.orders.addOrder)
 
+  router.delete('/api/orders', api.orders.deleteOrder)
+
   router.get('/api/dishes', api.dishes.getDishes)
 
   router.put('/api/dishes', api.dishes.updateDish)

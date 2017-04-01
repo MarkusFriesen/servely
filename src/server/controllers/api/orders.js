@@ -36,6 +36,16 @@ module.exports = {
       }
     })
   },
+  deleteOrder(req, res){
+    Models.Orders.remove({ "_id" : req.body.orderId }, (err, order) => {
+      if (err){
+        console.error(err)
+        res.status(500).json({error: err})
+      } else {
+          res.status(200).json(order)
+      }
+    })
+  },
   updateOrder(req, res) {
     Models.Orders.findOneAndUpdate({"_id" : req.body.orderId }, {$set: {
       table: req.body.table,

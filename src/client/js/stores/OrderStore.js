@@ -59,7 +59,7 @@ export class OrderStore {
         if (err) {
           onFailure(err)
         } else {
-          this.orders.push(new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed))
+          this.orders.push(new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed, res.body._id))
           onSuccess()
         }
       })
@@ -79,6 +79,21 @@ export class OrderStore {
           order.name = name
           order.dishes = dishes
 
+          onSuccess()
+        }
+      })
+  }
+
+  deleteOrder(id, onSuccess, onFailure){
+    request
+      .delete('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send({orderId: id})
+      .end((err, res) => {
+        if (err){
+          onFailure(err)
+        } else {
+          this.orders.replace(this.orders.filter( o => o._id != id))
           onSuccess()
         }
       })
