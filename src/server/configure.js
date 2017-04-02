@@ -9,6 +9,8 @@ let path = require('path'),
 module.exports = function(app, config) {
   if (config === null) { config = {} }
 
+  app.set('port', 3300);
+
   app.use(middleware.session({
     secret: 'SECRETHERE',
     resave: false,

@@ -51,6 +51,7 @@
     "reactstrap" : "latest",
     "sanitize-html": "latest",
     "sass-loader": "latest",
+    "socket.io": "^1.7.3",
     "style-loader": "latest",
     "superagent": "latest",
     "taggle": "latest",

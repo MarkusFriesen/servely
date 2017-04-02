@@ -1,6 +1,7 @@
 import { autorun, computed, observable } from "mobx"
 import { remove, find, filter } from "lodash"
 import request from 'superagent'
+var socket = io.connect();
 
 class Order {
   @observable table
@@ -27,8 +28,9 @@ class Order {
 export class OrderStore {
   constructor(){
     this.getOrder = this.getOrder.bind(this)
-
+    this.fetchOrders = this.fetchOrders.bind(this)
     this.fetchOrders()
+    socket.on('changed:orders', this.fetchOrders);
   }
   @observable orders = [new Order(0, "markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)];
   @observable filter = ""
@@ -60,6 +62,7 @@ export class OrderStore {
           onFailure(err)
         } else {
           this.orders.push(new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed, res.body._id))
+          socket.emit('changed:orders', "new Order");
           onSuccess()
         }
       })
@@ -79,6 +82,7 @@ export class OrderStore {
           order.name = name
           order.dishes = dishes
 
+          socket.emit('changed:orders', "updated Order");
           onSuccess()
         }
       })
@@ -94,6 +98,8 @@ export class OrderStore {
           onFailure(err)
         } else {
           this.orders.replace(this.orders.filter( o => o._id != id))
+
+          socket.emit('changed:orders', "deleted Order");
           onSuccess()
         }
       })
