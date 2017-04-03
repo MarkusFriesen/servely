@@ -23,14 +23,33 @@ class Order {
     this.hasPayed = hasPayed
     this.amountPayed = amountPayed
   }
+
+  toJSON(){
+    return {
+      _id: this._id,
+      table: this.table,
+      name: this.name,
+      timestamp: this.timestamp,
+      dishes: this.dishes,
+      made: this.made,
+      hasPayed: this.hasPayed,
+      amountPayed: this.amountPayed
+    }
+  }
 }
 
 export class OrderStore {
   constructor(){
     this.getOrder = this.getOrder.bind(this)
     this.fetchOrders = this.fetchOrders.bind(this)
+    this.addReceivedOrder = this.addReceivedOrder.bind(this)
+    this.deleteReceivedOrder = this.deleteReceivedOrder.bind(this)
+    this.updateReceivedOrder = this.updateReceivedOrder.bind(this)
     this.fetchOrders()
-    socket.on('changed:orders', this.fetchOrders);
+    socket.on('new:order', this.addReceivedOrder);
+    socket.on('deleted:order', this.deleteReceivedOrder);
+    socket.on('updated:order', this.updateReceivedOrder);
+
   }
   @observable orders = [new Order(0, "markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)];
   @observable filter = ""
@@ -38,6 +57,26 @@ export class OrderStore {
   @computed get filteredOrders() {
     var matchesFilter = new RegExp(this.filter, "i")
     return filter(this.orders, o => !this.filter || (o.table == this.filter) || matchesFilter.test(o.name));
+  }
+
+  addReceivedOrder(order){
+    if (!find(this.orders, {_id: order._id})){
+      this.orders.push(new Order(order.table, order.name, order.timestamp, order.dishes, order.made, order.hasPayed, order.amountPayed, order._id))
+    }
+  }
+
+  deleteReceivedOrder(order){
+    this.orders.replace(this.orders.filter( o => o._id != order._id))
+  }
+
+  updateReceivedOrder(order){
+    const oldOrder = this.getOrder(order._id)
+    oldOrder.table = order.table
+    oldOrder.name = order.name
+    oldOrder.dishes = order.dishes
+    oldOrder.made = order.made
+    oldOrder.hasPayed = order.hasPayed
+    oldOrder.amountPayed = order.amountPayed
   }
 
   fetchOrders(){
@@ -61,8 +100,9 @@ export class OrderStore {
         if (err) {
           onFailure(err)
         } else {
-          this.orders.push(new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed, res.body._id))
-          socket.emit('changed:orders', "new Order");
+          const order = new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed, res.body._id)
+          this.orders.push(order)
+          socket.emit('new:order', order.toJSON());
           onSuccess()
         }
       })
@@ -82,7 +122,7 @@ export class OrderStore {
           order.name = name
           order.dishes = dishes
 
-          socket.emit('changed:orders', "updated Order");
+          socket.emit('updated:order', order.toJSON());
           onSuccess()
         }
       })
@@ -99,7 +139,7 @@ export class OrderStore {
         } else {
           this.orders.replace(this.orders.filter( o => o._id != id))
 
-          socket.emit('changed:orders', "deleted Order");
+          socket.emit('deleted:order', {_id: id});
           onSuccess()
         }
       })

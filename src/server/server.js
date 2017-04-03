@@ -10,9 +10,14 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 io.on('connection', function(socket){
-  socket.on('changed:orders', function(msg){
-    console.warn("Got Change", msg)
-    io.emit('changed:orders', msg);
+  socket.on('new:order', function(order){
+    io.emit('new:order', order);
+  });
+  socket.on('deleted:order', function(order){
+    io.emit('deleted:order', order);
+  });
+  socket.on('updated:order', function(order){
+    io.emit('updated:order', order);
   });
 });
 
