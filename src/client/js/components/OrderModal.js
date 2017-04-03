@@ -3,7 +3,6 @@ import { map, first, findIndex } from "lodash";
 import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Name, Label, Button, Table, CardLink } from "reactstrap"
 import Griddle from "griddle-react";
 import { inject, observer } from "mobx-react"
-import { toJSON } from "mobx"
 
 @inject('orderStore')
 @inject('dishStore')
