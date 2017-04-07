@@ -1,5 +1,32 @@
 .navbar {
-  input {
-      width: 250px;
+  height: 3em;
+
+  .navbar-brand {
+    display: inherit;
+    width: 50%;
+
+    input {
+      margin-left: 5px;
+      height: 2em;
+    }
+
+    img{
+      margin-top: 5px;
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+@media screen and (max-width: 575px){
+  .navbar {
+    height: 4.5em;
+    padding-top:10px;
+
+    .navbar-brand{
+      input{
+        width: 70%;
+      }
+    }
   }
 }
