@@ -10,25 +10,24 @@
     }
 
     img{
-      margin-top: 5px;
       width: 25px;
       height: 25px;
     }
   }
-}
 
-@media screen and (min-width: 575px){
-    height: 3em;
-}
 
-@media screen and (max-width: 575px){
-  .navbar {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    .navbar-brand{
-      input{
-        width: 70%;
+  @media screen and (min-width: 576px) {
+      height: 3em;
+  }
+
+  @media screen and (max-width: 575px) {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      .navbar-brand{
+        input{
+          width: 70%;
+        }
       }
-    }
+
   }
 }
