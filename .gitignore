@@ -16,6 +16,7 @@ src/server/public/reach
 src/server/public/upload
 
 src/client/client.min.js
+src/server/public/OrderMe/client.min.js
 
 #Secret stuff
 server/config/auth.js
