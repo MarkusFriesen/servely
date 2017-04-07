@@ -4,6 +4,7 @@ import { take, map, pick,findIndex } from "lodash"
 import { inject, observer } from "mobx-react"
 
 import OrderModal from "./OrderModal"
+import SplitOrderModal from "./SplitOrderModal"
 
 @inject('dishStore')
 @inject('orderStore')
@@ -57,7 +58,7 @@ export default class Order extends React.Component {
     const payBill = this.payBill.bind(this)
     const toggle = this.toggle.bind(this)
 
-    const dishIds = dishes.map(d => d.id)
+    const dishIds = dishes.filter(d => d).map(d => d.id)
     const orderDishes = this.props.dishStore.getDishesByIds(dishIds)
 
     var dishesToShow, dishesToPay, total
@@ -129,6 +130,7 @@ export default class Order extends React.Component {
             </InputGroup>
             <FormFeedback>{(this.state.amountPayed - total < 0 ? "Missing: " : "Change: ")} {Math.abs(this.state.amountPayed - total).toFixed(2)} <i class="fa fa-eur"></i> </FormFeedback>
           </FormGroup>
+          <SplitOrderModal _id={_id} />
           <CardLink class='card-link' onClick={flip}><i class="fa fa-undo error fa-2x"></i></CardLink>
           <CardLink class='card-link' onClick={toggle}><i class="fa fa-eur success fa-2x"></i></CardLink>
         </CardBlock>
