@@ -25,8 +25,26 @@ module.exports = {
     ]
   },
   plugins: debug ? [] : [
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({ mangle: false, sourcemap: false }),
+    new webpack.optimize.UglifyJsPlugin(
+      {
+        mangle: false,
+        compress: {
+          booleans: true,
+          cascade: true,
+          conditionals: true,
+          dead_code: true,
+          drop_console: true,
+          evaluate: true,
+          if_return: true,
+          join_vars: true,
+          sequences: true,
+          screw_ie8: true,
+          unused: true
+        },
+        output: {
+          comments: false
+      }
+    }),
   ],
 };
