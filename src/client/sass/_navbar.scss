@@ -1,5 +1,4 @@
 .navbar {
-  height: 3em;
 
   .navbar-brand {
     display: inherit;
@@ -18,11 +17,14 @@
   }
 }
 
+@media screen and (min-width: 575px){
+    height: 3em;
+}
+
 @media screen and (max-width: 575px){
   .navbar {
-    height: 4.5em;
-    padding-top:10px;
-
+    padding-top: 5px;
+    padding-bottom: 5px;
     .navbar-brand{
       input{
         width: 70%;
