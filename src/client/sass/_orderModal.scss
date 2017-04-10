@@ -12,6 +12,10 @@
     padding: 12px 0 12px 0;
   }
 
+  label.form-check-label{
+    display: inline-flex;
+  }
+
   .remove-dish{
     border-radius: 30px;
     border-top-right-radius: 0;

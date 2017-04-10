@@ -1,6 +1,6 @@
 import React from "react";
 import { map, first, findIndex } from "lodash";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Name, Label, Button, Table, CardLink } from "reactstrap"
+import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Name, Label, Button, Table, CardLink, Form, FormGroup } from "reactstrap"
 import Griddle from "griddle-react";
 import { inject, observer } from "mobx-react"
 
@@ -17,6 +17,7 @@ export default class OrderModal extends React.Component {
       name: "",
       dishes: [],
       open: false,
+      made: false,
       modal: false
     }
   }
@@ -33,7 +34,8 @@ export default class OrderModal extends React.Component {
         this.setState({
           table: order.table,
           name: order.name,
-          dishes: order.dishes.map(d => Object.assign({}, d))
+          dishes: order.dishes.map(d => Object.assign({}, d)),
+          made: order.made
         })
       }
     }
@@ -41,7 +43,8 @@ export default class OrderModal extends React.Component {
       this.setState({
         table: 1,
         name: "",
-        dishes: []
+        dishes: [],
+        made: false,
       })
     }
 }
@@ -73,7 +76,7 @@ export default class OrderModal extends React.Component {
   }
 
   updateOrder(){
-    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, false, false, 0, () => { this.close() }, (e) => { console.error(e) })
+    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, this.state.made, false, 0, () => { this.close() }, (e) => { console.error(e) })
   }
 
 
@@ -97,6 +100,10 @@ export default class OrderModal extends React.Component {
     }
 
     this.setState(dishes: dishes)
+  }
+
+  handleMade(){
+    this.setState({ made: !this.state.made })
   }
 
   removeDish(dish){
@@ -162,12 +169,21 @@ export default class OrderModal extends React.Component {
         <Modal isOpen={this.state.modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>Order</ModalHeader>
           <ModalBody>
-            <Label>Table
-              <Input type="number" name="table" placeholder="Table number" value={this.state.table} onChange={this.handleTable.bind(this)} />
-            </Label><br/>
-            <Label>Name
-              <Input type="text" name="Name" placeholder="Customer name" value={this.state.name} onChange={this.handleName.bind(this)} />
-            </Label>
+            <Form>
+              <FormGroup>
+                <Label>Table</Label>
+                <Input type="number" name="table" placeholder="Table number" value={this.state.table} onChange={this.handleTable.bind(this)} />
+              </FormGroup>
+              <FormGroup>
+                <Label>Name</Label>
+                <Input type="text" name="Name" placeholder="Customer name" value={this.state.name} onChange={this.handleName.bind(this)} />
+              </FormGroup>
+              <FormGroup>
+                <Label check>
+                  <Input type="checkbox" onChange={this.handleMade.bind(this)} checked={this.state.made}/>Made
+                </Label>
+              </FormGroup>
+            </Form>
             <div class="dishes">
               <Griddle tableClassName={'table'} useGriddleStyles={false} results={ map(allDishes, d => { return {name: d.name, _id: d._id, cost: d.cost.toFixed(2)}}) } showFilter={true} columnMetadata={metadata} columns={["name", "cost"]} onRowClick={this.handleClick.bind(this)}/>
               <Table responsive>

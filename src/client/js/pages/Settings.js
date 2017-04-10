@@ -1,15 +1,17 @@
 import React from 'react';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, Label, Input } from 'reactstrap';
 import classnames from 'classnames';
+import { inject, observer } from 'mobx-react';
 
+@inject('orderStore')
+@observer
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      activeTab: '1',
-      kitchenMode: true
+      activeTab: '1'
     };
   }
 
@@ -22,10 +24,9 @@ export default class Settings extends React.Component {
   }
 
   toggleKitchenMode(){
-    this.setState({
-      kitchenMode: !this.state.kitchenMode
-    })
+    this.props.orderStore.setKitchenMode(!this.props.orderStore.kitchenMode)
   }
+
   render() {
     return (
       <div class="settings">
@@ -51,7 +52,7 @@ export default class Settings extends React.Component {
           <TabPane tabId="1">
             <Row>
               <Label check>
-                <Input type="checkbox" onClick={this.toggleKitchenMode.bind(this)} checked={this.state.kitchenMode}/>{' '} Kitchen mode
+                <Input type="checkbox" onChange={this.toggleKitchenMode.bind(this)} checked={this.props.orderStore.kitchenMode}/>{' '} Kitchen mode
               </Label>
             </Row>
           </TabPane>

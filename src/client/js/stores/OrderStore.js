@@ -51,12 +51,21 @@ export class OrderStore {
     socket.on('updated:order', this.updateReceivedOrder);
 
   }
-  @observable orders = [new Order(0, "markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)];
+  @observable kitchenMode = localStorage.getItem('kitchenMode') == 'true'
+  @observable orders = [new Order(1, "Markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)]
+                        //new Order(2, "Elli", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 1}], false, false, 0),
+                        //new Order(3, "John", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 3}], true, false, 0)];
   @observable filter = ""
+
+  setKitchenMode(value){
+    localStorage.setItem('kitchenMode', value)
+    this.kitchenMode = localStorage.getItem('kitchenMode') == 'true'
+  }
 
   @computed get filteredOrders() {
     var matchesFilter = new RegExp(this.filter, "i")
-    return filter(this.orders, o => !this.filter || (o.table == this.filter) || matchesFilter.test(o.name));
+    return filter(this.orders, o => (!this.filter || (o.table == this.filter) || matchesFilter.test(o.name)) &&
+                                    (!this.kitchenMode || !o.made));
   }
 
   addReceivedOrder(order){
@@ -121,6 +130,9 @@ export class OrderStore {
           order.table = table
           order.name = name
           order.dishes = dishes
+          order.made = made
+          order.hasPayed = hasPayed
+          order.amountPayed = amountPayed
 
           socket.emit('updated:order', order.toJSON());
           onSuccess()
