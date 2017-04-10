@@ -6,6 +6,7 @@ import { Provider } from "mobx-react"
 import Orders from "./pages/Orders";
 import Dishes from "./pages/Dishes";
 import Layout from "./pages/Layout";
+import Settings from "./pages/Settings";
 
 import OrderStore from "./stores/OrderStore"
 import DishStore from "./stores/DishStore"
@@ -22,6 +23,7 @@ ReactDOM.render(
           <IndexRoute component={Orders}></IndexRoute>
           <Route path="Orders" name="Orders" component={Orders}>Orders</Route>
           <Route path="Dishes" name="Dishes" component={Dishes}>Dishes</Route>
+          <Route path="Settings" name="Settings" component={Settings}>Settings</Route>
         </Route>
       </Router>
     </Provider>,

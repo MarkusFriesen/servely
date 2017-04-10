@@ -43,6 +43,9 @@ export default class Navigation extends React.Component {
             <NavItem>
               <Link to="/dishes" class='nav-link' onClick={this.toggle}>Dishes</Link>
             </NavItem>
+            <NavItem>
+              <Link to="/settings" class='nav-link' onClick={this.toggle}>Settings</Link>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>
