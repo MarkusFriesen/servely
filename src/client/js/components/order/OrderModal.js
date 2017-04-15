@@ -4,6 +4,8 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Name, Label, Button,
 import Griddle from "griddle-react";
 import { inject, observer } from "mobx-react"
 
+import Toast from "../Toast"
+
 @inject('orderStore')
 @inject('dishStore')
 @observer
@@ -16,10 +18,12 @@ export default class OrderModal extends React.Component {
       table: 1,
       name: "",
       dishes: [],
-      open: false,
       made: false,
-      modal: false
+      modal: false,
+      errorMessage: undefined,
     }
+
+    this.toggle = this.toggle.bind(this)
   }
 
   componentWillMount(){
@@ -49,34 +53,22 @@ export default class OrderModal extends React.Component {
     }
 }
 
-  toggle(){
+  toggle() {
+    const modal = this.state.modal
     this.setState({
-      modal: !this.state.modal
-    })
-
-    this.setOrder()
-  }
-
-  open(){
-    this.setState({
-      modal: true,
-    })
-  }
-
-  close(){
-    this.setState({
-      modal: false
+      modal: !modal,
+      errorMessage: undefined
     })
 
     this.setOrder()
   }
 
   addOrder(){
-    this.props.orderStore.createOrder(this.state.table, this.state.name, this.state.dishes, () => { this.close() }, (e) => { console.error(e) })
+    this.props.orderStore.createOrder(this.state.table, this.state.name, this.state.dishes, () => { this.toggle() }, (e) => { console.warn(e), this.setState({errorMessage: e.message })})
   }
 
   updateOrder(){
-    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, this.state.made, false, 0, () => { this.close() }, (e) => { console.error(e) })
+    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, this.state.made, false, 0, () => { this.toggle() }, (e) => { console.error(e) })
   }
 
 
@@ -133,7 +125,6 @@ export default class OrderModal extends React.Component {
   }
 
   render() {
-    const toggle = this.toggle.bind(this)
     const addOrder = this.addOrder.bind(this)
 
     const allDishes = this.props.dishStore.dishes
@@ -165,11 +156,12 @@ export default class OrderModal extends React.Component {
 
     return (
       <div>
+        <Toast message={this.state.errorMessage} title="Error" />
         { !this.props.id ?
-          <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}>+</Button> :
-          <CardLink class='card-link float-right' onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
-        <Modal isOpen={this.state.modal} toggle={toggle}>
-          <ModalHeader toggle={toggle}>Order</ModalHeader>
+          <Button color="primary" class='btn-rnd' onClick={this.toggle}>+</Button> :
+          <CardLink class='card-link float-right' onClick={this.toggle}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
+        <Modal isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>Order</ModalHeader>
           <ModalBody>
             <Form>
               <FormGroup>
@@ -204,7 +196,7 @@ export default class OrderModal extends React.Component {
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={ !this.props.id ? this.addOrder.bind(this) : this.updateOrder.bind(this)}>Save</Button>
-            <Button color="secondary" onClick={this.close.bind(this)}>Cancel</Button>
+            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
           </ModalFooter>
         </Modal>
       </div>
