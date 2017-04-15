@@ -47,6 +47,16 @@
     .form-control-feedback{
       margin-left:30px;
     }
+
+    .card-footer-link {
+      display: flex;
+    }
+
+    .pay-order-modal{
+      .card-link {
+        margin-left: 10px;
+      }
+    }
   }
 
   @media screen and ( max-width:1699px ) and (min-width: 1200px) {

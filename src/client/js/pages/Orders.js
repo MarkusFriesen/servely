@@ -3,7 +3,7 @@ import { observer, inject } from "mobx-react"
 import { Button, Glyphicon, Row, CardColumns } from "reactstrap";
 
 import Order from "../components/Order";
-import OrderModal from "../components/OrderModal";
+import OrderModal from "../components/order/OrderModal";
 
 @inject('orderStore')
 @observer

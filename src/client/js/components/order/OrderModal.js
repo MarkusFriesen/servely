@@ -164,8 +164,10 @@ export default class OrderModal extends React.Component {
     ]
 
     return (
-      <div class="order-details">
-        { !this.props.id ? <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}>+</Button> : <CardLink onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
+      <div>
+        { !this.props.id ?
+          <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}>+</Button> :
+          <CardLink class='card-link float-right' onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
         <Modal isOpen={this.state.modal} toggle={toggle}>
           <ModalHeader toggle={toggle}>Order</ModalHeader>
           <ModalBody>
