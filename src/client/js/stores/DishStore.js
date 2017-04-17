@@ -35,17 +35,16 @@ export class DishStore {
   ];
 
   fetchDishes(){
-
-  request
-    .get('/api/dishes')
-    .end((err, res) => {
-      if (err) {
-        //TODO:Show error
-        console.error(err)
-      } else {
-        this.dishes.replace(res.body.map(d => new Dish(d.name, d.description, d.type, d.cost, d._id)))
-      }
-    })
+    request
+      .get('/api/dishes')
+      .end((err, res) => {
+        if (err) {
+          //TODO:Show error
+          console.error(err)
+        } else {
+          this.dishes.replace(res.body.map(d => new Dish(d.name, d.description, d.type, d.cost, d._id)))
+        }
+      })
   }
 
   createDish(name, cost, description, type, onSuccess, onFailure){
@@ -58,7 +57,7 @@ export class DishStore {
           console.error(err)
           onFailure(err)
         } else {
-          this.dishes.push(new Dish(res.body.name, res.body.description, res.body.type, res.body.cost))
+          this.dishes.push(new Dish(res.body.name, res.body.description, res.body.type, res.body.cost, res.body._id))
           onSuccess()
         }
       })
