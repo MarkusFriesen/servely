@@ -65,7 +65,7 @@ export default class Order extends React.Component {
     const cardFooter = this.state.flipped ?
       <div class='card-footer-link'>
         <CardLink class='card-link' onClick={flip}><i class="fa fa-undo error fa-2x"></i></CardLink>
-        <PayOrderModal amountPayed={this.state.amountPayed} />
+        <PayOrderModal amountPayed={this.state.amountPayed} _id={this.props._id} />
       </div> :
       <CardLink onClick={flip}><i class="fa fa-shopping-cart success fa-2x"></i></CardLink>
 
