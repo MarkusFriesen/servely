@@ -7,6 +7,24 @@
 @import 'settings';
 @import 'footer';
 
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  padding-bottom: 2em;
+  min-height: 93%;
+}
+
 .container-fluid{
   margin-top: 40px;
 }
