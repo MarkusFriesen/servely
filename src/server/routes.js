@@ -22,4 +22,12 @@ module.exports.initialize = function(app, router) {
   router.post('/api/dishes', api.dishes.addDish)
 
   router.delete('/api/dishes', api.dishes.deleteDish)
+
+  router.get('/api/dishTypes', api.dishTypes.getDishTypes)
+
+  router.put('/api/dishTypes', api.dishTypes.updateDishType)
+
+  router.post('/api/dishTypes', api.dishTypes.addDishType)
+
+  router.delete('/api/dishTypes', api.dishTypes.deleteDishType)
 }

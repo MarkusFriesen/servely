@@ -1,4 +1,5 @@
 module.exports = {
   orders: require('./orders'),
-  dishes: require('./dishes')
+  dishes: require('./dishes'),
+  dishTypes: require('./dishTypes')
 }

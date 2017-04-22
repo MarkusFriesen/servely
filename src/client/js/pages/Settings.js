@@ -3,6 +3,8 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, Ca
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
+import DishTypeSettings from "../components/settings/DishTypeSettings"
+
 @inject('orderStore')
 @observer
 export default class Settings extends React.Component {
@@ -51,7 +53,7 @@ export default class Settings extends React.Component {
             </Row>
           </TabPane>
           <TabPane tabId="2">
-            <h4>Create your dish types here</h4>
+            <DishTypeSettings />
           </TabPane>
         </TabContent>
       </div>

@@ -10,11 +10,13 @@ import Settings from "./pages/Settings";
 
 import OrderStore from "./stores/OrderStore"
 import DishStore from "./stores/DishStore"
+import DishTypeStore from "./stores/DishTypeStore"
 
 const app = document.getElementById('app');
 const stores = {
   orderStore: OrderStore,
-  dishStore: DishStore
+  dishStore: DishStore,
+  dishTypeStore: DishTypeStore
 }
 ReactDOM.render(
     <Provider {...stores}>
