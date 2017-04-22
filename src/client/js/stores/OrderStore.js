@@ -100,7 +100,7 @@ export class OrderStore {
     })
   }
 
-  createOrder(table, name, dishes, onSuccess, onFailure){
+  createOrder({table, name, dishes}, onSuccess, onFailure){
     request
       .post('/api/orders')
       .set('Content-Type', 'application/json')
@@ -117,7 +117,7 @@ export class OrderStore {
       })
   }
 
-  updateOrder(id, table, name, dishes, made, hasPayed, amountPayed, onSuccess, onFailure){
+  updateOrder({id, table, name, dishes, made, hasPayed, amountPayed}, onSuccess, onFailure){
     request
       .put('/api/orders')
       .set('Content-Type', 'application/json')

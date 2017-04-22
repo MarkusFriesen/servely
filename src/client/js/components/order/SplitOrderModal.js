@@ -59,26 +59,35 @@ export default class SplitOrderModal extends React.Component {
 
   splitOrder(){
 
-    this.props.orderStore.createOrder(this.state.order.table, this.state.name, this.state.newDishes.filter(d => d.quantity > 0), () => {
-      const dishes = this.state.order.dishes.map(d => Object.assign({}, d))
-      dishes.forEach((d, i) => {
-        console.warn(d.quantity, this.state.newDishes[i].quantity, d.quantity - this.state.newDishes[i].quantity)
-        update(d, 'quantity', q => q - this.state.newDishes[i].quantity)
-      })
-      remove(dishes, d => d.quantity <= 0)
+    this.props.orderStore.createOrder(
+      {
+        table: this.state.order.table,
+        name: this.state.name,
+        dishes: this.state.newDishes.filter(d => d.quantity > 0)
+      }, () =>
+      {
+        const dishes = this.state.order.dishes.map(d => Object.assign({}, d))
+        dishes.forEach((d, i) => {
+          console.warn(d.quantity, this.state.newDishes[i].quantity, d.quantity - this.state.newDishes[i].quantity)
+          update(d, 'quantity', q => q - this.state.newDishes[i].quantity)
+        })
+        remove(dishes, d => d.quantity <= 0)
 
-      this.props.orderStore.updateOrder(
-        this.props._id,
-        this.state.order.table,
-        this.state.order.name,
-        dishes,
-        this.state.order.made,
-        this.state.order.hasPayed,
-        this.state.order.amountPayed,
-        () => this.toggle(),
-        (err) => console.error(err))
-      //TODO: rollback on fail!
-    }, (err) => console.error("Split Failed: ", err))
+        this.props.orderStore.updateOrder(
+          {
+            id: this.props._id,
+            table: this.state.order.table,
+            name: this.state.order.name,
+            dishes: dishes,
+            made: this.state.order.made,
+            hasPayed: this.state.order.hasPayed,
+            amountPayed: this.state.order.amountPayed
+          },
+          () => this.toggle(),
+          (err) => console.error(err))
+          //TODO: rollback on fail!
+      },
+      (err) => console.error("Split Failed: ", err))
   }
 
   open(){

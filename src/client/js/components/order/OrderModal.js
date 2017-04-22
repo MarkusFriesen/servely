@@ -64,11 +64,29 @@ export default class OrderModal extends React.Component {
   }
 
   addOrder(){
-    this.props.orderStore.createOrder(this.state.table, this.state.name, this.state.dishes, () => { this.toggle() }, (e) => { console.warn(e), this.setState({errorMessage: e.message })})
+    this.props.orderStore.createOrder(
+      {
+        table: this.state.table,
+        name: this.state.name,
+        dishes: this.state.dishes
+      },
+      () => { this.toggle() },
+      (e) => { console.warn(e), this.setState({errorMessage: e.message })})
   }
 
   updateOrder(){
-    this.props.orderStore.updateOrder(this.props.id, this.state.table, this.state.name, this.state.dishes, this.state.made, false, 0, () => { this.toggle() }, (e) => { console.error(e) })
+    this.props.orderStore.updateOrder(
+      {
+        id: this.props.id,
+        table: this.state.table,
+        name: this.state.name,
+        dishes: this.state.dishes,
+        made: this.state.made,
+        hasPayed: false,
+        amountPayed: 0
+      },
+      () => { this.toggle() },
+      (e) => { console.error(e) })
   }
 
 
@@ -159,7 +177,7 @@ export default class OrderModal extends React.Component {
         <Toast message={this.state.errorMessage} title="Error" />
         { !this.props.id ?
           <Button color="primary" class='btn-rnd' onClick={this.toggle}>+</Button> :
-          <CardLink class='card-link float-right' onClick={this.toggle}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
+          <CardLink class='float-right' onClick={this.toggle}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Order</ModalHeader>
           <ModalBody>
