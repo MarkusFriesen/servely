@@ -2,6 +2,7 @@ import React from "react";
 import { Container } from "reactstrap"
 
 import Navigation from "../components/layout/Navigation";
+import Footer from "../components/layout/Footer";
 
 require('../../sass/all.scss');
 export default class Layout extends React.Component {
@@ -13,6 +14,7 @@ export default class Layout extends React.Component {
         <Container fluid>
           {this.props.children}
         </Container>
+        <Footer />
       </div>
     );
   }
