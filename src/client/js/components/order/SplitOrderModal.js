@@ -77,7 +77,7 @@ export default class SplitOrderModal extends React.Component {
 
         this.props.orderStore.updateOrder(
           {
-            id: this.props._id,
+            _id: this.props._id,
             table: this.state.order.table,
             name: this.state.order.name,
             dishes: dishes,

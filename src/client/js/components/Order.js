@@ -7,6 +7,7 @@ import PayOrderModal from "./order/PayOrderModal"
 import OrderDishes from "./order/OrderDishes"
 import OrderModal from "./order/OrderModal"
 import SplitOrderModal from "./order/SplitOrderModal"
+import JoinOrdersModal from "./order/JoinOrdersModal"
 
 @inject('dishStore')
 @inject('orderStore')
@@ -74,6 +75,9 @@ export default class Order extends React.Component {
         <Card>
           <CardHeader>
             <div class="cover">
+              {
+                this.state.flipped ? <JoinOrdersModal _id={_id}/> : undefined
+              }
               <CardTitle>Table { table }</CardTitle>
               <CardSubtitle> { name }</CardSubtitle>
             </div>
