@@ -12,8 +12,9 @@ class Order {
   @observable made
   @observable hasPayed
   @observable amountPayed
+  @observable notes
 
-  constructor(table, name, timestamp, dishes, made, hasPayed, amountPayed, _id) {
+  constructor({table, name, timestamp, dishes, made, hasPayed, amountPayed, notes, _id}) {
     this.table = table
     this._id = _id || Date.now()
     this.name = name,
@@ -22,6 +23,7 @@ class Order {
     this.made = made
     this.hasPayed = hasPayed
     this.amountPayed = amountPayed
+    this.notes = notes
   }
 
   toJSON(){
@@ -33,7 +35,8 @@ class Order {
       dishes: this.dishes,
       made: this.made,
       hasPayed: this.hasPayed,
-      amountPayed: this.amountPayed
+      amountPayed: this.amountPayed,
+      notes: this.notes
     }
   }
 }
@@ -52,9 +55,18 @@ export class OrderStore {
 
   }
   @observable kitchenMode = localStorage.getItem('kitchenMode') == 'true'
-  @observable orders = [new Order(1, "Markus", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 2}], false, false, 0)]
-                        //new Order(2, "Elli", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 1}], false, false, 0),
-                        //new Order(3, "John", Date.now(), [{id:"58833fdc7bb0c19fc957754b", quantity: 3}], true, false, 0)];
+  @observable orders = []
+    // new Order(
+    // {
+    //   table: 1,
+    //   name: "Markus",
+    //   timestamp: Date.now(),
+    //   dishes: [{id:"58833fdc7bb0c19fc957754b", quantity: 2}],
+    //   made: false,
+    //   hasPayed: false,
+    //   amountPayed: 0,
+    //   notes: "Extra pickels"
+    // })]
   @observable filter = ""
 
   setKitchenMode(value){
@@ -70,7 +82,17 @@ export class OrderStore {
 
   addReceivedOrder(order){
     if (!find(this.orders, {_id: order._id})){
-      this.orders.push(new Order(order.table, order.name, order.timestamp, order.dishes, order.made, order.hasPayed, order.amountPayed, order._id))
+      this.orders.push(new Order(
+        { table: order.table,
+          name: order.name,
+          timestamp: order.timestamp,
+          dishes: order.dishes,
+          made: order.made,
+          hasPayed: order.hasPayed,
+          amountPayed: order.amountPayed,
+          notes: order.notes,
+          _id: order._id
+        }))
     }
   }
 
@@ -86,6 +108,7 @@ export class OrderStore {
     oldOrder.made = order.made
     oldOrder.hasPayed = order.hasPayed
     oldOrder.amountPayed = order.amountPayed
+    oldOrder.notes = order.notes
   }
 
   fetchOrders(){
@@ -95,21 +118,44 @@ export class OrderStore {
       if (err) {
         //TODO: Show error
       } else {
-        this.orders.replace(res.body.map(o => new Order(o.table, o.name, o.timestamp, o.dishes, o.made, o.hasPayed, o.amountPayed, o._id)))
+        console.warn(res.body)
+        this.orders.replace(res.body.map(o => new Order(
+          {
+            table: o.table,
+            name:  o.name,
+            timestamp: o.timestamp,
+            dishes: o.dishes,
+            made: o.made,
+            hasPayed: o.hasPayed,
+            amountPayed: o.amountPayed,
+            notes: o.notes,
+            _id: o._id
+        })))
       }
     })
   }
 
-  createOrder({table, name, dishes}, onSuccess, onFailure){
+  createOrder({table, name, dishes, notes, made}, onSuccess, onFailure){
     request
       .post('/api/orders')
       .set('Content-Type', 'application/json')
-      .send({table: table, name: name, dishes: dishes})
+      .send({table: table, name: name, dishes: dishes, notes: notes, made: made || false})
       .end((err, res) => {
         if (err) {
           onFailure(err)
         } else {
-          const order = new Order(res.body.table, res.body.name, res.body.timestamp, res.body.dishes, res.body.made, res.body.hasPayed, res.body.amountPayed, res.body._id)
+          const order = new Order(
+            {
+              table: res.body.table,
+              name: res.body.name,
+              timestamp: res.body.timestamp,
+              dishes: res.body.dishes,
+              made: res.body.made,
+              hasPayed: res.body.hasPayed,
+              amountPayed: res.body.amountPayed,
+              notes: res.body.notes,
+              _id: res.body._id
+            })
           this.orders.push(order)
           socket.emit('new:order', order.toJSON());
           onSuccess()
@@ -117,11 +163,21 @@ export class OrderStore {
       })
   }
 
-  updateOrder({id, table, name, dishes, made, hasPayed, amountPayed}, onSuccess, onFailure){
+  updateOrder({id, table, name, dishes, made, hasPayed, amountPayed, notes}, onSuccess, onFailure){
     request
       .put('/api/orders')
       .set('Content-Type', 'application/json')
-      .send({orderId: id, table: table, name: name, dishes: dishes, made: made, hasPayed: hasPayed, amountPayed: parseFloat(amountPayed || 0)})
+      .send(
+        {
+          orderId: id,
+          table: table,
+          name: name,
+          dishes: dishes,
+          made: made,
+          hasPayed: hasPayed,
+          amountPayed: parseFloat(amountPayed || 0),
+          notes: notes}
+        )
       .end((err, res) => {
         if (err) {
           onFailure(err)
@@ -133,6 +189,7 @@ export class OrderStore {
           order.made = made
           order.hasPayed = hasPayed
           order.amountPayed = amountPayed
+          order.notes = notes
 
           socket.emit('updated:order', order.toJSON());
           onSuccess()

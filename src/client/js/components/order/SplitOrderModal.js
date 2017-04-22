@@ -63,7 +63,9 @@ export default class SplitOrderModal extends React.Component {
       {
         table: this.state.order.table,
         name: this.state.name,
-        dishes: this.state.newDishes.filter(d => d.quantity > 0)
+        dishes: this.state.newDishes.filter(d => d.quantity > 0),
+        notes: this.state.order.notes,
+        made: this.state.order.made
       }, () =>
       {
         const dishes = this.state.order.dishes.map(d => Object.assign({}, d))
@@ -81,7 +83,8 @@ export default class SplitOrderModal extends React.Component {
             dishes: dishes,
             made: this.state.order.made,
             hasPayed: this.state.order.hasPayed,
-            amountPayed: this.state.order.amountPayed
+            amountPayed: this.state.order.amountPayed,
+            notes: this.state.order.notes
           },
           () => this.toggle(),
           (err) => console.error(err))

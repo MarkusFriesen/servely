@@ -8,7 +8,8 @@ let OrderSchema = new Schema({
   dishes:       [{id: Schema.Types.ObjectId, quantity: Number}],
   made:         Boolean,
   hasPayed:     Boolean,
-  amountPayed:  Number
+  amountPayed:  Number,
+  notes:        String
 })
 
 module.exports = mongoose.model('Order', OrderSchema)

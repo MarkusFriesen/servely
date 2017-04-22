@@ -20,6 +20,7 @@ export default class OrderModal extends React.Component {
       dishes: [],
       made: false,
       modal: false,
+      notes: "",
       errorMessage: undefined,
     }
 
@@ -39,7 +40,8 @@ export default class OrderModal extends React.Component {
           table: order.table,
           name: order.name,
           dishes: order.dishes.map(d => Object.assign({}, d)),
-          made: order.made
+          made: order.made,
+          notes: order.notes
         })
       }
     }
@@ -49,6 +51,7 @@ export default class OrderModal extends React.Component {
         name: "",
         dishes: [],
         made: false,
+        notes: ""
       })
     }
 }
@@ -68,7 +71,8 @@ export default class OrderModal extends React.Component {
       {
         table: this.state.table,
         name: this.state.name,
-        dishes: this.state.dishes
+        dishes: this.state.dishes,
+        notes: this.state.notes
       },
       () => { this.toggle() },
       (e) => { console.warn(e), this.setState({errorMessage: e.message })})
@@ -83,7 +87,8 @@ export default class OrderModal extends React.Component {
         dishes: this.state.dishes,
         made: this.state.made,
         hasPayed: false,
-        amountPayed: 0
+        amountPayed: 0,
+        notes: this.state.notes
       },
       () => { this.toggle() },
       (e) => { console.error(e) })
@@ -96,6 +101,10 @@ export default class OrderModal extends React.Component {
 
   handleName(e) {
     this.setState({ name: e.target.value });
+  }
+
+  handleNotes(e) {
+    this.setState({ notes: e.target.value });
   }
 
   handleClick(e){
@@ -189,6 +198,10 @@ export default class OrderModal extends React.Component {
               <FormGroup>
                 <Label>Name</Label>
                 <Input type="text" name="Name" placeholder="Customer name" value={this.state.name} onChange={this.handleName.bind(this)} />
+              </FormGroup>
+              <FormGroup>
+                <Label for="notes">Notes</Label>
+                <Input type="textarea" name="text" id="notes" value={this.state.notes} onChange={this.handleNotes.bind(this)} />
               </FormGroup>
               <FormGroup>
                 <Label check>

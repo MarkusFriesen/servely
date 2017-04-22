@@ -25,8 +25,9 @@ module.exports = {
         table: req.body.table,
         name: req.body.name,
         dishes: req.body.dishes,
-        made: false,
-        hasPayed: false
+        made: req.body.made || false,
+        hasPayed: false,
+        notes: req.body.notes
       }, (err, order) => {
       if (err) {
         console.warn(err)
@@ -47,13 +48,15 @@ module.exports = {
     })
   },
   updateOrder(req, res) {
+    console.warn(res)
     Models.Orders.findOneAndUpdate({"_id" : req.body.orderId }, {$set: {
       table: req.body.table,
       name: req.body.name,
       dishes: req.body.dishes,
       made: req.body.made || false,
       hasPayed: req.body.hasPayed || false,
-      amountPayed: req.body.amountPayed || 0
+      amountPayed: req.body.amountPayed || 0,
+      notes: req.body.notes
     }}, {new: true},  (err, order) => {
     if (err) {
       console.warn(err)
