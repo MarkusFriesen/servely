@@ -35,7 +35,7 @@ export default class DishGroup extends React.Component {
     const flip = this.flip.bind(this)
 
     const dishes = map(dishGroup, (d, i) =>
-      <table key={i}>
+      <table key={d._id}>
         <tbody>
           <tr>
             <td class="name"><h6>{d.name}</h6></td>
@@ -48,7 +48,7 @@ export default class DishGroup extends React.Component {
       </table>)
 
       const editabledishes = map(dishGroup, (d, i) =>
-        <table key={i}>
+        <table key={d._id}>
           <tbody>
             <tr>
               <td class="name"><h6>{d.name}</h6></td>
@@ -61,6 +61,7 @@ export default class DishGroup extends React.Component {
           </tbody>
         </table>)
 
+    const dishTypeName = type && type.name ? type.name : ""
     const images= {
       "Dessert" : <CardImg top width="100%" class="img" src="assets/img/dessert.jpg"/>,
       "Sandwiches" : <CardImg top width="100%" class="img" src="assets/img/sandwiches.jpg"/>,
@@ -68,12 +69,13 @@ export default class DishGroup extends React.Component {
       "Pullman Burger": <CardImg top width="100%" class="img" src="assets/img/burger.jpg"/>,
       "Quick Eats": <CardImg top width="100%" class="img" src="assets/img/quick.jpg"/>,
     }
-    const image = images[type]
+
+    const image = images[dishTypeName]
 
     const front = <div>
       { image || <CardImg top width="100%" class="img" src="assets/img/default.jpg"/> }
       <CardBlock>
-        <CardTitle>{ type }</CardTitle>
+        <CardTitle>{ dishTypeName }</CardTitle>
         { dishes }
 
         <CardLink onClick={flip}><i class="fa fa-pencil fa-2x"></i></CardLink>
@@ -83,7 +85,7 @@ export default class DishGroup extends React.Component {
     const back = <div>
       { image || <CardImg top width="100%" class="img" src="assets/img/default.jpg"/> }
       <CardBlock>
-        <CardTitle>{ type }</CardTitle>
+        <CardTitle>{ dishTypeName }</CardTitle>
         { editabledishes }
         <CardLink onClick={flip}><i class="fa fa-undo error fa-2x"></i></CardLink>
       </CardBlock>

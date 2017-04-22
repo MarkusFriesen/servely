@@ -5,6 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Input, Name, Label, Button,
 import { observer, inject } from 'mobx-react'
 
 @inject('dishStore')
+@inject('dishTypeStore')
 @observer
 export default class DishModal extends React.Component {
   constructor(){
@@ -14,7 +15,7 @@ export default class DishModal extends React.Component {
 
     this.state = {
       name: "",
-      type: "",
+      type: undefined,
       cost: 0,
       description: "",
       open: false,
@@ -43,7 +44,7 @@ export default class DishModal extends React.Component {
         name: "",
         cost: 0,
         description: "",
-        type: ""
+        type: this.props.dishTypeStore.dishTypes && this.props.dishTypeStore.dishTypes[0] ? this.props.dishTypeStore.dishTypes[0]._id : undefined
       })
     }
   }
@@ -109,6 +110,8 @@ export default class DishModal extends React.Component {
   render() {
     const toggle = this.toggle.bind(this)
 
+    const dishTypes = this.props.dishTypeStore.dishTypes.map(d => <option key={d._id} value={d._id}>{d.name}</option>)
+
     return (
       <div class="dish-details">
         { !this.props.id ? <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}>+</Button> : <CardLink onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
@@ -125,7 +128,9 @@ export default class DishModal extends React.Component {
               <Input type="number" name="cost" placeholder="Table number" value={this.state.cost} onChange={this.handlecost.bind(this)} />
             </Label><br/>
             <Label>Type
-              <Input type="text" name="type" placeholder="Dish type" value={this.state.type} onChange={this.handletype.bind(this)} />
+              <Input type="select" id="selectDishType" name="selectDishType" placeholder="Dish type" value={this.state.type} onChange={this.handletype.bind(this)} >
+                { dishTypes }
+              </Input>
             </Label><br/><br/>
           </ModalBody>
           <ModalFooter>

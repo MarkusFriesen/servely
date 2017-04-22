@@ -57,6 +57,10 @@
       column-count: 3;
     }
 
+    .edit{
+      text-align: right;
+    }
+
   @media screen and (max-width: 1500px) and (min-width: 992px){
     .card-columns {
       column-count: 2;

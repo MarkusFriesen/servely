@@ -4,7 +4,7 @@ let mongoose = require('mongoose'),
 let DishSchema = new Schema({
   name:         String,
   cost:         Number,
-  type:         String,
+  type:         Schema.Types.ObjectId,
   description:  String
 })
 
