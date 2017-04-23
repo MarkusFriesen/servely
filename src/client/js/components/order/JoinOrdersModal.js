@@ -69,7 +69,6 @@ export default class PayOrderModal extends React.Component {
 
     const rows = this.state.orders.map( o =>
       <tr key={o._id}>
-
         <th><input type="checkbox" onChange={this.toggleDish(o).bind(this)} checked={o.selected}/></th>
         <th>{o.name}</th>
       </tr>)

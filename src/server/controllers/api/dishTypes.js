@@ -8,7 +8,6 @@ module.exports = {
         console.warn(err)
         res.status(500).json({error: err})
       }
-      console.warn(types)
       if (types.length) {
         res.json(types)
       } else {

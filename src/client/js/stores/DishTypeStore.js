@@ -30,7 +30,6 @@ export class DishTypeStore {
         //TODO:Show error
         console.error(err)
       } else {
-        console.warn(res.body)
         this.dishTypes.replace(res.body.map(d => new DishType(d.name, d._id)))
       }
     })
@@ -46,7 +45,6 @@ export class DishTypeStore {
           console.error(err)
           onFailure(err)
         } else {
-          console.warn(res.body)
           this.dishTypes.push(new DishType(res.body.name, res.body._id))
           onSuccess()
         }

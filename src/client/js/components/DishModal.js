@@ -44,7 +44,7 @@ export default class DishModal extends React.Component {
         name: "",
         cost: 0,
         description: "",
-        type: this.props.dishTypeStore.dishTypes && this.props.dishTypeStore.dishTypes[0] ? this.props.dishTypeStore.dishTypes[0]._id : undefined
+        type: this.props.dishTypeStore.dishTypes && this.props.dishTypeStore.dishTypes.length >= 1 ? this.props.dishTypeStore.dishTypes[0]._id : undefined
       })
     }
   }

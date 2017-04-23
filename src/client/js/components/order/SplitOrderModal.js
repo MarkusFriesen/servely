@@ -70,7 +70,6 @@ export default class SplitOrderModal extends React.Component {
       {
         const dishes = this.state.order.dishes.map(d => Object.assign({}, d))
         dishes.forEach((d, i) => {
-          console.warn(d.quantity, this.state.newDishes[i].quantity, d.quantity - this.state.newDishes[i].quantity)
           update(d, 'quantity', q => q - this.state.newDishes[i].quantity)
         })
         remove(dishes, d => d.quantity <= 0)

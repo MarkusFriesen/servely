@@ -205,7 +205,7 @@ export default class OrderModal extends React.Component {
               </FormGroup>
               <FormGroup>
                 <Label check>
-                  <Input type="checkbox" onChange={this.handleMade.bind(this)} checked={this.state.made}/>Made
+                  <Input type="checkbox" onChange={this.handleMade.bind(this)} checked={this.state.made}/>{' '}Made
                 </Label>
               </FormGroup>
             </Form>

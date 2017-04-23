@@ -118,7 +118,6 @@ export class OrderStore {
       if (err) {
         //TODO: Show error
       } else {
-        console.warn(res.body)
         this.orders.replace(res.body.map(o => new Order(
           {
             table: o.table,
@@ -163,13 +162,13 @@ export class OrderStore {
       })
   }
 
-  updateOrder({id, table, name, dishes, made, hasPayed, amountPayed, notes}, onSuccess, onFailure){
+  updateOrder({_id, table, name, dishes, made, hasPayed, amountPayed, notes}, onSuccess, onFailure){
     request
       .put('/api/orders')
       .set('Content-Type', 'application/json')
       .send(
         {
-          orderId: id,
+          orderId: _id,
           table: table,
           name: name,
           dishes: dishes,
@@ -182,7 +181,7 @@ export class OrderStore {
         if (err) {
           onFailure(err)
         } else {
-          const order = this.getOrder(id)
+          const order = this.getOrder(_id)
           order.table = table
           order.name = name
           order.dishes = dishes
@@ -222,10 +221,10 @@ export class OrderStore {
   getOrder(id) {
     return find(this.orders, { _id: id })
   }
+
+  getOrdersByIds(ids){
+    return this.orders.filter(o => ids.includes(o._id))
+  }
 }
 const store = window.orderStore = new OrderStore
 export default store
-
-autorun(() => {
-  store.orders[0]
-})
