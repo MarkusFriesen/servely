@@ -35,7 +35,7 @@ export default class Order extends React.Component {
   }
 
   render() {
-    const { _id, table, name, timestamp, dishes  } = this.props;
+    const { _id, table, name, timestamp, dishes, notes  } = this.props;
     const flip = this.flip.bind(this)
 
     const dishIds = dishes.filter(d => d).map(d => d.id)
@@ -93,6 +93,13 @@ export default class Order extends React.Component {
                 <FormFeedback>{(this.state.amountPayed - total < 0 ? "Missing: " : "Change: ")} {Math.abs(this.state.amountPayed - total).toFixed(2)} <i class="fa fa-eur"></i> </FormFeedback>
               </FormGroup>
             : undefined }
+            {
+              this.props.orderStore.kitchenMode && !this.state.flipped  && notes ?
+              <blockquote>
+                <p>{notes}</p>
+              </blockquote>
+              : undefined
+            }
             { modalLink }
             { cardFooter }
           </CardBlock>
