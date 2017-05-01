@@ -34,6 +34,11 @@ export default class Order extends React.Component {
     })
   }
 
+  madeOrder(e){
+    const { _id, table, name, dishes, hasPayed,  amountPayed, notes } = this.props;
+    this.props.orderStore.updateOrder({_id, table, name, dishes, made: true, hasPayed, amountPayed, notes}, () => {}, (e) => { console.error(e.message)})
+  }
+
   render() {
     const { _id, table, name, timestamp, dishes, notes  } = this.props;
     const flip = this.flip.bind(this)
@@ -77,6 +82,11 @@ export default class Order extends React.Component {
             <div class="cover">
               {
                 this.state.flipped ? <JoinOrdersModal _id={_id}/> : undefined
+              }
+
+              { this.props.orderStore.kitchenMode && !this.state.flipped ?
+                <i class="white float-right fa fa-check fa-2x" onClick={ this.madeOrder.bind(this) }></i> :
+                undefined
               }
               <CardTitle>Table { table }</CardTitle>
               <CardSubtitle> { name }</CardSubtitle>
