@@ -93,7 +93,7 @@ export default class DishGroup extends React.Component {
 
     return (
       <div class="flip">
-        <Card class={this.state.flipped ? "flipped" : ""}>
+        <Card>
           <div class="face front ">
             {this.state.flipped ? undefined : front}
           </div>
