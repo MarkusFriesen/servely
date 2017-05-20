@@ -77,7 +77,7 @@ export default class DishTypeModal extends React.Component {
         <Toast message={this.state.errorMessage} title="Error" />
         { this.props.id ?
           <i class="fa fa-pencil primary fa-2x" onClick={this.toggle.bind(this)}></i> :
-          <Button color="primary" class='btn-rnd' onClick={this.toggle}>+</Button>
+          <Button color="primary" class='btn-rnd' onClick={this.toggle}><i class="fa fa-plus"></i></Button>
         }
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Dish Type</ModalHeader>

@@ -185,7 +185,7 @@ export default class OrderModal extends React.Component {
       <div>
         <Toast message={this.state.errorMessage} title="Error" />
         { !this.props.id ?
-          <Button color="primary" class='btn-rnd' onClick={this.toggle}>+</Button> :
+          <Button color="primary" class='btn-rnd' onClick={this.toggle}><i class="fa fa-plus"></i></Button> :
           <CardLink class='float-right' onClick={this.toggle}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
         <Modal isOpen={this.state.modal} toggle={this.toggle}>
           <ModalHeader toggle={this.toggle}>Order</ModalHeader>

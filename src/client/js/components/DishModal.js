@@ -114,7 +114,7 @@ export default class DishModal extends React.Component {
 
     return (
       <div class="dish-details">
-        { !this.props.id ? <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}>+</Button> : <CardLink onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
+        { !this.props.id ? <Button color="primary" class='btn-rnd' onClick={this.open.bind(this)}><i class="fa fa-plus"></i></Button> : <CardLink onClick={this.open.bind(this)}><i class="fa fa-pencil primary fa-2x"></i></CardLink> }
         <Modal isOpen={this.state.modal} toggle={toggle} class="dish-modal">
           <ModalHeader toggle={toggle}>Dish</ModalHeader>
           <ModalBody>
