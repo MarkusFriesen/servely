@@ -36,7 +36,10 @@ module.exports = function(app, config) {
   app.use(middleware.cookieParser('SECRETHERE'))
 
   app.use('/public/', express['static'](path.join(__dirname, './public')))
-  app.use('/assets/img', express.static((path.join(__dirname, './public/OrderMe/assets/img'))))
+  app.use('/assets/img', express.static((path.join(__dirname, './public/assets/img'))))
+  app.use('/assets/', express.static((path.join(__dirname, './public/assets/'))))
+  app.use('/app.css', express.static((path.join(__dirname, './public/app.css'))))
+  app.use('/app.bundle.js', express.static((path.join(__dirname, './public/app.bundle.js'))))
 
   app.set('config', config)
 

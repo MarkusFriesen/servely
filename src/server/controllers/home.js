@@ -8,6 +8,6 @@ module.exports = {
       userid: req.session.user_id
     }
 
-    res.render('home', model)
+    res.render('../public/index.html', model)
   }
 }

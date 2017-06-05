@@ -4,16 +4,34 @@
   "description": "Order dishes from a web app to manage customer orders",
   "main": "index.js",
   "scripts": {
+    "start": "node --use_strict src/server/server.js",
     "dev": "webpack-dev-server",
     "prod": "webpack -p"
   },
   "author": "Markus Friesen",
   "license": "ISC",
   "dependencies": {
+    "async": "latest",
+    "axios": "latest",
+    "body-parser": "latest",
+    "connect-mongo": "latest",
+    "cookie-parser": "latest",
+    "errorhandler": "latest",
+    "express": "latest",
+    "express-handlebars": "latest",
+    "express-session": "latest",
+    "faker": "latest",
+    "keymirror": "latest",
+    "method-override": "latest",
+    "mongoose": "latest",
+    "morgan": "latest",
+    "multer": "latest",
     "react-dom": "^15.5.4",
     "react-router-dom": "^4.1.1",
     "react-router": "^4.1.1",
-    "superagent": "^3.5.2"
+    "superagent": "^3.5.2",
+    "sanitize-html": "latest",
+    "socket.io": "latest"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",

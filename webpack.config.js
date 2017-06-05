@@ -9,7 +9,7 @@ var cssDev = ['style-loader', 'css-loader', 'sass-loader'];
 var cssProd = ExtractTextPlugin.extract({
   fallback: 'style-loader',
   loader: ['css-loader', 'sass-loader'],
-  publicPath: '/src/server/public/OrderMe/'
+  publicPath: '/src/server/public/'
 })
 
 var cssConfig = isProd ? cssProd : cssDev;
@@ -17,7 +17,7 @@ var cssConfig = isProd ? cssProd : cssDev;
 module.exports = {
   entry: './src/client/js/app.js',
   output: {
-    path: isProd ? path.join(__dirname, 'src/server/public/OrderMe/') : path.resolve(__dirname, "dist"),
+    path: isProd ? path.join(__dirname, 'src/server/public/') : path.resolve(__dirname, "dist"),
     filename: 'app.bundle.js'
   },
   module: {
@@ -43,7 +43,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, "src/server/public/OrderMe/"),
+    contentBase: path.join(__dirname, "src/server/public/"),
     compress: true,
     stats: "errors-only",
     open: true,
