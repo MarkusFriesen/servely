@@ -1,0 +1,73 @@
+$break-small: 1000px;
+$break-large: 1500px;
+
+.masonry-layout {
+  -moz-column-count: 2;
+  -moz-column-gap: 0;
+  -webkit-column-count: 2;
+  -webkit-column-gap: 0;
+  column-count: 2;
+  column-gap: 0;
+  
+  padding: 10px;
+
+  @media screen and (max-width: $break-small) {
+    -moz-column-count: 1;
+    -webkit-column-count: 1;
+    column-count: 1;
+  }
+  @media screen and (min-width: $break-large) {
+    -moz-column-count: 3;
+    -webkit-column-count: 3;
+    column-count: 3;
+  }
+
+  .masonry-layout__panel {
+    break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    padding: 5px;
+  }
+
+  .mdl-card{
+      width: inherit;
+      background-color: white !important;
+  }
+
+  .mdl-card{
+
+    .mdl-card__supporting-text {
+      width: inherit;
+    }
+
+    .mdl-card__actions{
+      .mdl-button--icon{
+        margin-right: 10px;
+        float: right;
+        
+        .material-icons {
+          top: 15%;
+          left: 15%;
+          -webkit-transform: none;
+          transform: none;
+        }
+      }
+
+      .mdl-dialog__content {
+        .mdl-textfield {
+          margin-top: 15px;
+        }
+      }
+
+      p { 
+        font-size: 16px;
+        color: rgba(0,0,0,.54);
+        font-weight: 700;
+        text-align: right;
+        padding-right: 5px;
+      }
+    }
+  }
+}
+
+
+

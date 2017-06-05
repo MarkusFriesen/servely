@@ -17,22 +17,46 @@ class Dish {
     this.cost = parseFloat(cost)
   }
 
-  update(name, description, type, cost){
-    this.name = name
-    this.description = description
-    this.type = type
-    this.cost = parseFloat(cost)
+  update({name, description, type, cost}, onSuccess, onFailure){
+    request
+      .put('/api/dishes')
+      .set('Content-Type', 'application/json')
+      .send({id: id, name: name, cost: cost, description: description, type: type})
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          onFailure(err)
+        } else {
+
+          this.name = res.body.name
+          this.description = res.body.description
+          this.type = res.body.type
+          this.cost = parseFloat(res.body.cost)
+
+          onSuccess()
+        }
+      })
   }
 }
 
 export class DishStore {
   constructor(){
-
-      this.fetchDishes()
+    this.fetchDishes()
   }
-  @observable dishes = [new Dish("Simple Salad", "(Shellsburg, IA) chili, garlic, lime" , "Quick Eats", 6, "58833fdc7bb0c19fc957754b" ),
-    new Dish("Orzo Salad", "house pickles, mustard seed, fried chili flake (if fried served w/ blue chz dressing)", "Quick Eats",9.50, "58833ff97bb0c19fc957754c")
+
+  @observable dishes = [
+    new Dish("Simple Salad", "(Shellsburg, IA) chili, garlic, lime" , "58833fdc7bb0c19fc957754c", 6, "58833fdc7bb0c19fc957754b" ),
+    new Dish("Steak", "Argentinan Steak Cooked to your liking" , "58833fdc7bb0c19fc957754d", 6, "58833fdc7bb0c19fc957752d" ),
+    new Dish("Burger with Fries", "Beef, cheese, Lettuce, Tomatoes" , "58833fdc7bb0c19fc957754d", 6, "58833fdc8bb0c19fc957754d" ),
+    new Dish("Orzo Salad", "house pickles, mustard seed, fried chili flake (if fried served w/ blue chz dressing)", "58833fdc7bb0c19fc957754c",9.50, "58833ff97bb0c19fc957754c")
   ];
+
+  @observable filter = ""
+  
+  @computed get filteredDishes() {
+    var matchesFilter = new RegExp(this.filter, "i")
+    return filter(this.dishes, o => (!this.filter ||  matchesFilter.test(o.name)));
+  }
 
   fetchDishes(){
     request
@@ -47,7 +71,15 @@ export class DishStore {
       })
   }
 
-  createDish(name, cost, description, type, onSuccess, onFailure){
+  getDish(id) {
+    return find(this.dishes, d =>  d._id == id )
+  }
+
+  getDishesByIds(ids){
+    return this.dishes.filter((d) => ids.includes(d._id))
+  }
+
+  add({name, description, type, cost}, onSuccess, onFailure){
     request
       .post('/api/dishes')
       .set('Content-Type', 'application/json')
@@ -57,31 +89,13 @@ export class DishStore {
           console.error(err)
           onFailure(err)
         } else {
-          this.dishes.push(new Dish(res.body.name, res.body.description, res.body.type, res.body.cost, res.body._id))
+          this.dishes.push(new Dish(res.body.name, res.body.description, res.body.type, parseFloat(res.body.cost), res.body._id))
           onSuccess()
         }
       })
   }
 
-  updateDish(id, name, cost, description, type, onSuccess, onFailure){
-    request
-      .put('/api/dishes')
-      .set('Content-Type', 'application/json')
-      .send({id: id, name: name, cost: cost, description: description, type: type})
-      .end((err, res) => {
-        if (err) {
-          console.error(err)
-          onFailure(err)
-        } else {
-          const dish = this.getDish(id)
-          dish.update(res.body.name, res.body.description, res.body.type, res.body.cost)
-
-          onSuccess()
-        }
-      })
-  }
-
-  deleteDish(id, onSuccess, onFailure){
+  remove(id, onSuccess, onFailure){
     request
       .delete('/api/dishes')
       .set('Content-Type', 'application/json')
@@ -96,13 +110,7 @@ export class DishStore {
       })
   }
 
-  getDish(id) {
-    return find(this.dishes, { _id: id })
-  }
-
-  getDishesByIds(ids){
-    return this.dishes.filter((d) => ids.includes(d._id))
-  }
 }
+
 const store = window.dishStore = new DishStore
 export default store

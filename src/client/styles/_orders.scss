@@ -1,0 +1,53 @@
+.orders {
+  .mdl-data-table td {
+    border-top: none;
+    border-bottom: none;
+  }
+
+  .mdl-card__title{
+    background: url("./assets/img/background.jpg");
+    color: white;
+
+    .smaller {
+      font-size: 16px;
+    }
+  }
+
+  .mdl-card__actions{
+    a {
+        color: inherit
+    }
+  }
+
+  .mdl-card__menu{
+    color: #fff;
+  }
+
+  .in-line {
+    display: inline;
+  }
+
+  .mdl-dialog{
+    .mdl-dialog__content{
+      padding: 0;
+
+      .mdl-list__item {
+        padding: 0;
+      }
+
+      .mdl-data-table {
+        white-space: pre-line;
+
+        .tbl-btn{
+          width: 16px;
+          max-width: 16px;
+
+          button{
+            margin-right: -15px;
+
+          }
+        }
+      }
+    }
+  }
+}

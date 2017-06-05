@@ -1,0 +1,64 @@
+@import './navigation';
+@import './cards';
+@import './footer';
+@import './orders';
+@import './orderDetails';
+@import './settings';
+@import './dish';
+
+html {
+  background: #eee;
+
+  .float-right{
+    float: right;
+  }
+
+  .error{
+    color: #d50000 !important;
+  }
+
+  .mdl-button--fab .material-icons {
+      position: initial;
+      top: 30% !important;
+      left: 30% !important;
+      transform: none !important;
+      width: 24px;
+  }
+
+  .mdl-button--fab {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 2;
+  }
+
+  .mdl-data-table{
+    border: none !important;
+    width: 100%
+  }
+
+  .mdl-card{
+    width: initial;
+  }
+}
+
+select {
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    display: block;
+    font-size: 16px;
+    font-family: "Helvetica","Arial",sans-serif;
+    margin: 0;
+    padding: 4px 0;
+    width: 300px;
+    max-width: 100%;
+    background: 0 0;
+    text-align: left;
+    color: inherit;
+}
+
+.mdl-button--icon .material-icons{
+  position: initial !important;
+  -webkit-transform: none !important;
+   transform: none !important; 
+}

@@ -11,31 +11,61 @@ class DishType {
     this.name = name
   }
 
-  update(name){
-    this.name = name
+  update(name, onSuccess, onFailure){
+    request
+      .put('/api/dishTypes')
+      .set('Content-Type', 'application/json')
+      .send({id: id, name: name})
+      .end((err, res) => {
+        if (err) {
+          console.error(err)
+          onFailure(err)
+        } else {          
+          this.name = res.body.name
+
+          onSuccess()
+        }
+      })
   }
 }
 
 export class DishTypeStore {
   constructor(){
-      this.fetchDishTypes()
+    this.fetchDishTypes()
   }
-  @observable dishTypes = [ ];
+
+  @observable dishTypes = [new DishType("Quick Eats", "58833fdc7bb0c19fc957754c"), 
+  new DishType("Mains", "58833fdc7bb0c19fc957754d") ]
+
+  @observable filter = ""
+  
+  @computed get filteredDishTypes() {
+    var matchesFilter = new RegExp(this.filter, "i")
+    return filter(this.dishTypes, d => (!this.filter || matchesFilter.test(d.name)));
+  }
 
   fetchDishTypes(){
-  request
-    .get('/api/dishTypes')
-    .end((err, res) => {
-      if (err) {
-        //TODO:Show error
-        console.error(err)
-      } else {
-        this.dishTypes.replace(res.body.map(d => new DishType(d.name, d._id)))
-      }
-    })
+    request
+      .get('/api/dishTypes')
+      .end((err, res) => {
+        if (err) {
+          //TODO:Show error
+          console.error(err)
+        } else {
+          this.dishTypes.replace(res.body.map(d => new DishType(d.name, d._id)))
+        }
+      })
   }
 
-  createDishType(name, onSuccess, onFailure){
+  getDishType(id) {
+    return find(this.dishTypes, d => d._id == id)
+  }
+
+  getdishTypesByIds(ids){
+    return this.dishTypes.filter((d) => ids.includes(d._id))
+  }
+
+  add(name, onSuccess, onFailure){
     request
       .post('/api/dishTypes')
       .set('Content-Type', 'application/json')
@@ -50,26 +80,8 @@ export class DishTypeStore {
         }
       })
   }
-
-  updateDishType(id, name, onSuccess, onFailure){
-    request
-      .put('/api/dishTypes')
-      .set('Content-Type', 'application/json')
-      .send({id: id, name: name})
-      .end((err, res) => {
-        if (err) {
-          console.error(err)
-          onFailure(err)
-        } else {
-          const dishType = this.getDishType(id)
-          dishType.update(res.body.name)
-
-          onSuccess()
-        }
-      })
-  }
-
-  removeDishType(id, onSuccess, onFailure){
+ 
+  remove(id, onSuccess, onFailure){
     request
       .delete('/api/dishTypes')
       .set('Content-Type', 'application/json')
@@ -78,18 +90,10 @@ export class DishTypeStore {
         if (err){
           onFailure(err)
         } else {
-          this.dishTypes.replace(this.dishTypes.filter( d => d._id != id))
+        this.dishTypes.replace(this.dishTypes.filter( d => d._id != id))
           onSuccess()
         }
       })
-  }
-
-  getDishType(id) {
-    return find(this.dishTypes, { _id: id })
-  }
-
-  getdishTypesByIds(ids){
-    return this.dishTypes.filter((d) => ids.includes(d._id))
   }
 }
 const store = window.dishTypeStore = new DishTypeStore

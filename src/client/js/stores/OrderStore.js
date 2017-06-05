@@ -1,7 +1,8 @@
 import { autorun, computed, observable } from "mobx"
 import { remove, find, filter } from "lodash"
-import request from 'superagent'
 var socket = io.connect();
+
+import request from 'superagent'
 
 class Order {
   @observable table
@@ -16,7 +17,7 @@ class Order {
 
   constructor({table, name, timestamp, dishes, made, hasPayed, amountPayed, notes, _id}) {
     this.table = table
-    this._id = _id || Date.now()
+    this._id = _id || Date.now() + Math.round(Math.random() * 1000)
     this.name = name,
     this.timestamp = timestamp
     this.dishes = dishes
@@ -24,6 +25,40 @@ class Order {
     this.hasPayed = hasPayed
     this.amountPayed = amountPayed
     this.notes = notes
+  }
+
+  update({table, name, timestamp, dishes, made, hasPayed, amountPayed, notes}, onsuccess, onFailure){
+
+    request
+      .put('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send(
+        {
+          orderId: this._id,
+          table: table ? table : this.table,
+          name: name ? name : this.name,
+          dishes: dishes ? dishes : this.dishes,
+          made: made ? made : this.made,
+          hasPayed:  hasPayed ? hasPayed : this.hasPayed,
+          amountPayed: amountPayed ? parseFloat(amountPayed) : parseFloat(this.amountPayed || 0),
+          notes: notes ? notes : this.notes}
+        )
+      .end((err, res) => {
+        if (err) {
+          onFailure(err)
+        } else {
+          this.table = table
+          this.name = name
+          this.dishes = dishes
+          this.made = made
+          this.hasPayed = hasPayed
+          this.amountPayed = amountPayed
+          this.notes = notes
+
+          socket.emit('updated:order', this.toJSON());
+          onSuccess()
+        }
+      })
   }
 
   toJSON(){
@@ -54,30 +89,109 @@ export class OrderStore {
     socket.on('updated:order', this.updateReceivedOrder);
 
   }
-  @observable kitchenMode = localStorage.getItem('kitchenMode') == 'true'
-  @observable orders = []
-    // new Order(
-    // {
-    //   table: 1,
-    //   name: "Markus",
-    //   timestamp: Date.now(),
-    //   dishes: [{id:"58833fdc7bb0c19fc957754b", quantity: 2}],
-    //   made: false,
-    //   hasPayed: false,
-    //   amountPayed: 0,
-    //   notes: "Extra pickels"
-    // })]
-  @observable filter = ""
 
+  @observable orders = [
+     new Order(
+     {
+       table: 1,
+       name: "Markus",
+       timestamp: Date.now(),
+       dishes: [{id:"58833fdc7bb0c19fc957754b", quantity: 2}],
+       made: false,
+       hasPayed: false,
+       amountPayed: 0,
+       notes: ""
+     }),
+      new Order(
+     {
+       table: 1,
+       name: "Elli",
+       timestamp: Date.now() + 1,
+       dishes: [{id:"58833ff97bb0c19fc957754c", quantity: 2}],
+       made: false,
+       hasPayed: false,
+       amountPayed: 0,
+       notes: "Extra pickels. Cream no Sugar. Potatoes on the side. Ketchup with Majyo."
+     }),
+      new Order(
+     {
+       table: 1,
+       name: "John",
+       timestamp: Date.now() + 5,
+       dishes: [{id:"58833ff97bb0c19fc957754c", quantity: 2}, {id:"58833fdc7bb0c19fc957754b", quantity: 2}],
+       made: false,
+       hasPayed: false,
+       amountPayed: 0,
+       notes: "Extra pickels"
+     })]
+
+  @observable filter = ""
+  
+  @computed get filteredOrders() {
+    const matchesFilter = new RegExp(this.filter, "i")
+    return filter(this.orders, o => (!this.filter || (o.table == this.filter) || matchesFilter.test(o.name)) &&
+                                    (!this.kitchenMode || !o.made));
+  }
+
+  @observable kitchenMode = localStorage.getItem('kitchenMode') == 'true'
+  
   setKitchenMode(value){
     localStorage.setItem('kitchenMode', value)
     this.kitchenMode = localStorage.getItem('kitchenMode') == 'true'
   }
 
-  @computed get filteredOrders() {
-    var matchesFilter = new RegExp(this.filter, "i")
-    return filter(this.orders, o => (!this.filter || (o.table == this.filter) || matchesFilter.test(o.name)) &&
-                                    (!this.kitchenMode || !o.made));
+  getOrder(id) {
+    return find(this.orders, (d) => d._id == id )
+  }
+
+  getOrderByIds(ids){
+    return this.orders.filter(o => ids.includes(o._id))
+  }
+
+  add({table, name, notes, made, dishes, onSuccess, onFailure}){
+    request
+      .post('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send({table: table, name: name, dishes: dishes, notes: notes, made: made || false})
+      .end((err, res) => {
+        if (err) {
+          onFailure(err)
+        } else {
+          const order = new Order(
+            {
+              table: res.body.table,
+              name: res.body.name,
+              timestamp: res.body.timestamp,
+              dishes: res.body.dishes,
+              made: res.body.made,
+              hasPayed: res.body.hasPayed,
+              amountPayed: res.body.amountPayed,
+              notes: res.body.notes,
+              _id: res.body._id
+            })
+          this.orders.push(order)
+          socket.emit('new:order', order.toJSON());
+          onSuccess()
+        }
+      }
+    )
+  }
+
+  remove(id, onSuccess, onFailure){
+    request
+      .delete('/api/orders')
+      .set('Content-Type', 'application/json')
+      .send({orderId: id})
+      .end((err, res) => {
+        if (err){
+          onFailure(err)
+        } else {
+          this.orders.replace(this.orders.filter( o => o._id != id))
+
+          socket.emit('deleted:order', {_id: id});
+          onSuccess()
+        }
+      })
   }
 
   addReceivedOrder(order){
@@ -134,97 +248,7 @@ export class OrderStore {
     })
   }
 
-  createOrder({table, name, dishes, notes, made}, onSuccess, onFailure){
-    request
-      .post('/api/orders')
-      .set('Content-Type', 'application/json')
-      .send({table: table, name: name, dishes: dishes, notes: notes, made: made || false})
-      .end((err, res) => {
-        if (err) {
-          onFailure(err)
-        } else {
-          const order = new Order(
-            {
-              table: res.body.table,
-              name: res.body.name,
-              timestamp: res.body.timestamp,
-              dishes: res.body.dishes,
-              made: res.body.made,
-              hasPayed: res.body.hasPayed,
-              amountPayed: res.body.amountPayed,
-              notes: res.body.notes,
-              _id: res.body._id
-            })
-          this.orders.push(order)
-          socket.emit('new:order', order.toJSON());
-          onSuccess()
-        }
-      })
-  }
-
-  updateOrder({_id, table, name, dishes, made, hasPayed, amountPayed, notes}, onSuccess, onFailure){
-    request
-      .put('/api/orders')
-      .set('Content-Type', 'application/json')
-      .send(
-        {
-          orderId: _id,
-          table: table,
-          name: name,
-          dishes: dishes,
-          made: made,
-          hasPayed: hasPayed,
-          amountPayed: parseFloat(amountPayed || 0),
-          notes: notes}
-        )
-      .end((err, res) => {
-        if (err) {
-          onFailure(err)
-        } else {
-          const order = this.getOrder(_id)
-          order.table = table
-          order.name = name
-          order.dishes = dishes
-          order.made = made
-          order.hasPayed = hasPayed
-          order.amountPayed = amountPayed
-          order.notes = notes
-
-          socket.emit('updated:order', order.toJSON());
-          onSuccess()
-        }
-      })
-  }
-
-  deleteOrder(id, onSuccess, onFailure){
-    request
-      .delete('/api/orders')
-      .set('Content-Type', 'application/json')
-      .send({orderId: id})
-      .end((err, res) => {
-        if (err){
-          onFailure(err)
-        } else {
-          this.orders.replace(this.orders.filter( o => o._id != id))
-
-          socket.emit('deleted:order', {_id: id});
-          onSuccess()
-        }
-      })
-  }
-
-  clearPayed= () => {
-    const unpayedOrders = this.orders.filter(order => !order.hasPayed)
-    this.orders.replace(unpayedOrders)
-  }
-
-  getOrder(id) {
-    return find(this.orders, { _id: id })
-  }
-
-  getOrdersByIds(ids){
-    return this.orders.filter(o => ids.includes(o._id))
-  }
 }
+
 const store = window.orderStore = new OrderStore
 export default store
