@@ -30,7 +30,7 @@ export default class DishCard extends React.Component {
         <Card shadow={2}>
           <CardTitle>
             <h5>
-              <div class="mdl-card__title-text"> { this.props.type.name } </div>
+              <div class="mdl-card__title-text"> { this.props.type ? this.props.type.name : "" } </div>
             </h5>
           </CardTitle>
           <CardText>
