@@ -1,6 +1,5 @@
 import { autorun, computed, observable } from "mobx"
 import { remove, find, filter } from "lodash"
-var socket = io.connect();
 
 import request from 'superagent'
 
@@ -86,7 +85,6 @@ export class OrderStore {
     socket.on('new:order', this.addReceivedOrder);
     socket.on('deleted:order', this.deleteReceivedOrder);
     socket.on('updated:order', this.updateReceivedOrder);
-
   }
 
   @observable orders = [
