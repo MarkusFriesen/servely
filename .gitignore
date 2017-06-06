@@ -18,5 +18,7 @@ src/server/public/upload
 src/client/client.min.js
 src/server/public/OrderMe/client.min.js
 
+dist/*
+
 #Secret stuff
 server/config/auth.js

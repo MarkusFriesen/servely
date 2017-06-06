@@ -37,12 +37,8 @@ module.exports = {
         }
       },
       {
-        test: /(\.png|\.jpg)$/,
-        use:{
-          loader: 'file-loader',
-          query: {
-            useRelativePath: isProd
-          }}
+        test: /(\.png|\.jpe?g)$/,
+        use: 'file-loader?name=[name].[ext]&publicPath=/&outputPath=assets/img/',
       }
     ]
   },
