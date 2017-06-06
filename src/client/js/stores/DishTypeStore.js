@@ -15,7 +15,7 @@ class DishType {
     request
       .put('/api/dishTypes')
       .set('Content-Type', 'application/json')
-      .send({id: id, name: name})
+      .send({id: this._id, name: name})
       .end((err, res) => {
         if (err) {
           console.error(err)
