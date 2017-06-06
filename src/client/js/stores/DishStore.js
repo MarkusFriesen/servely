@@ -21,7 +21,7 @@ class Dish {
     request
       .put('/api/dishes')
       .set('Content-Type', 'application/json')
-      .send({id: id, name: name, cost: cost, description: description, type: type})
+      .send({id: this._id, name: name, cost: cost, description: description, type: type})
       .end((err, res) => {
         if (err) {
           console.error(err)
