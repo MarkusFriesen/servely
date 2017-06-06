@@ -9,7 +9,7 @@ var cssDev = ['style-loader', 'css-loader', 'sass-loader'];
 var cssProd = ExtractTextPlugin.extract({
   fallback: 'style-loader',
   loader: ['css-loader', 'sass-loader'],
-  publicPath: '/src/server/public/'
+  publicPath: '/src/server/public/assets/styles'
 })
 
 var cssConfig = isProd ? cssProd : cssDev;
@@ -38,7 +38,11 @@ module.exports = {
       },
       {
         test: /(\.png|\.jpg)$/,
-        use: 'file-loader'
+        use:{
+          loader: 'file-loader',
+          query: {
+            useRelativePath: isProd
+          }}
       }
     ]
   },
@@ -62,6 +66,5 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin()
-
   ]
 }

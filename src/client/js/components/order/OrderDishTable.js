@@ -17,6 +17,7 @@ export default class OrderDishTable extends React.Component {
   render() {
     const order = this.props.orderStore.getOrder(this.props.orderId)
     const dishesOrdered = order.dishes.map((d, i) => {
+      debugger
       const dish = this.props.dishStore.getDish(d.id)
       return (
         {name: dish.name, quantity: d.quantity, cost: dish.cost}
