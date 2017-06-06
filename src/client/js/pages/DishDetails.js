@@ -21,8 +21,10 @@ export default class OrdersDetails extends React.Component {
   componentWillMount(){
     const id = this.props.match.params.id
     if (id){
-      const dish = this.props.dishStore.getDish(id)
+      const d = this.props.dishStore.getDish(id)
       
+      const dish = d || {}
+
       this.setState({ name: dish.name,
       cost: dish.cost,
       description: dish.description,
