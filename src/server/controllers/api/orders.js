@@ -48,7 +48,6 @@ module.exports = {
     })
   },
   updateOrder(req, res) {
-    console.warn(res)
     Models.Orders.findOneAndUpdate({"_id" : req.body.orderId }, {$set: {
       table: req.body.table,
       name: req.body.name,
