@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react"
 import { Link } from "react-router-dom"
 
 import OrderDishTable from "./OrderDishTable" 
-import OrderPayDialog from "./OrderPayDialog"
+import PayDialog from "./PayDialog"
 import JoinOrder from "./JoinOrder"
 import SplitOrder from "./SplitOrder"
 
@@ -53,7 +53,7 @@ export default class OrderCard extends React.Component {
               <CardText> <p>{this.props.notes}</p></CardText>: undefined
             }
           <CardMenu>
-            <OrderPayDialog dishes={this.props.dishes} id={this.props._id}/>
+            <PayDialog dishes={this.props.dishes} id={this.props._id}/>
           </CardMenu>
         </Card>
       </div>

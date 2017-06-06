@@ -45,7 +45,7 @@ export default class OrderPayDialog extends React.Component {
     const isNumber = this.state.amountPayed && !isNaN(amountPayed)
     const change = isNumber ? (amountPayed - total).toFixed(2) : undefined
     const payedFull = change >= 0
-    const className = payedFull ? "" : "error"
+    const className = payedFull ? "success" : "error"
 
     const changeLabel = payedFull ? "Change" : "Missing"
     return(
@@ -54,18 +54,28 @@ export default class OrderPayDialog extends React.Component {
         <Dialog open={this.state.openDialog}>
           <DialogTitle>Payment</DialogTitle>
           <DialogContent>
-            <h5>Total: € { total }</h5>
             <Textfield
-            onChange={this.setAmountPayed.bind(this)}
-            pattern="-?[0-9]*([\.,][0-9]+)?"
-            error="Input is not a number!"
-            label="Amount Payed"
-            floatingLabel
-            value={ this.state.amountPayed }
-          />
-          <p class={className}>
-            &nbsp;{ isNumber ? `${changeLabel} : € ${change}` : `` }
-          </p> 
+              label="Total"
+              floatingLabel
+              value={ total }
+            />
+
+            <div class={className}>
+              <Textfield
+                onClick= {() => {}}
+                label="Change"
+                floatingLabel
+                value={change}
+              />
+            </div> 
+            <Textfield
+              onChange={this.setAmountPayed.bind(this)}
+              pattern="-?[0-9]*([\.,][0-9]+)?"
+              error="Input is not a number!"
+              label="Amount Payed"
+              floatingLabel
+              value={ this.state.amountPayed }
+            />
           </DialogContent>
           <DialogActions>
             <Button type='button' onClick={this.payBill.bind(this)} accent>Pay</Button>
