@@ -27,8 +27,7 @@ class Order {
     this.notes = notes
   }
 
-  update({table, name, timestamp, dishes, made, hasPayed, amountPayed, notes}, onsuccess, onFailure){
-
+  update({table, name, timestamp, dishes, made, hasPayed, amountPayed, notes}, onSuccess, onFailure){
     request
       .put('/api/orders')
       .set('Content-Type', 'application/json')
@@ -47,13 +46,13 @@ class Order {
         if (err) {
           onFailure(err)
         } else {
-          this.table = table
-          this.name = name
-          this.dishes = dishes
-          this.made = made
-          this.hasPayed = hasPayed
-          this.amountPayed = amountPayed
-          this.notes = notes
+          this.table = table ? table : this.table,
+          this.name = name ? name : this.name
+          this.dishes = dishes ? dishes : this.dishes
+          this.made = made ? made : this.made
+          this.hasPayed = hasPayed ? hasPayed : this.hasPayed
+          this.amountPayed = amountPayed ? parseFloat(amountPayed) : parseFloat(this.amountPayed || 0)
+          this.notes = notes ? notes : this.notes
 
           socket.emit('updated:order', this.toJSON());
           onSuccess()
@@ -148,7 +147,7 @@ export class OrderStore {
     return this.orders.filter(o => ids.includes(o._id))
   }
 
-  add({table, name, notes, made, dishes, onSuccess, onFailure}){
+  add({table, name, notes, made, dishes}, onSuccess, onFailure){
     request
       .post('/api/orders')
       .set('Content-Type', 'application/json')
