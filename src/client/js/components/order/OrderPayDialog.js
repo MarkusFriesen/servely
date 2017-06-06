@@ -37,7 +37,8 @@ export default class OrderPayDialog extends React.Component {
 
   render() {
     const total = this.props.dishes.reduce((acc, val) => {
-      return acc + (val.quantity * this.props.dishStore.getDish(val.id).cost)
+      const dish = this.props.dishStore.getDish(val.id)
+      return acc + (val.quantity * (dish ? dish.cost : 0))
     }, 0).toFixed(2);
 
     const amountPayed = this.state.amountPayed ? parseFloat(this.state.amountPayed.replace(',', '.')).toFixed(2) : undefined
