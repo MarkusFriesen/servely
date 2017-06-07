@@ -55,6 +55,7 @@ export default class OrderPayDialog extends React.Component {
           <DialogTitle>Payment</DialogTitle>
           <DialogContent>
             <Textfield
+              disabled
               label="Total"
               floatingLabel
               value={ total }
@@ -62,6 +63,7 @@ export default class OrderPayDialog extends React.Component {
 
             <div class={className}>
               <Textfield
+                disabled
                 onClick= {() => {}}
                 label="Change"
                 floatingLabel
