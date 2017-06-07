@@ -87,15 +87,15 @@ export default class SplitOrder extends React.Component {
   }
 
   render() {
-    const dishes = this.state.dishes.map((d, i) =>
-      <tr key={i}>
-        <td class="tbl-btn"><IconButton name="remove" onClick={this.removeDish(d.id)}/></td>
-        <td>{d.quantity}</td>
-        <td class="tbl-btn "><IconButton name="add" onClick={this.addDish(d.id)}/></td>
-        <td class="mdl-data-table__cell--non-numeric">{this.props.dishStore.getDish(d.id).name}</td>
-      </tr> )
+    const dishes = this.state.dishes.map((d, i) => {
+      return ({id: d.id, 
+        quantity: d.quantity, 
+        name: this.props.dishStore.getDish(d.id).name, 
+        add: <IconButton name="add" onClick={this.addDish(d.id)}/>,
+        remove: <IconButton name="remove" onClick={this.removeDish(d.id)}/>})
+    })
     return (
-      <div class="in-line">
+      <div class="in-line split">
         <Button colored onClick={this.handleOpenDialog} ripple>Split</Button>
         <Dialog open={this.state.openDialog}>
           <DialogTitle>Split Order</DialogTitle>
@@ -105,13 +105,16 @@ export default class SplitOrder extends React.Component {
                 value={ this.state.newName }
                 onChange={ this.handleNameChange }
                 floatingLabel
-              />
-              <br/>
-            <table class="mdl-data-table">
-              <tbody>
-                { dishes }
-              </tbody>
-            </table>
+            />
+            <br/>
+            <DataTable
+              rowKeyColumn="id"
+              rows={ dishes } >
+              <TableHeader numeric name="remove"></TableHeader>
+              <TableHeader numeric name="quantity"></TableHeader>
+              <TableHeader numeric name="add" ></TableHeader>
+              <TableHeader name="name"></TableHeader>
+            </DataTable>
           </DialogContent>
           <DialogActions>
             <Button type='button' accent onClick={this.splitOrder}>Split</Button>
