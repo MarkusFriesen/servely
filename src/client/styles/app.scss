@@ -46,6 +46,11 @@ html {
   }
 }
 
+*, *::before, *::after {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
 select {
     border: none;
     border-bottom: 1px solid rgba(0,0,0,.12);
