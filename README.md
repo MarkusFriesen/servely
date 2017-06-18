@@ -12,7 +12,10 @@ npm install
 ```
 
 ### Server
-In sepperate terminal instaces
+The server is initialized in ```src\server\server.js``` 
+
+
+To start the server, execute the following commands in sepperate terminal instaces
 
 > Compile client side code
 ```
@@ -28,7 +31,14 @@ mongod
 npm start
 ```
 
-### Client side (Development)
+
+### Client side
+
+The client is initialized in ```src\client\js\app.js``` 
+
+Learn more about [React](https://facebook.github.io/react/). 
+
+> Run the client code in development mode
 ```
 npm run dev
 ```
