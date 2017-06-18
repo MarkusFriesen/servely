@@ -1,7 +1,7 @@
-# OrderMe
+# Order
 
-OrderMe is an open-source fullstack JavaScript application, with a Node.js MongoDB serverside, and ReactJS on the client side.
-The project is a simple order system that lets an organization add their purchasable items, and create orders for said items. 
+Order is an open-source fullstack JavaScript application, with a Node.js MongoDB serverside, and ReactJS on the client side.
+The project is a simple ordering system that lets an organization add their purchasable items, and create orders for said items. 
 
 
 ## Getting Started TL;DR: 
@@ -13,18 +13,22 @@ npm install
 
 ### Server
 In sepperate terminal instaces
+
+> Compile client side code
 ```
-set NODE_ENV=production
-webpack
+npm run prod
 ```
+
+> Start mongo database
 ```
 mongod
 ```
+> Start Node.js server
 ```
 npm start
 ```
 
-### Client side
+### Client side (Development)
 ```
 npm run dev
 ```
