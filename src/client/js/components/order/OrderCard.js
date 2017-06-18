@@ -50,7 +50,7 @@ export default class OrderCard extends React.Component {
               <CardText> <p>{this.props.notes}</p></CardText>: undefined
             }
           <CardMenu>
-            <Link to={`/orders/pay/${this.props._id}`}><IconButton name="credit_card" /></Link>
+            <Link to={`/payOrder/${this.props._id}`}><IconButton name="credit_card" /></Link>
           </CardMenu>
         </Card>
       </div>

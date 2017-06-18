@@ -1,5 +1,5 @@
 import React from "react";
-import { Textfield, Dialog, IconButton, Button, DialogTitle, DialogContent, DialogActions } from 'react-mdl';
+import { Textfield, Card, IconButton, Button, CardTitle, CardText, CardMenu, Grid, Cell } from 'react-mdl';
 import { inject } from "mobx-react"
 
 @inject('dishStore')
@@ -10,19 +10,11 @@ export default class PayOrder extends React.Component {
 
     this.state = {
       amountPayed: "",
-      openDialog: false,
-      dishes:[]
+      dishes:[],
+      order: undefined
     }
-    this.handleCloseDialog = this.handleCloseDialog.bind(this);
-  }
 
-   componentDidMount(){
-    var dialog = document.querySelector('dialog');
-    dialogPolyfill.registerDialog(dialog);
-
-    this.setState({
-      openDialog: true
-    })
+    this.goBack = this.goBack.bind(this)
   }
 
   componentWillMount(){
@@ -33,17 +25,14 @@ export default class PayOrder extends React.Component {
         this.setState({
           name: order.name,
           dishes: order.dishes.map(d => Object.assign({}, d)),
+          order: order
         })
       }
     }
   }
 
-  handleCloseDialog() {
-    this.setState({
-      openDialog: false
-    }, () => {
-      this.props.history.goBack()
-    });
+  goBack(){
+    this.props.history.goBack()
   }
 
   setAmountPayed(e){
@@ -51,7 +40,7 @@ export default class PayOrder extends React.Component {
   }
 
   payBill(){
-    this.props.orderStore.remove(this.props.match.params.id, () => {this.handleCloseDialog()}, (err) => {console.error(err)})
+    this.props.orderStore.remove(this.props.match.params.id, () => {this.goBack()}, (err) => {console.error(err)})
   }
 
   render() {
@@ -68,41 +57,42 @@ export default class PayOrder extends React.Component {
 
     const changeLabel = payedFull ? "Change" : "Missing"
     return(
-      <div class="orders">
-        <Dialog open={this.state.openDialog} id={`pay${this.props.match.params.id}`}>
-          <DialogTitle>Payment</DialogTitle>
-          <DialogContent>
-            <Textfield
-              disabled
-              label="Total"
-              floatingLabel
-              value={ total }
-            />
-
-            <div class={className}>
+      <Grid className="order-details center-card pay">
+        <Cell col={12}>
+          <Card shadow={1} >
+            <CardTitle><IconButton name="close" onClick={this.goBack}/>Pay {this.state.order ? `${this.state.order.name}'s` : ""} Bill</CardTitle>
+            <CardText>
               <Textfield
                 disabled
-                onClick= {() => {}}
-                label="Change"
+                label="Total"
                 floatingLabel
-                value={change}
+                value={ total }
               />
-            </div> 
-            <Textfield
-              onChange={this.setAmountPayed.bind(this)}
-              pattern="-?[0-9]*([\.,][0-9]+)?"
-              error="Input is not a number!"
-              label="Amount Payed"
-              floatingLabel
-              value={ this.state.amountPayed }
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button type='button' onClick={this.payBill.bind(this)} accent>Pay</Button>
-            <Button type='button' onClick={this.handleCloseDialog}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+
+              <div class={className}>
+                <Textfield
+                  disabled
+                  onClick= {() => {}}
+                  label="Change"
+                  floatingLabel
+                  value={change}
+                />
+              </div> 
+              <Textfield
+                onChange={this.setAmountPayed.bind(this)}
+                pattern="-?[0-9]*([\.,][0-9]+)?"
+                error="Input is not a number!"
+                label="Amount Payed"
+                floatingLabel
+                value={ this.state.amountPayed }
+              />
+            </CardText>
+            <CardMenu>
+              <Button type='button' onClick={this.payBill.bind(this)} accent>Pay</Button>
+            </CardMenu>
+          </Card>
+        </Cell>
+      </Grid>
     )
   }
 }

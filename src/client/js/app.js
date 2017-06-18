@@ -45,8 +45,8 @@ ReactDOM.render(
 
         <Content>
           <Route exact path="/" component={ Orders }/>
-          <Route path="/orders/pay/:id?" component={ PayOrder }/>
           <Route path="/orders" component={ Orders }/>
+          <Route path="/payOrder/:id?" component={ PayOrder }/>
           <Route path="/splitOrder/:id?" component={ SplitOrder }/>
           <Route path="/joinOrder/:id?" component={ JoinOrder }/>
           <Route path="/dishes" component={ Dishes }/>

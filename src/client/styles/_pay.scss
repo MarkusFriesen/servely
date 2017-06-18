@@ -1,0 +1,13 @@
+.pay {
+  .mdl-card .mdl-card__supporting-text {
+    .is-disabled{
+      .mdl-textfield__label{
+        color: rgba(0,0,0,.55)
+      }
+
+      .mdl-textfield__input{
+        color: inherit;
+      }
+    }
+  }
+}
