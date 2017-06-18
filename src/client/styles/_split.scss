@@ -1,0 +1,26 @@
+.split {
+  thead tr th:nth-child(2n+1){
+    padding-right: 10px;
+
+  }
+
+  tbody tr td:nth-child(2n+1){
+    max-width: 16px;
+    width: 16px;
+    padding:0;
+    
+    button {
+      float: none
+    }
+  }   
+
+  thead tr th:nth-child(2){
+    padding-left:0;
+    padding-right: 5px;
+  }
+
+  tbody tr td:nth-child(2){
+    padding-left:0;
+    padding-right: 5px;
+  }   
+}

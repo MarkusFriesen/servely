@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 import OrderDishTable from "./OrderDishTable" 
 import PayDialog from "./PayDialog"
 import JoinOrder from "./JoinOrder"
-import SplitOrder from "./SplitOrder"
 
 @inject('orderStore')
 @observer
@@ -38,7 +37,7 @@ export default class OrderCard extends React.Component {
           </CardText>
           <CardActions>
             <div>
-            <SplitOrder id={ this.props._id } />
+            <Link to={`/splitOrder/${this.props._id}`}> <Button colored ripple>Split</Button></Link>
             <JoinOrder table={this.props.table} id={this.props._id}/>
               { this.state.expandCard ? 
                 <IconButton name="expand_more" onClick={this.toggleExpand.bind(this)}/> :

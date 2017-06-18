@@ -1,5 +1,5 @@
 import React from "react"
-import { Dialog, Button, DialogTitle, DialogContent, DialogActions, DataTable, TableHeader, IconButton, Textfield } from "react-mdl"
+import { Card, Button, Cell, CardTitle, CardText, CardMenu, DataTable, TableHeader, IconButton, Textfield, Grid } from "react-mdl"
 import { inject, observer } from "mobx-react"
 
 @inject('orderStore')
@@ -13,28 +13,27 @@ export default class SplitOrder extends React.Component {
       oldDishes: [],
       newName: ""
     };
-    this.handleOpenDialog = this.handleOpenDialog.bind(this);
-    this.handleCloseDialog = this.handleCloseDialog.bind(this);
+    
     this.addDish = this.addDish.bind(this);
     this.removeDish = this.removeDish.bind(this);
     this.splitOrder = this.splitOrder.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this)
+    this.goBack = this.goBack.bind(this)
   }
 
-  handleOpenDialog() {
-    const oldDishes = this.props.orderStore.getOrder(this.props.id).dishes
-    const dishes = oldDishes.map(d =>{return({id: d.id, quantity: 0})})
-    this.setState({
-      openDialog: true,
-      dishes: dishes,
-      oldDishes: oldDishes
-    });
-  }
+  componentWillMount() {
+    const order = this.props.orderStore.getOrder(this.props.match.params.id)
 
-  handleCloseDialog() {
-    this.setState({
-      openDialog: false
-    });
+    if (order){
+      const oldDishes = order.dishes
+      const dishes = oldDishes.map(d =>{return({id: d.id, quantity: 0})})
+      this.setState({
+        openDialog: true,
+        dishes: dishes,
+        oldDishes: oldDishes,
+        order: order
+      });
+    }
   }
 
   addDish(id){
@@ -66,8 +65,7 @@ export default class SplitOrder extends React.Component {
 
   splitOrder(){
     if (this.state.newName){
-      const order = this.props.orderStore.getOrder(this.props.id)
-      const { table, name, notes, made } = order
+      const { table, name, notes, made } = this.state.order
       
       const newDishes = []
       for (var i=0; i < this.state.dishes.length; i++){
@@ -76,14 +74,18 @@ export default class SplitOrder extends React.Component {
 
       this.props.orderStore.add({table: table, name: this.state.newName, notes: notes, made: made, dishes: this.state.dishes.filter(d => d.quantity > 0)},
         () => {
-          order.update({dishes: newDishes.filter(d => d.quantity > 0)}, 
-            () => {this.handleCloseDialog()}, 
+          this.state.order.update({dishes: newDishes.filter(d => d.quantity > 0)}, 
+            () => {this.goBack()}, 
             (err) => {console.error(err)}
           )
         }, 
         (err) => { console.error(err) }
       )
     }
+  }
+
+  goBack(){
+    this.props.history.goBack()
   }
 
   render() {
@@ -95,33 +97,33 @@ export default class SplitOrder extends React.Component {
         remove: <IconButton name="remove" onClick={this.removeDish(d.id)}/>})
     })
     return (
-      <div class="in-line split">
-        <Button colored onClick={this.handleOpenDialog} ripple>Split</Button>
-        <Dialog open={this.state.openDialog}>
-          <DialogTitle>Split Order</DialogTitle>
-          <DialogContent>
-            <Textfield
+      <Grid class="order-details center-card split">
+        <Cell col={12}>
+          <Card shadow={1} >
+            <CardTitle><IconButton name="close" onClick={this.goBack}/> Split {this.state.order ? `${this.state.order.name}'s` : ""} Order</CardTitle>
+            <CardText>
+              <Textfield
                 label="Name"
                 value={ this.state.newName }
                 onChange={ this.handleNameChange }
                 floatingLabel
-            />
-            <br/>
-            <DataTable
-              rowKeyColumn="id"
-              rows={ dishes } >
-              <TableHeader numeric name="remove"></TableHeader>
-              <TableHeader numeric name="quantity"></TableHeader>
-              <TableHeader numeric name="add" ></TableHeader>
-              <TableHeader name="name"></TableHeader>
+              />
+              <br/>
+              <DataTable
+                rowKeyColumn="id"
+                rows={ dishes } >
+                <TableHeader numeric name="remove"></TableHeader>
+                <TableHeader numeric name="quantity"></TableHeader>
+                <TableHeader numeric name="add" ></TableHeader>
+                <TableHeader name="name"></TableHeader>
             </DataTable>
-          </DialogContent>
-          <DialogActions>
-            <Button type='button' accent onClick={this.splitOrder}>Split</Button>
-            <Button type='button' onClick={this.handleCloseDialog}>Cancel</Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+            </CardText>
+            <CardMenu>
+              <Button type='button' accent onClick={this.splitOrder}>Split</Button>
+            </CardMenu>
+          </Card>
+        </Cell>
+      </Grid>
     );
   }
 }
