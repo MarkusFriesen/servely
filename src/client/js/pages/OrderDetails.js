@@ -158,7 +158,7 @@ export default class OrdersDetails extends React.Component {
                     value={this.state.notes}
                   />
 
-                  <Checkbox label="Made" ripple value={this.state.made} onClick={handleMadeChage}/>
+                  <Checkbox label="Made" ripple checked={this.state.made} onClick={handleMadeChage}/>
                 </Cell>
                 <Cell col={4}>
                   <h4>Available Dishes</h4>

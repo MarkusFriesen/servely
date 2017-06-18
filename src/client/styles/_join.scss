@@ -1,0 +1,11 @@
+.join {
+  .mdl-data-table td {
+    border-top: none;
+    border-bottom: none;
+  }
+  
+  tbody tr td:nth-child(2n+1){
+    max-width: 16px;
+    width: 16px;
+  } 
+}

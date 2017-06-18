@@ -36,16 +36,14 @@ export default class OrderCard extends React.Component {
             <OrderDishTable orderId={this.props._id}/>
           </CardText>
           <CardActions>
-            <div>
             <Link to={`/splitOrder/${this.props._id}`}> <Button colored ripple>Split</Button></Link>
-            <JoinOrder table={this.props.table} id={this.props._id}/>
-              { this.state.expandCard ? 
-                <IconButton name="expand_more" onClick={this.toggleExpand.bind(this)}/> :
-                <IconButton name="expand_less" onClick={this.toggleExpand.bind(this)}/>
-              }
+            <Link to={`/joinOrder/${this.props._id}`}> <Button colored>Join</Button></Link>
+            { this.state.expandCard ? 
+              <IconButton name="expand_more" onClick={this.toggleExpand.bind(this)}/> :
+              <IconButton name="expand_less" onClick={this.toggleExpand.bind(this)}/>
+            }
               
             <Link to={`/orderDetails/${this.props._id}`}><IconButton name="mode_edit" /></Link>
-            </div>
           </CardActions >
             {
               this.state.expandCard ?

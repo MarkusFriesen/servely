@@ -36,8 +36,8 @@ class Order {
           table: table ? table : this.table,
           name: name ? name : this.name,
           dishes: dishes ? dishes : this.dishes,
-          made: made ? made : this.made,
-          hasPayed:  hasPayed ? hasPayed : this.hasPayed,
+          made: made !== undefined ? made : this.made,
+          hasPayed:  hasPayed !== undefined ? hasPayed : this.hasPayed,
           amountPayed: amountPayed ? parseFloat(amountPayed) : parseFloat(this.amountPayed || 0),
           notes: notes ? notes : this.notes}
         )
@@ -48,8 +48,8 @@ class Order {
           this.table = table ? table : this.table,
           this.name = name ? name : this.name
           this.dishes = dishes ? dishes : this.dishes
-          this.made = made ? made : this.made
-          this.hasPayed = hasPayed ? hasPayed : this.hasPayed
+          this.made = made !== undefined ? made : this.made
+          this.hasPayed = hasPayed !== undefined ? hasPayed : this.hasPayed
           this.amountPayed = amountPayed ? parseFloat(amountPayed) : parseFloat(this.amountPayed || 0)
           this.notes = notes ? notes : this.notes
 
@@ -94,7 +94,7 @@ export class OrderStore {
        name: "Markus",
        timestamp: Date.now(),
        dishes: [{id:"58833fdc7bb0c19fc957754b", quantity: 2}],
-       made: false,
+       made: true,
        hasPayed: false,
        amountPayed: 0,
        notes: ""

@@ -5,6 +5,7 @@
 @import './orderDetails';
 @import './settings';
 @import './dish';
+@import './join';
 @import './split';
 
 html {
@@ -44,6 +45,10 @@ html {
 
   .mdl-card{
     width: initial;
+  }
+
+  a {
+    text-decoration: none;
   }
 }
 
