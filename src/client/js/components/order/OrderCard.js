@@ -52,7 +52,7 @@ export default class OrderCard extends React.Component {
               <CardText> <p>{this.props.notes}</p></CardText>: undefined
             }
           <CardMenu>
-            <PayDialog dishes={this.props.dishes} id={this.props._id}/>
+            <Link to={`/orders/pay/${this.props._id}`}><IconButton name="credit_card" /></Link>
           </CardMenu>
         </Card>
       </div>

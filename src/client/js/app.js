@@ -16,6 +16,7 @@ import OrderDetails from "./pages/OrderDetails";
 import DishDetails from "./pages/DishDetails";
 import DishTypeSettings from "./pages/DishTypeSettings";
 import SplitOrder from "./pages/SplitOrder";
+import PayOrder from "./pages/PayOrder";
 
 import Nav from "./components/layout/Nav";
 import Drawer from "./components/layout/Drawer";
@@ -43,6 +44,7 @@ ReactDOM.render(
 
         <Content>
           <Route exact path="/" component={ Orders }/>
+          <Route path="/orders/pay/:id?" component={ PayOrder }/>
           <Route path="/orders" component={ Orders }/>
           <Route path="/splitOrder/:id?" component={ SplitOrder }/>
           <Route path="/dishes" component={ Dishes }/>
