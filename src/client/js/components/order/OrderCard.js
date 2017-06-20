@@ -3,9 +3,7 @@ import { Card, CardTitle, CardText, CardActions, Button, IconButton, Icon, CardM
 import { inject, observer } from "mobx-react"
 import { Link } from "react-router-dom"
 
-import OrderDishTable from "./OrderDishTable" 
-import PayDialog from "./PayDialog"
-import JoinOrder from "./JoinOrder"
+import OrderDishTable from "./OrderDishTable"
 
 @inject('orderStore')
 @observer
