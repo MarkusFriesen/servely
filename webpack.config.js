@@ -47,7 +47,17 @@ module.exports = {
     compress: true,
     stats: "errors-only",
     open: true,
-    hot: true
+    hot: true,
+    setup: function(app){
+      app.delete('/api/orders', function (req, res){
+        res.status(200).json({})
+      });
+
+      app.post('/api/orders', function(req, res){
+        //TODO: figure out where order is in req
+        res.status(200).json({})
+      });
+    }
   },
   plugins: [
     new HtmlWebpackPlugin({

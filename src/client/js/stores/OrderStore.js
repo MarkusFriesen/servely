@@ -123,6 +123,8 @@ export class OrderStore {
      })]
 
   @observable filter = ""
+  @observable undoText = ""
+  @observable undoAction = () => {}
   
   @computed get filteredOrders() {
     const matchesFilter = new RegExp(this.filter, "i")

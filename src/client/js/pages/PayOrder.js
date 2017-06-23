@@ -40,7 +40,14 @@ export default class PayOrder extends React.Component {
   }
 
   payBill(){
-    this.props.orderStore.remove(this.props.match.params.id, () => {this.goBack()}, (err) => {console.error(err)})
+    this.props.orderStore.remove(
+      this.props.match.params.id, 
+      () => {
+        this.goBack(); 
+        this.props.orderStore.undoText = `Payed ${this.state.order.name}'s bill`
+        this.props.orderStore.undoAction = () => {this.props.orderStore.add(this.state.order, () => {}, () => {})}  
+      }, 
+      (err) => {console.error(err)})
   }
 
   render() {

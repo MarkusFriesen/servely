@@ -4,6 +4,7 @@ import { FABButton, Icon } from "react-mdl"
 import { Link } from 'react-router-dom'
 
 import OrderCard from "../components/order/OrderCard"
+import UndoSnackbar from "../components/snackbar/UndoSnackbar"
 
 @inject('orderStore')
 @observer
@@ -19,6 +20,11 @@ export default class Orders extends React.Component {
               <Icon name="add" />
             </FABButton>
         </Link>
+
+        <UndoSnackbar 
+          text={this.props.orderStore.undoText} 
+          undoAction={this.props.orderStore.undoAction} 
+          clear={() => {this.props.orderStore.undoText="";}} />
       </div>)
   }
 }
