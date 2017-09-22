@@ -44,12 +44,7 @@ export class DishStore {
     this.fetchDishes()
   }
 
-  @observable dishes = [
-    new Dish("Simple Salad", "(Shellsburg, IA) chili, garlic, lime" , "58833fdc7bb0c19fc957754c", 6, "58833fdc7bb0c19fc957754b" ),
-    new Dish("Steak", "Argentinan Steak Cooked to your liking" , "58833fdc7bb0c19fc957754d", 6, "58833fdc7bb0c19fc957752d" ),
-    new Dish("Burger with Fries", "Beef, cheese, Lettuce, Tomatoes" , "58833fdc7bb0c19fc957754d", 6, "58833fdc8bb0c19fc957754d" ),
-    new Dish("Orzo Salad", "house pickles, mustard seed, fried chili flake (if fried served w/ blue chz dressing)", "58833fdc7bb0c19fc957754c",9.50, "58833ff97bb0c19fc957754c")
-  ];
+  @observable dishes = [];
 
   @observable filter = ""
   

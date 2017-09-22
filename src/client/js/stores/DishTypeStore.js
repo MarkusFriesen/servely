@@ -34,8 +34,7 @@ export class DishTypeStore {
     this.fetchDishTypes()
   }
 
-  @observable dishTypes = [new DishType("Quick Eats", "58833fdc7bb0c19fc957754c"), 
-  new DishType("Mains", "58833fdc7bb0c19fc957754d") ]
+  @observable dishTypes = []
 
   @observable filter = ""
   

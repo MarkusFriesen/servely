@@ -87,40 +87,7 @@ export class OrderStore {
     socket.on('updated:order', this.updateReceivedOrder);
   }
 
-  @observable orders = [
-     new Order(
-     {
-       table: 1,
-       name: "Markus",
-       timestamp: Date.now(),
-       dishes: [{id:"58833fdc7bb0c19fc957754b", quantity: 2}],
-       made: true,
-       hasPayed: false,
-       amountPayed: 0,
-       notes: ""
-     }),
-      new Order(
-     {
-       table: 1,
-       name: "Elli",
-       timestamp: Date.now() + 1,
-       dishes: [{id:"58833ff97bb0c19fc957754c", quantity: 2}],
-       made: false,
-       hasPayed: false,
-       amountPayed: 0,
-       notes: "Extra pickels. Cream no Sugar. Potatoes on the side. Ketchup with Majyo."
-     }),
-      new Order(
-     {
-       table: 1,
-       name: "John",
-       timestamp: Date.now() + 5,
-       dishes: [{id:"58833ff97bb0c19fc957754c", quantity: 2}, {id:"58833fdc7bb0c19fc957754b", quantity: 2}],
-       made: false,
-       hasPayed: false,
-       amountPayed: 0,
-       notes: "Extra pickels"
-     })]
+  @observable orders = []
 
   @observable filter = ""
   @observable undoText = ""
