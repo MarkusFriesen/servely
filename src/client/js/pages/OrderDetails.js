@@ -18,7 +18,8 @@ export default class OrdersDetails extends React.Component {
       made: false,
       dishes: [],
       order: undefined,
-      filter: ""
+      filter: "",
+      offset: 0
     }
   }
 
@@ -33,7 +34,8 @@ export default class OrdersDetails extends React.Component {
           notes: order.notes, 
           made: order.made, 
           dishes: order.dishes.map(d => Object.assign({}, d)),
-          order: order
+          order: order,
+          offset: 0
         })
       }
     }
@@ -60,7 +62,10 @@ export default class OrdersDetails extends React.Component {
   }
 
   handleFilterChange(e){
-    this.setState({filter: e.target.value})
+    this.setState({
+      filter: e.target.value,
+      offset: 0
+    })
   }
 
   addDish(id){
@@ -112,6 +117,18 @@ export default class OrdersDetails extends React.Component {
     }
   }
 
+  pushOffset(){
+    if (this.state.offset + 5 < this.props.dishStore.dishes.length){
+      this.setState({offset: this.state.offset + 5})
+    }
+  }
+
+  pullOffset(){
+    if (this.state.offset - 5 > -1){
+      this.setState({offset: this.state.offset - 5})
+    }
+  }
+
   render() {
     const goBack = this.goBack.bind(this)
     const handleNameChange = this.handleNameChange.bind(this)
@@ -122,10 +139,19 @@ export default class OrdersDetails extends React.Component {
     const addDish = this.addDish.bind(this)
     const removeDish = this.removeDish.bind(this)
     const saveOrder = this.saveOrder.bind(this)
+    const pushOffset = this.pushOffset.bind(this)
+    const pullOffset = this.pullOffset.bind(this)
 
     const matchesFilter = new RegExp(this.state.filter, "i")
     const allDishes = this.props.dishStore.dishes
-    const dataRows = allDishes.map(d => {return({id: d._id, name: d.name, add: <IconButton name="add" onClick={addDish(d._id)} /> })}).filter(e => matchesFilter.test(e.name)).slice(0, 5)
+    const allRows = allDishes.map(d => {
+      return({
+        id: d._id, 
+        name: d.name, 
+        add: <IconButton name="add" onClick={addDish(d._id)} /> 
+      })}).filter(e => matchesFilter.test(e.name))
+
+      const dataRows = allRows.slice(this.state.offset, this.state.offset + 5)
 
     return (
       <Grid className="order-details">
@@ -158,10 +184,12 @@ export default class OrdersDetails extends React.Component {
                     value={this.state.notes}
                   />
 
-                  <Checkbox label="Made" ripple checked={this.state.made} onClick={handleMadeChage}/>
+                  <Checkbox label="Made" ripple checked={this.state.made} onClick={handleMadeChage} onChange={handleMadeChage}/>
                 </Cell>
                 <Cell col={4}>
                   <h4>Available Dishes</h4>
+                  <Button class="float-right" onClick={pushOffset} disabled={(this.state.offset + 5) > allRows.length}>Next</Button> 
+                  <Button class="float-right" onClick={pullOffset} disabled={(this.state.offset - 5) < 0}>Previous</Button> 
                   <Textfield
                     onChange={handleFilterChange}
                     label="Filter"
