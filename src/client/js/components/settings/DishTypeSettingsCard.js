@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom"
-import { Card, CardTitle, CardText, ListItem, ListItemContent, List, ListItemAction, IconButton, CardMenu, Menu, MenuItem } from 'react-mdl';
+import { Card, CardTitle, CardText, ListItem, ListItemContent, List, ListItemAction, IconButton, CardMenu } from 'react-mdl';
 import { inject, observer } from "mobx-react"
+import { Menu, MenuItem } from 'react-mdl-extra'
 
 
 @inject('dishTypeStore')
@@ -17,8 +18,7 @@ export default class DishTypeSettingsCard extends React.Component {
       <ListItem key={i}>
         <ListItemContent icon="label" >{ d.name } </ListItemContent>
         <ListItemAction>
-          <IconButton name="more_vert" id={`menu-${d._id}${i}`} />
-          <Menu target={`menu-${d._id}${i}`} align="right" ripple>
+          <Menu target={<IconButton name="more_vert" />} align="br tr" ripple>
             <Link to={`/setting/dishType/${d._id}`}><MenuItem>Edit</MenuItem></Link>
             <MenuItem onClick={removeDishType(d._id)}>Delete</MenuItem>
           </Menu>
