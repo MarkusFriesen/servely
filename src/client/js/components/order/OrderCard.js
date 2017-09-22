@@ -21,6 +21,13 @@ export default class OrderCard extends React.Component {
   }
 
   render() {
+    let expandIcon = undefined
+    if (this.props.notes) {
+      expandIcon = this.state.expandCard ?
+        <IconButton name="expand_more" onClick={this.toggleExpand.bind(this)}/> :
+        <IconButton name="expand_less" onClick={this.toggleExpand.bind(this)}/>
+    }
+
     return (
       <div class="masonry-layout__panel">
         <Card shadow={2}>
@@ -36,10 +43,7 @@ export default class OrderCard extends React.Component {
           <CardActions>
             <Link to={`/splitOrder/${this.props._id}`}> <Button colored ripple>Split</Button></Link>
             <Link to={`/joinOrder/${this.props._id}`}> <Button colored>Join</Button></Link>
-            { this.state.expandCard ? 
-              <IconButton name="expand_more" onClick={this.toggleExpand.bind(this)}/> :
-              <IconButton name="expand_less" onClick={this.toggleExpand.bind(this)}/>
-            }
+            { expandIcon }
               
             <Link to={`/orderDetails/${this.props._id}`}><IconButton name="mode_edit" /></Link>
           </CardActions >
