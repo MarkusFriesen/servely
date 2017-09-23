@@ -7,7 +7,7 @@ import { Menu, MenuItem } from 'react-mdl-extra'
 @inject('dishStore')
 export default class DishCard extends React.Component {
   remove(id){
-    () => { this.props.dishStore.remove(id, () => {}, (err) => {console.error(err)})}
+    return () => { this.props.dishStore.remove(id, () => {}, (err) => {console.error(err)}) }
   }
 
   render(){
