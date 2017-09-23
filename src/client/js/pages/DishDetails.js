@@ -92,8 +92,6 @@ export default class OrdersDetails extends React.Component {
             <CardText>              
               <Textfield
                 label="Name"
-                pattern={this.state.name ? "*" : ""}
-                error="Enter a name"
                 value={ this.state.name }
                 onChange={ handelNameChange }
                 floatingLabel
