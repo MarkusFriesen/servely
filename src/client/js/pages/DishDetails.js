@@ -92,12 +92,16 @@ export default class OrdersDetails extends React.Component {
             <CardText>              
               <Textfield
                 label="Name"
+                pattern={this.state.name ? "*" : ""}
+                error="Enter a name"
                 value={ this.state.name }
                 onChange={ handelNameChange }
                 floatingLabel
               /><br/>             
               <Textfield
                 label="Description"
+                pattern={this.state.description ? "*" : ""}
+                error="Enter a description"
                 value={ this.state.description }
                 onChange={ handleDescriptionChange }
                 rows={3}
@@ -105,7 +109,7 @@ export default class OrdersDetails extends React.Component {
               /><br/>
 
               <Textfield
-                pattern="-?[0-9]*([\.,][0-9]+)?"
+                pattern={this.state.cost ? "-?[0-9]*([\.,][0-9]+)?" : ""}
                 error="Input is not a number!"
                 label="Cost"
                 floatingLabel
