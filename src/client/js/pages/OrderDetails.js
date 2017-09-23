@@ -167,14 +167,16 @@ export default class OrdersDetails extends React.Component {
                     label="Table"
                     floatingLabel
                     value={this.state.table}
-                    pattern="-?[0-9]*(\.[0-9]+)?"
-                    error="Input is not a number!"
+                    pattern={this.state.table ? "[0-9]+" : "" }
+                    error="Invalid table number!"
                   /><br/>
                   <Textfield
-                      onChange={handleNameChange}
-                      label="Name"
-                      floatingLabel
-                      value={this.state.name}
+                    onChange={handleNameChange}
+                    label="Name"
+                    floatingLabel
+                    value={this.state.name}
+                    pattern={this.state.name ? "*" : "" }
+                    error="Enter a name!"
                   /><br/>
                   <Textfield
                     onChange={handleNotesChange}
