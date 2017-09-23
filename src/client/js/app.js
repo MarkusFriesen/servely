@@ -29,10 +29,15 @@ import DishTypeStore from "./stores/DishTypeStore"
 import css from '../styles/app.scss'
 
 const app = document.getElementById('app')
+
+const dishTypeStore = new DishTypeStore()
+const dishStore = new DishStore(dishTypeStore)
+const orderStore = new OrderStore()
+
 const stores = {
-  orderStore: OrderStore,
-  dishStore: DishStore,
-  dishTypeStore: DishTypeStore
+  orderStore: orderStore,
+  dishStore: dishStore,
+  dishTypeStore: dishTypeStore
 }
 
 

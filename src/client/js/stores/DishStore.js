@@ -39,9 +39,11 @@ class Dish {
   }
 }
 
-export class DishStore {
-  constructor(){
+export default class DishStore {
+  constructor(dishTypStore){
     this.fetchDishes()
+    
+    this.DishTypeStore = dishTypStore
   }
 
   @observable dishes = [];
@@ -49,8 +51,8 @@ export class DishStore {
   @observable filter = ""
   
   @computed get filteredDishes() {
-    var matchesFilter = new RegExp(this.filter, "i")
-    return filter(this.dishes, o => (!this.filter ||  matchesFilter.test(o.name)));
+    var matchesFilter = new RegExp(this.filter, "i") 
+    return filter(this.dishes, o => (!this.filter ||  matchesFilter.test(o.name) || matchesFilter.test(this.DishTypeStore.getDishType(o.type).name)));
   }
 
   fetchDishes(){
@@ -106,6 +108,3 @@ export class DishStore {
   }
 
 }
-
-const store = window.dishStore = new DishStore
-export default store

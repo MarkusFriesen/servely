@@ -29,7 +29,7 @@ class DishType {
   }
 }
 
-export class DishTypeStore {
+export default class DishTypeStore {
   constructor(){
     this.fetchDishTypes()
   }
@@ -95,5 +95,3 @@ export class DishTypeStore {
       })
   }
 }
-const store = window.dishTypeStore = new DishTypeStore
-export default store

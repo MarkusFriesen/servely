@@ -74,7 +74,7 @@ class Order {
   }
 }
 
-export class OrderStore {
+export default class OrderStore {
   constructor(){
     this.getOrder = this.getOrder.bind(this)
     this.fetchOrders = this.fetchOrders.bind(this)
@@ -215,6 +215,3 @@ export class OrderStore {
   }
 
 }
-
-const store = window.orderStore = new OrderStore
-export default store
