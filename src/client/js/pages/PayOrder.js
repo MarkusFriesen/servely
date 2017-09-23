@@ -8,27 +8,27 @@ export default class PayOrder extends React.Component {
   constructor(props){
     super(props)
 
+    const { id } = this.props.match.params
+    let order = undefined
+    let total = 0
+
+    if (id){
+      order = this.props.orderStore.getOrder(id)
+      if (order){
+          total = order.dishes.reduce((acc, val) => {
+            const dish = this.props.dishStore.getDish(val.id)
+            return acc + (val.quantity * (dish ? dish.cost : 0))
+          }, 0).toFixed(2)
+      }
+    }
+
     this.state = {
       amountPayed: "",
-      dishes:[],
-      order: undefined
+      order: order,
+      total: total
     }
 
     this.goBack = this.goBack.bind(this)
-  }
-
-  componentWillMount(){
-    const id = this.props.match.params.id
-    if (id){
-      const order = this.props.orderStore.getOrder(id)
-      if (order){
-        this.setState({
-          name: order.name,
-          dishes: order.dishes.map(d => Object.assign({}, d)),
-          order: order
-        })
-      }
-    }
   }
 
   goBack(){
@@ -37,6 +37,10 @@ export default class PayOrder extends React.Component {
 
   setAmountPayed(e){
     this.setState({amountPayed : e.target.value})
+  }
+
+  setTotal(e){
+    this.setState({total : e.target.value})
   }
 
   payBill(){
@@ -51,11 +55,7 @@ export default class PayOrder extends React.Component {
   }
 
   render() {
-    const total = this.state.dishes.reduce((acc, val) => {
-      const dish = this.props.dishStore.getDish(val.id)
-      return acc + (val.quantity * (dish ? dish.cost : 0))
-    }, 0).toFixed(2);
-
+    const { total } = this.state
     const amountPayed = this.state.amountPayed ? parseFloat(this.state.amountPayed.replace(',', '.')).toFixed(2) : undefined
     const isNumber = this.state.amountPayed && !isNaN(amountPayed)
     const change = isNumber ? (amountPayed - total).toFixed(2) : undefined
@@ -70,10 +70,10 @@ export default class PayOrder extends React.Component {
             <CardTitle><IconButton name="close" onClick={this.goBack}/>Pay {this.state.order ? `${this.state.order.name}'s` : ""} Bill</CardTitle>
             <CardText>
               <Textfield
-                disabled
                 label="Total"
                 floatingLabel
                 value={ total }
+                onChange={this.setTotal.bind(this)}
               />
 
               <div class={className}>
