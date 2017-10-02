@@ -21,6 +21,7 @@
     "express-handlebars": "~3.0.0",
     "express-session": "~1.15.3",
     "faker": "~4.1.0",
+    "filesaver.js-npm": "^1.0.1",
     "keymirror": "~0.1.1",
     "method-override": "~2.3.9",
     "moment": "^2.18.1",

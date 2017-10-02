@@ -4,6 +4,7 @@ import { DataTable, TableHeader, Grid, Textfield, FABButton, Icon } from "react-
 import moment from 'moment'
 
 import { DateRangePicker } from "react-dates"
+import FileSaver from "filesaver.js-npm"
 
 @inject('orderHistoryStore')
 @inject('dishStore')
@@ -14,13 +15,22 @@ export default class OrderHistory extends React.Component {
     super()
 
     this.state = {
+      startDate: moment(), 
+      endDate: moment(),
       focusedInput: undefined
     }
+    this.downloadData = this.downloadData.bind(this)
+    this.getPayedOrders = this.getPayedOrders.bind(this)
   }
 
-  render() {
-    const { payedOrders } = this.props.orderHistoryStore
+  downloadData(){
+    const data = this.getPayedOrders().map(o => `${o.timestamp},${o.name},${o.type},${o.quantity},$${o.cost.toFixed(2)}\n`)
+    const blob = new Blob(data, {type: "text/plain;charset=utf-8"})
+    FileSaver.saveAs(blob, `${this.state.startDate}-to-${this.state.endDate}-orders.csv`, true)
+  }
 
+  getPayedOrders(){
+    const { payedOrders } = this.props.orderHistoryStore
     const allPayedDishes = []
 
     payedOrders.forEach(o => {
@@ -33,13 +43,19 @@ export default class OrderHistory extends React.Component {
               id: `${o.id}${d.id}`, 
               quantity: d.quantity,
               name: dish.name,
-              costs: dish.cost,
+              cost: dish.cost,
               type: dishType.name,
               timestamp: moment(o.timestamp).format("ll") })
           }
         }
       })
     })
+    return allPayedDishes
+  }
+
+  render() {
+
+    const allPayedDishes = this.getPayedOrders()
 
     return(
       <Grid class="order-history">
@@ -69,10 +85,10 @@ export default class OrderHistory extends React.Component {
           <TableHeader name="name">Name</TableHeader>
           <TableHeader name="type">Type</TableHeader>
           <TableHeader numeric name="quantity" >Quantity</TableHeader>
-          <TableHeader numeric name="costs" cellFormatter={(cost) => `\$${cost.toFixed(2)}`} >Price</TableHeader>
+          <TableHeader numeric name="cost" cellFormatter={(cost) => `\$${cost.toFixed(2)}`} >Price</TableHeader>
         </DataTable>
 
-        <FABButton colored ripple raised id="add-order">
+        <FABButton colored ripple raised id="add-order" onClick={this.downloadData}>
           <Icon name="file_download" />
         </FABButton>
 
