@@ -18,6 +18,7 @@ import DishTypeSettings from "./pages/DishTypeSettings";
 import SplitOrder from "./pages/SplitOrder";
 import PayOrder from "./pages/PayOrder";
 import JoinOrder from "./pages/JoinOrder";
+import OrderHistory from "./pages/OrderHistory";
 
 import Nav from "./components/layout/Nav";
 import Drawer from "./components/layout/Drawer";
@@ -25,6 +26,7 @@ import Drawer from "./components/layout/Drawer";
 import OrderStore from "./stores/OrderStore";
 import DishStore from "./stores/DishStore";
 import DishTypeStore from "./stores/DishTypeStore"
+import OrderHistoryStore from "./stores/OrderHistoryStore";
 
 import css from '../styles/app.scss'
 
@@ -33,11 +35,13 @@ const app = document.getElementById('app')
 const dishTypeStore = new DishTypeStore()
 const dishStore = new DishStore(dishTypeStore)
 const orderStore = new OrderStore()
+const orderHistoryStore = new OrderHistoryStore()
 
 const stores = {
   orderStore: orderStore,
   dishStore: dishStore,
-  dishTypeStore: dishTypeStore
+  dishTypeStore: dishTypeStore,
+  orderHistoryStore: orderHistoryStore
 }
 
 
@@ -59,6 +63,7 @@ ReactDOM.render(
           <Route path="/orderDetails/:id?" component={ OrderDetails }/>
           <Route path="/dishDetails/:id?" component={ DishDetails }/>
           <Route path="/setting/dishType/:id?" component={ DishTypeSettings }/>
+          <Route path="/orderHistory/" component={ OrderHistory } />
         </Content>
       </Layout>
     </Router>

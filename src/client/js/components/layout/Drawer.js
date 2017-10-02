@@ -20,6 +20,9 @@ export default class NavDrawer extends React.Component {
           <Link to="/orders" onClick={ this.onClick.bind(this) }>
             <i class="material-icons" role="presentation">shopping_cart</i>Orders
           </Link>
+          <Link  to="/orderHistory" onClick={ this.onClick.bind(this) }>
+            <i class="material-icons" role="presentation">history</i>History
+          </Link>
           <Link to="/dishes" onClick={ this.onClick.bind(this) }>
             <i class="material-icons" role="presentation">shopping_basket</i>Dishes
           </Link>
