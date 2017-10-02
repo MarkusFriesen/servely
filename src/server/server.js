@@ -2,7 +2,8 @@ let express = require('express'),
     app = express(),
     router = new express.Router(),
     configure = require('./configure'),
-    mongoose = require('mongoose')
+    mongoose = require('mongoose'),
+    removeOldOrdersJob = require("./removeOldOrdersJob")
 
 app = configure(app)
 
