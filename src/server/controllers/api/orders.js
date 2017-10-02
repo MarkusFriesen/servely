@@ -3,7 +3,8 @@ let Models = require('../../models'),
 
 module.exports = {
   getOrders(req, res) {
-    Models.Orders.find({}, (err, orders) => {
+    const filter = req.query
+    Models.Orders.find(filter || {}, (err, orders) => {
       if (orders.length) {
         res.json(orders)
       } else {
