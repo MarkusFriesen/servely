@@ -87,10 +87,11 @@ export default class OrderHistory extends React.Component {
           <TableHeader numeric name="quantity" >Quantity</TableHeader>
           <TableHeader numeric name="cost" cellFormatter={(cost) => `\$${cost.toFixed(2)}`} >Price</TableHeader>
         </DataTable>
-
+        
+        {!!new Blob ?
         <FABButton colored ripple raised id="add-order" onClick={this.downloadData}>
           <Icon name="file_download" />
-        </FABButton>
+        </FABButton> : undefined }
 
       </Grid>
     )
