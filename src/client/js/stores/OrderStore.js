@@ -131,7 +131,7 @@ export default class OrderStore {
   fetchOrders(){
     request
     .get('/api/orders')
-    .query({ hasPayed: false })
+    .query({ filter: JSON.stringify({ hasPayed: false })})
     .end((err, res) => {
       if (err) {
         //TODO: Show error
