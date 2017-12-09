@@ -1,15 +1,23 @@
 import express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
-import schema from './data/schema';
+import Mongoose from 'mongoose'
 
-const GRAPHQL_PORT = 3300;
+import schema from './data/schema';
+import config from './config';
+
+
 
 const graphQLServer = express();
 
 graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
 graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(
-  `GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`
+graphQLServer.listen(config.GRAPHQL_PORT, () => console.log(
+  `GraphiQL is now running on http://localhost:${config.GRAPHQL_PORT}/graphiql`
 ));
+
+mongoose.connect(config.MONGO_DB)
+mongoose.connection.on('open', () => {
+  console.log('MongoDB connected.')
+})
