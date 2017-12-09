@@ -4,6 +4,6 @@ const DishTypeSchema = Mongoose.Schema({
   name: String
 })
 
-const DishType = Mongoose.model('dishTypes', dishTypeSchema);
+const DishType = Mongoose.model('dishTypes', DishTypeSchema);
 
 export default DishType

@@ -17,7 +17,7 @@ graphQLServer.listen(config.GRAPHQL_PORT, () => console.log(
   `GraphiQL is now running on http://localhost:${config.GRAPHQL_PORT}/graphiql`
 ));
 
-mongoose.connect(config.MONGO_DB)
-mongoose.connection.on('open', () => {
+Mongoose.connect(config.MONGO_DB)
+Mongoose.connection.on('open', () => {
   console.log('MongoDB connected.')
 })

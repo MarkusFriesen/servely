@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose';
+const Schema = Mongoose.Schema
 
 const DishSchema = Mongoose.Schema({
   name: String,

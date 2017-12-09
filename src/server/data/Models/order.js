@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose';
+const Schema = Mongoose.Schema
 
 const OrderSchema = Mongoose.Schema({
   table: Number,
@@ -10,6 +11,6 @@ const OrderSchema = Mongoose.Schema({
   notes: String
 })
 
-const Order = Mongoose.model('dishTypes', OrderSchema);
+const Order = Mongoose.model('order', OrderSchema);
 
 export default Order
