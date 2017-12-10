@@ -14,7 +14,7 @@ type Dish {
   description: String
 }
 type OrderDish {
-  dish: Dish
+  dish: Dish!
   made: Boolean
 }
 type Order {
@@ -32,8 +32,17 @@ type Query {
   dishes(_id:ID, name:String): [Dish]
   dishTypes(_id:ID, name:String): [DishType]
 }
+input dishId {
+  id: ID
+}
+type Mutation {
+  addOrder(table: Int!, name:String, dishes: [dishId]!): Order
+  addDish(name: String!, cost: Float!, type: ID!, description: String): Dish
+  addDishType(name: String!): DishType
+}
 schema {
   query: Query
+  mutation: Mutation
 }
 `;
 

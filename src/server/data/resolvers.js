@@ -16,6 +16,17 @@ const resolvers = {
       return DishType.find(args)
     }
   },
+  Mutation: {
+    addOrder(_, args){
+      return Order.create(args)
+    },
+    addDish(_, args){
+      return Dish.create(args)
+    },
+    addDishType(_, args){
+      return DishType.create(args)
+    }
+  },
   Dish: {
     type(dish) {
       return DishType.findOne({ _id: dish.type })
