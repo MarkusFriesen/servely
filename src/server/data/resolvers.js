@@ -2,13 +2,17 @@ import { Order, Dish, DishType } from "./Models"
 
 const resolvers = {
   Query: {
-    order(root, args) {
-        return Order.find(args)
+    orders(_, args) {
+      return Order.find(args)
     },
-    dish(root, args){
+    dishes(_, args){
       return Dish.find(args)
     },
-    dishType(root, args){
+    dishTypes(_, args){
+      console.warn(args)
+      DishType.find(args, (error, result) => {
+        console.warn(error, result)
+      })
       return DishType.find(args)
     }
   },

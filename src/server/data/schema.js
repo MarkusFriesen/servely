@@ -19,7 +19,7 @@ type OrderDish {
 }
 type Order {
   _id: ID
-  table: Int
+  table: Int!
   name: String
   timestamp: String!
   dishes: [OrderDish]
@@ -28,9 +28,12 @@ type Order {
   notes: String
 }
 type Query {
-  order(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
-  dish(_id:ID, name:String): [Dish]
-  dishType(_id:ID, name:String): [DishType]
+  orders(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
+  dishes(_id:ID, name:String): [Dish]
+  dishTypes(_id:ID, name:String): [DishType]
+}
+schema {
+  query: Query
 }
 `;
 
