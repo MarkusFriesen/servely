@@ -2,22 +2,33 @@ import { makeExecutableSchema } from 'graphql-tools';
 import resolvers from './resolvers';
 
 const typeDefs = `
-type Author {
-  id: Int
-  firstName: String
-  lastName: String
-  posts: [Post]
+type DishType {
+  _id: ID
+  name: String!
 }
-type Post {
-  id: Int
-  title: String
-  text: String
-  views: Int
-  author: Author
+type Dish {
+  _id: ID
+  name: String!
+  cost: Float!
+  type: DishType!
+  description: String
+}
+type OrderDish {
+  dish: Dish
+  made: Boolean
+}
+type Order {
+  _id: ID
+  table: Int
+  name: String
+  timestamp: String!
+  dishes: [OrderDish]
+  hasPayed: Boolean
+  amountPayed: Float
+  notes: String
 }
 type Query {
-  author(firstName: String, lastName: String): Author
-  getFortuneCookie: String
+  order(table: Int, name: String, hasPayed: Boolean): [Order]
 }
 `;
 

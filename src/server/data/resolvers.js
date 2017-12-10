@@ -1,22 +1,26 @@
+import { Order, Dish, DishType } from "./Models"
+
 const resolvers = {
   Query: {
-    author(root, args) {
-      return { id: 1, firstName: 'Hello', lastName: 'World' };
+    order(root, args) {
+        return Order.find(args)
     },
   },
-  Author: {
-    posts(author) {
-      return [
-        { id: 1, title: 'A post', text: 'Some text', views: 2 },
-        { id: 2, title: 'Another post', text: 'Some other text', views: 200 }
-      ];
+  Dish: {
+    type(dish) {
+      return DishType.findOne({ _id: dish.type })
     },
   },
-  Post: {
-    author(post) {
-      return { id: 1, firstName: 'Hello', lastName: 'World' };
+  OrderDish: {
+    dish(orderDish) {
+      return Dish.findOne({ _id: orderDish.id })
     },
   },
+  Order: {
+    dishes(order){
+      return order.dishes
+    }
+  }
 };
 
 export default resolvers;
