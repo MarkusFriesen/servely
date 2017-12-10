@@ -28,7 +28,9 @@ type Order {
   notes: String
 }
 type Query {
-  order(table: Int, name: String, hasPayed: Boolean): [Order]
+  order(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
+  dish(_id:ID, name:String): [Dish]
+  dishType(_id:ID, name:String): [DishType]
 }
 `;
 

@@ -5,6 +5,12 @@ const resolvers = {
     order(root, args) {
         return Order.find(args)
     },
+    dish(root, args){
+      return Dish.find(args)
+    },
+    dishType(root, args){
+      return DishType.find(args)
+    }
   },
   Dish: {
     type(dish) {
