@@ -9,10 +9,6 @@ const resolvers = {
       return Dish.find(args)
     },
     dishTypes(_, args){
-      console.warn(args)
-      DishType.find(args, (error, result) => {
-        console.warn(error, result)
-      })
       return DishType.find(args)
     }
   },
@@ -25,6 +21,20 @@ const resolvers = {
     },
     addDishType(_, args){
       return DishType.create(args)
+    },
+    updateOrder(_, args){
+      return new Promise((resolve, reject) => {
+        Order.update({ _id: args._id }, args, (err, result) => {
+          if (err)
+            reject(err)
+
+          Order.findOne({_id: args._id}, (e, r) => {
+            if (e) //TODO: Rollback here!!
+              reject(e)
+            resolve(r)
+          })
+        })
+      })
     }
   },
   Dish: {
