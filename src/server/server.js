@@ -2,15 +2,18 @@ import express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import Mongoose from 'mongoose'
+import cors from 'cors';
 
 import schema from './data/schema';
 import config from './config';
 
-
+import removeOldOrderJob from './removeOldOrdersJob'
 
 const graphQLServer = express();
 
-graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+graphQLServer.use('/graphql', cors(), bodyParser.json(), graphqlExpress({
+  schema
+}));
 graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
 
 graphQLServer.listen(config.GRAPHQL_PORT, () => console.log(

@@ -5,8 +5,21 @@ const OrderSchema = Mongoose.Schema({
   table: Number,
   name: String,
   timestamp: { type: Date, default: Date.now },
-  dishes: [{ id: Schema.Types.ObjectId, made: {type: Boolean, default: false} }],
-  hasPayed: {type: Boolean, default: false},
+  dishes: [{
+    id: Schema.Types.ObjectId,
+    made: {
+      type: Boolean,
+      default: false
+    },
+    hasPayed: {
+      type: Boolean,
+      default: false
+    }
+  }],
+  hasPayed: {
+    type: Boolean,
+    default: false
+  },
   amountPayed: Number,
   notes: String
 })

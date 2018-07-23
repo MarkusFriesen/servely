@@ -11,11 +11,11 @@ type Dish {
   name: String!
   cost: Float!
   type: DishType!
-  description: String
 }
 type OrderDish {
   dish: Dish!
   made: Boolean
+  hasPayed: Boolean
 }
 type Order {
   _id: ID
@@ -23,7 +23,6 @@ type Order {
   name: String
   timestamp: String!
   dishes: [OrderDish]
-  hasPayed: Boolean
   amountPayed: Float
   notes: String
 }
@@ -35,17 +34,18 @@ type Query {
 input orderDishMutation {
   id: ID!
   made: Boolean
-}
-input dishTypeMutation {
-  _id: ID!
+  hasPayed: Boolean
 }
 type Mutation {
   addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
-  addDish(name: String!, cost: Float!, type: ID!, description: String): Dish
+  updateOrder(_id: ID!, name: String, table: Int, dishes: [orderDishMutation], notes: String): Order
+  joinOrders(_id: ID!, orderIds: [ID]!) : Order
+  addDish(name: String!, cost: Float!, type: ID!): Dish
+  updateDish(_id: ID!, name:String, cost: Float, type: ID): Dish
+  removeDish(_id: ID!) : Dish
   addDishType(name: String!): DishType
-  updateOrder(_id: ID!, name: String, dishes:[orderDishMutation], notes: String, hasPayed: Boolean, amountPayed: Float): Order
-  updateDish(_id: ID!, name:String, cost: Float, type: dishTypeMutation, description: String): Dish
-
+  updateDishType(_id: ID!, name: String!): DishType
+  removeDishType(_id: ID!): DishType
 }
 schema {
   query: Query
