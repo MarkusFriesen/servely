@@ -4,7 +4,7 @@ let cron = require('node-cron'),
 cron.schedule("* */2 * * *", function(){
   const date = new Date()
   date.setDate(date.getDate() - 120)
-  Models.Orders.deleteMany({ "timestamp" : { $lt : date}, "hasPayed": true }, (err, order) => {
+  Models.Order.deleteMany({ "timestamp" : { $lt : date}, "hasPayed": true }, (err, order) => {
       if (err){
         console.error(err)
       }

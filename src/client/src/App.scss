@@ -1,0 +1,52 @@
+$mdc-theme-primary: #795548;
+$mdc-theme-secondary: #486c79;
+$mdc-theme-background: #fff;
+
+@import 'material-components-web/material-components-web';
+
+@import 'styles/header.scss';
+@import 'styles/drawer.scss';
+@import 'styles/cards.scss';
+@import 'styles/details.scss';
+
+
+.floating-right {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  z-index: 2;
+}
+
+.main-elevation {
+  margin: 0rem 1.25rem;
+  background-color: $mdc-theme-background
+}
+
+.bottomSpacer{
+  height: 5rem;
+}
+
+body {
+  background-color: #f9f5f5
+}
+
+.mdc-dialog__header{
+  color: black
+}
+
+.mdc-dialog__body{
+  .mdc-text-field{
+    width: stretch;
+  }
+}
+
+.mdc-select{
+  width: stretch;
+}
+
+.mdc-select {
+  .mdc-floating-label {
+        transform: translateY(-100%) scale(0.75);
+
+  }
+}

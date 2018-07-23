@@ -1,0 +1,29 @@
+.mdc-card {
+  margin: 1rem;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+
+#masonry-layout {
+  margin: auto;
+}
+
+.highlight {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  position: relative;
+  overflow: hidden;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  align-items: center;
+  user-select: none;
+  border-radius: 50%;
+  justify-content: center;
+  background-color: #ff6659;
+}
