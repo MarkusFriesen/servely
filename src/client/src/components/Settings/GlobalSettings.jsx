@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import { observer, inject } from "mobx-react"
-
-import { Checkbox } from 'rmwc/Checkbox';
+import {
+  List,
+  ListItem, 
+  ListItemGraphic,
+  ListItemText
+} from 'rmwc/List';
 import {
   Toolbar,
   ToolbarRow,
@@ -20,12 +24,13 @@ class GlobalSettings extends Component {
             </ToolbarSection>
           </ToolbarRow>
         </Toolbar>
-
-        <Checkbox
-          checked={this.props.store.kitchenMode}
-          onChange={evt => this.props.store.kitchenMode = evt.target.checked}>
-          Kitchen Mode
-            </Checkbox>
+        
+        <List>
+          <ListItem onClick={() => this.props.store.kitchenMode = !this.props.store.kitchenMode}>
+            <ListItemGraphic>{this.props.store.kitchenMode ? "radio_button_checked" : "radio_button_unchecked"}</ListItemGraphic>
+            <ListItemText>Kitchen Mode</ListItemText>
+          </ListItem>
+        </List>
         </React.Fragment>
     )
   }
