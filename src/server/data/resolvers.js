@@ -19,12 +19,14 @@ const resolvers = {
     addDish(_, args){
       return Dish.create(args)
     },
-    updateDish(_, args){
+    updateDish(_, args){  
+      const id = args._id
+      delete args._id
       return new Promise((resolve, reject) => {
-        Dish.update({ _id: args._id }, args, (e, r) => {
+        Dish.update({ _id: id }, args, (e, r) => {
           if (e)
             reject(e)
-          Dish.findOne({_id: args._id}, (e, r) => {
+          Dish.findOne({_id: id}, (e, r) => {
             if (e)
               reject(e)
             resolve(r)
@@ -39,11 +41,13 @@ const resolvers = {
       return DishType.create(args)
     },
     updateDishType(_, args) {
+      const id = args._id
+      delete args._id
       return new Promise((resolve, reject) => {
-        DishType.update({ _id: args._id }, { name: args.name }, (e, r) => {
+        DishType.update({ _id: id }, { name: args.name }, (e, r) => {
           if (e)
             reject(e)
-          DishType.findOne({_id: args._id}, (e, r) => {
+          DishType.findOne({_id: id}, (e, r) => {
             if (e)
               reject(e)
             resolve(r)
@@ -54,18 +58,20 @@ const resolvers = {
     removeDishType(_, args) {
       return DishType.findOneAndRemove({_id: args._id})
     },
-    updateOrder(_, args){
+    updateOrder(_, args) {
+      const id = args._id
+      delete args._id
       return new Promise((resolve, reject) => {
 
         if (args.dishes){
           args.hasPayed = args.dishes.every(d => d.hasPayed)
         }
 
-        Order.update({ _id: args._id }, args, (err, result) => {
+        Order.update({ _id: id }, args, (err, result) => {
           if (err)
             reject(err)
 
-          Order.findOne({_id: args._id}, (e, r) => {
+          Order.findOne({_id: id}, (e, r) => {
             if (e) //TODO: Rollback here!!
               reject(e)
             resolve(r)
@@ -73,15 +79,17 @@ const resolvers = {
         })
       })
     },
-    joinOrders(_, args){
-      const allIds = args.orderIds.concat([args._id]);
+    joinOrders(_, args) {
+      const id = args._id
+      delete args._id
+      const allIds = args.orderIds.concat([id]);
       return new Promise((resolve, reject) => {
         Order.find({_id: {$in: allIds}}, (e, r) => {
           if (e)
             reject(e)
           else 
             Order.update({
-                  _id: args._id
+                  _id: id
                 }, {
                   dishes: [].concat.apply([], r.map(m => m.dishes))
                 }, ((e, r) => {
@@ -92,7 +100,7 @@ const resolvers = {
                   if (e)
                     reject(e)
                   else
-                    Order.findOne({_id: args._id}, (e, r) => {
+                    Order.findOne({_id: id}, (e, r) => {
                       if (e) //TODO: Rollback here!!
                         reject(e)
                       resolve(r)
