@@ -64,7 +64,7 @@ const resolvers = {
       return new Promise((resolve, reject) => {
 
         if (args.dishes){
-          args.hasPayed = args.dishes.every(d => d.hasPayed)
+          args.hasPayed = args.dishes.length === 0 ? false : args.dishes.every(d => d.hasPayed)
         }
 
         Order.update({ _id: id }, args, (err, result) => {
