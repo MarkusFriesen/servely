@@ -3,6 +3,7 @@ import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import bodyParser from 'body-parser';
 import Mongoose from 'mongoose'
 import cors from 'cors';
+import path from 'path';
 
 import schema from './data/schema';
 import config from './config';
@@ -10,6 +11,11 @@ import config from './config';
 import removeOldOrderJob from './removeOldOrdersJob'
 
 const graphQLServer = express();
+graphQLServer.use(express.static(path.join(__dirname, 'public')));
+
+graphQLServer.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 graphQLServer.use('/graphql', cors(), bodyParser.json(), graphqlExpress({
   schema

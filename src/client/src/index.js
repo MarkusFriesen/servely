@@ -13,9 +13,7 @@ import { ApolloProvider } from "react-apollo";
 
 import Store from "./stores/Store"
 
-const client = new ApolloClient({
-  uri: `http://${window.location.hostname}:5000/graphql`
-});
+const client = new ApolloClient();
 
 const stores = {
   store: Store
