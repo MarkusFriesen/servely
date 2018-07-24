@@ -62,9 +62,8 @@ const resolvers = {
       const id = args._id
       delete args._id
       return new Promise((resolve, reject) => {
-
         if (args.dishes){
-          args.hasPayed = args.dishes.length === 0 ? (args.hasPayed || false) : args.dishes.every(d => d.hasPayed)
+          args.hasPayed = args.dishes.length === 0 ? (!args.name && !args.table && !args.notes ? true : false) : args.dishes.every(d => d.hasPayed)
         }
 
         Order.update({ _id: id }, args, (err, result) => {
