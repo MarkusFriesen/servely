@@ -63,7 +63,7 @@ export default class DetailContent extends Component {
         name: this.props.order.name,
         table: this.props.order.table,
         notes: this.props.order.notes,
-        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name }, made: d.made}})
+        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name }, made: d.made, hasPayed: d.hasPayed}})
       })
       
     const dishTypes = this.state.dishTypes
@@ -82,7 +82,7 @@ export default class DetailContent extends Component {
 
   addDish(id, name){
     return () => {
-      const dishes = [{ dish: { id, name }, made: false }].concat(this.state.dishes)
+      const dishes = [{ dish: { id, name }, made: false, hasPayed: false }].concat(this.state.dishes)
       this.setState(
         {
           dishes: dishes
@@ -136,11 +136,18 @@ export default class DetailContent extends Component {
       <Grid>
         <GridCell span="6">
           <List>
-              {this.state.dishes.map((v, i) => 
+              {this.state.dishes.map((v, i) => {
+                if (v.hasPayed || v.made)
+                  return (<ListItem key={i} ripple={false}>
+                    <ListItemGraphic>{v.hasPayed ? "attach_money" : "done"}</ListItemGraphic>
+                    <ListItemText>{v.dish.name}</ListItemText>
+                  </ListItem>)
+                return (
                 <ListItem key={i} onClick={this.removeDish(i)}>
                   <ListItemGraphic>remove</ListItemGraphic>
                   <ListItemText>{v.dish.name}</ListItemText>
-                </ListItem>
+                </ListItem>)
+              }
               )}
           </List>
         </GridCell>
@@ -158,7 +165,7 @@ export default class DetailContent extends Component {
               table: this.state.table,
               name: this.state.name,
               notes: this.state.notes,
-              dishes: this.state.dishes.map(d => { return { id: d.dish.id, made: d.made } }).filter(d => d && d.id)
+              dishes: this.state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed} }).filter(d => d && d.id)
             }
           })} theme="secondary">Save</Button>
 

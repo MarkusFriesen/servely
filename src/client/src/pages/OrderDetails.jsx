@@ -30,6 +30,7 @@ export default class OrderDetails extends Component {
                 name
               }, 
               made,
+              hasPayed,
             }
           }
         }`} variables={{ id }}>
