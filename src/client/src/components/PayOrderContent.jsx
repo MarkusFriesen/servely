@@ -11,7 +11,8 @@ import {
   ListItem,
   ListItemText,
   ListItemGraphic,
-  ListItemMeta
+  ListItemMeta,
+  ListDivider
 } from 'rmwc/List';
 
 
@@ -28,10 +29,12 @@ export default class PayOrderContent extends Component {
 
     this.changePayment = this.changePayment.bind(this)
     this.toggleSelection = this.toggleSelection.bind(this)
+    this.toggleAll = this.toggleAll.bind(this)
   }
   state = {
     dishes: [],
-    paying: 0
+    paying: 0,
+    selectAll: true
   }
 
   toggleSelection(i){
@@ -41,6 +44,21 @@ export default class PayOrderContent extends Component {
       this.setState({ dishes: dishes})
     }
   }
+
+  toggleAll() {
+    const selected = !this.state.selectAll
+    const dishes = this.state.dishes
+
+    for (const dish of dishes) {
+      dish.paying = selected
+    }
+
+    this.setState({
+      dishes: dishes,
+      selectAll: selected
+    })
+  }
+
   changePayment(){
     return (e) => {
       if (!isNaN(e.target.value))
@@ -58,6 +76,12 @@ export default class PayOrderContent extends Component {
     return (
       <React.Fragment>
         <List>
+          <ListItem key={-1} onClick={this.toggleAll}>
+            <ListItemGraphic> {this.state.selectAll ? "radio_button_checked" : "radio_button_unchecked"}</ListItemGraphic>
+            <ListItemText>Everything</ListItemText>
+          </ListItem>
+
+          <ListDivider />
           {this.state.dishes.map((v, i) => {
             if (v.paying)
               total = v.dish.cost + total 
