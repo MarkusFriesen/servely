@@ -26,7 +26,7 @@ class GlobalSettings extends Component {
         </Toolbar>
         
         <List>
-          <ListItem onClick={() => this.props.store.kitchenMode = !this.props.store.kitchenMode}>
+          <ListItem onClick={() => this.props.store.setKitchenMode(!this.props.store.kitchenMode)}>
             <ListItemGraphic>{this.props.store.kitchenMode ? "radio_button_checked" : "radio_button_unchecked"}</ListItemGraphic>
             <ListItemText>Kitchen Mode</ListItemText>
           </ListItem>

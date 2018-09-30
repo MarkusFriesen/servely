@@ -2,7 +2,12 @@ import { observable, decorate } from "mobx"
 
 class Store {
   searchText = ""
-  kitchenMode = false
+  kitchenMode = localStorage.getItem("Bit.KitchenMode") || false
+
+  setKitchenMode(isOn){
+    this.kitchenMode = isOn;
+    localStorage.setItem("Bit.KitchenMode", isOn);
+  }
 }
 
 decorate(Store, {
