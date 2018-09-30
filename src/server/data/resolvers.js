@@ -56,7 +56,16 @@ const resolvers = {
       })
     },
     removeDishType(_, args) {
-      return DishType.findOneAndRemove({_id: args._id})
+      return new Promise((res, rej) => {
+        Dish.find({type: args._id}).then( r => {
+          if (r.length > 0) {
+            rej("Some dishes with this dish type still exist. Remove those dishes first, before removing the dish type.")
+            return
+          }
+
+          DishType.findOneAndRemove({ _id: args._id }).then(res).catch(rej)
+        }).catch(rej)
+      })
     },
     updateOrder(_, args) {
       const id = args._id
