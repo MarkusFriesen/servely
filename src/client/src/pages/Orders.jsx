@@ -27,7 +27,10 @@ class Order extends Component {
                   dish {
                     _id,
                     name,
-                    cost
+                    cost,
+                    type {
+                      name
+                    }
                   },
                   made,
                   hasPayed
@@ -42,7 +45,7 @@ class Order extends Component {
             let result = <Masonry id="masonry-layout">
               {
                 data.orders.filter(o => {
-                  return (!filter || (o.table.toString() === filter) || matchesFilter.test(o.name)) &&
+                  return (!filter || (o.table.toString() === filter) || matchesFilter.test(o.name) || o.dishes.some(d => matchesFilter.test(d.dish.type.name))) &&
                     (!this.props.store.kitchenMode || o.dishes.some(d => !d.made))
                 }).map((order, i) => {
 
