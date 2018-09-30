@@ -35,7 +35,15 @@ const resolvers = {
       })
     },
     removeDish(_, args){
-      return Dish.findOneAndRemove({_id: args._id})
+      return new Promise((res, rej) => {
+        Order.find({"dishes.id": args._id}).then(result => {
+            result.forEach(o => {
+              Order.update({ _id: o._id }, { $set : { dishes: o.dishes.filter(d => d.id != args._id) } }).then(console.info).catch(console.error)
+            })
+
+          Dish.findOneAndRemove({_id: args._id}).then(res).catch(rej)          
+        })
+      })
     },
     addDishType(_, args){
       return DishType.create(args)
