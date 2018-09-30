@@ -29,6 +29,7 @@ class Order extends Component {
                     name,
                     cost,
                     type {
+                      _id,
                       name
                     }
                   },
@@ -67,7 +68,10 @@ class Order extends Component {
                 <LinearProgress determinate={false}></LinearProgress>
                 {result}
               </React.Fragment>
-            if (error) return <p>Error :(</p>;
+            if (error){
+              console.warn(error)
+              return <p>Error :(</p>;
+            } 
 
             return result
             
