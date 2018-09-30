@@ -108,7 +108,7 @@ export default class PayOrderContent extends Component {
               pay({
               variables: {
                 id: this.props.id,
-                dishes: this.state.dishes.map(d => { return { id: d.dish._id, made: d.made, hasPayed: d.paying} })
+                  dishes: this.state.dishes.map(d => { return { id: d.dish._id, made: d.made, hasPayed: d.paying } }).concat(this.props.payedDishes.map(d => {return { id: d.dish._id, made: d.made, hasPayed: d.hasPayed }}))
               }
             })}}>Pay</Button>
 
