@@ -66,13 +66,17 @@ export default class OrderDetails extends Component {
                 _id,
                 name,
                 type {
+                  _id,
                   name
                 }
               }
             }`}>
           {({ loading, error, data }) => {
             if (loading) return <LinearProgress determinate={false}></LinearProgress>;
-            if (error) return <p>Error :(</p>;
+            if (error) {
+              return <p>Error :( <br /><br />{error.graphQLErrors.map(({ message }, i) => (
+              <span key={i}>{message}</span>))}</p>
+            };
 
             if (id){
               return this.fetchData(id, data.dishes)
