@@ -1,12 +1,11 @@
 {
   "short_name": "BIt",
   "name": "Bestell It",
-  "icons": [
-    {
+  "icons": [{
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
-    }, 
+    },
     {
       "src": "favicon-16x16.png",
       "sizes": "16x16",
