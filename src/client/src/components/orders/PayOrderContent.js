@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { TextField } from '@rmwc/textfield';
-import { Button } from '@rmwc/button';
+import { Button, ButtonIcon } from '@rmwc/button';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { LinearProgress } from '@rmwc/linear-progress';
 import { Grid, GridCell } from '@rmwc/grid';
+
+import CreateReceipt from './CreateReciept'
 
 import {
   List,
@@ -15,6 +17,7 @@ import {
   ListDivider
 } from '@rmwc/list';
 
+import FileSaver from "filesaver.js-npm"
 
 const PAY = gql`
   mutation pay($id: ID!, $dishes: [orderDishMutation]!){
@@ -30,6 +33,7 @@ export default class PayOrderContent extends Component {
     this.changePayment = this.changePayment.bind(this)
     this.toggleSelection = this.toggleSelection.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
+    this.saveFile = this.saveFile.bind(this)
   }
   state = {
     dishes: [],
@@ -72,6 +76,13 @@ export default class PayOrderContent extends Component {
     this.setState({
       dishes: this.props.dishesToPay
     })
+  }
+
+  saveFile(data){
+    const blob = new Blob([CreateReceipt(data)], {
+        type: "text/plain;charset=utf-8"
+      })
+    FileSaver.saveAs(blob, `Receipt ${new Date().toUTCString()}.html`, true)
   }
 
   render(){
@@ -128,6 +139,7 @@ export default class PayOrderContent extends Component {
             return result
           }}
         </Mutation>
+        <Button theme="secondary" onClick={() => this.saveFile(this.state.dishes.filter(d => d.paying).map(d => d.dish))}><ButtonIcon icon="cloud_download" />Download</Button>
     </React.Fragment>)
   }
 }
