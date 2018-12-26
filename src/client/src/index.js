@@ -11,9 +11,7 @@ import { ApolloProvider } from "react-apollo";
 import Store from "./stores/Store"
 import { ThemeProvider } from '@rmwc/theme';
 
-const client = new ApolloClient({
-  uri: "http://localhost:80/graphql"
-});
+const client = new ApolloClient();
 
 const stores = {
   store: Store
