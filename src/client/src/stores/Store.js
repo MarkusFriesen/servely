@@ -5,8 +5,8 @@ import {
 
 class Store {
   searchText = ""
-  kitchenMode = localStorage.getItem("Bit.KitchenMode") || false
-
+  kitchenMode = localStorage.getItem("Bit.KitchenMode") === "true" || false
+ 
   setKitchenMode(isOn) {
     this.kitchenMode = isOn;
     localStorage.setItem("Bit.KitchenMode", isOn);
