@@ -1,0 +1,24 @@
+.mdc-text-field {
+  width: -webkit-fill-available;
+  margin: .5rem;
+}
+
+.mdc-select {
+  width: -webkit-fill-available;
+  margin: .5rem;
+}
+
+.main-elevation button {
+  margin: 1rem;
+}
+
+.main-elevation {
+  margin: .5rem;
+}
+
+.mdc-text-field--focused .mdc-floating-label {
+  color: black !important;
+}
+.mdc-select .mdc-floating-label {
+  color: black !important;
+}
