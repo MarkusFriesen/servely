@@ -164,7 +164,7 @@ export default class DetailContent extends Component {
           let result = <Button onClick={() => addOrUpdate({
             variables: {
               id: this.state.id,
-              table: this.state.table,
+              table: parseInt(this.state.table),
               name: this.state.name,
               notes: this.state.notes,
               dishes: this.state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed} }).filter(d => d && d.id)

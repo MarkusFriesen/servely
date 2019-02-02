@@ -26,7 +26,7 @@ graphQLServer.listen(config.GRAPHQL_PORT, () => console.log(
   `GraphiQL is now running on http://localhost:${config.GRAPHQL_PORT}/graphiql`
 ));
 
-Mongoose.connect(config.MONGO_DB, {useMongoClient: true})
+Mongoose.connect(config.MONGO_DB, { useNewUrlParser: true })
 Mongoose.Promise = global.Promise
 
 Mongoose.connection.on('open', () => {

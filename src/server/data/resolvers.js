@@ -27,7 +27,7 @@ const resolvers = {
       const id = args._id
       delete args._id
       return new Promise((resolve, reject) => {
-        Dish.update({
+        Dish.updateOne({
           _id: id
         }, args).then(r => {
           Dish.findOne({
@@ -42,7 +42,7 @@ const resolvers = {
           "dishes.id": args._id
         }).then(result => {
           result.forEach(o => {
-            Order.update({
+            Order.updateOne({
                 _id: o._id
               }, {
                 $set: {
@@ -53,7 +53,7 @@ const resolvers = {
               .catch(console.error)
           })
 
-          Dish.findOneAndRemove({
+          Dish.findOneAndDelete({
             _id: args._id
           }).then(res).catch(rej)
         })
@@ -66,7 +66,7 @@ const resolvers = {
       const id = args._id
       delete args._id
       return new Promise((resolve, reject) => {
-        DishType.update({
+        DishType.updateOne({
             _id: id
           }, {
             name: args.name
@@ -90,7 +90,7 @@ const resolvers = {
             return
           }
 
-          DishType.findOneAndRemove({
+          DishType.findOneAndDelete({
             _id: args._id
           }).then(res).catch(rej)
         }).catch(rej)
@@ -104,7 +104,7 @@ const resolvers = {
           args.hasPayed = args.dishes.length === 0 ? (!args.name && !args.table && !args.notes ? true : false) : args.dishes.every(d => d.hasPayed)
         }
 
-        Order.update({
+        Order.updateOne({
           _id: id
         }, args).then(r => {
           Order.findOne({
@@ -125,12 +125,12 @@ const resolvers = {
             $in: allIds
           }
         }).then(r => {
-          Order.update({
+          Order.updateOne({
             _id: id
           }, {
             dishes: [].concat.apply([], r.map(m => m.dishes))
           }).then(r => {
-            Order.remove({
+            Order.deleteOne({
               _id: {
                 $in: args.orderIds
               }
