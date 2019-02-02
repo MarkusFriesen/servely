@@ -18,7 +18,7 @@ app.listen(config.GRAPHQL_PORT, () => console.log(
   `Server is now running on http://localhost:${config.GRAPHQL_PORT}`
 ));
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, uploads: false });
 server.applyMiddleware({ app })
 
 Mongoose.connect(config.MONGO_DB, { useNewUrlParser: true })
