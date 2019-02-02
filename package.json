@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/server/server.js --exec babel-node",
-    "build": "babel src/server --out-dir dist && cpx ./src/server/public/**/* ./dist/public",
+    "build": "del dist -f && babel src/server --out-dir dist && cpx ./src/server/public/**/* ./dist/public",
     "serve": "node dist/server.js"
   },
   "author": "Markus Friesen",
@@ -24,6 +24,7 @@
     "@babel/preset-env": "^7.3.1",
     "core-js": "^3.0.0-beta.3",
     "cpx": "^1.5.0",
+    "del-cli": "^1.1.0",
     "nodemon": "^1.18.9"
   },
   "babel": {
