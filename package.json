@@ -4,9 +4,9 @@
   "description": "Order dishes from a web app to manage customer orders",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server/server.js --exec babel-node",
+    "dev": "nodemon src/server/server.js --exec babel-node",
     "build": "del dist -f && babel src/server --out-dir dist && cpx ./src/server/public/**/* ./dist/public",
-    "serve": "node dist/server.js"
+    "start": "node dist/server.js"
   },
   "author": "Markus Friesen",
   "license": "ISC",
