@@ -1,7 +1,6 @@
-import { makeExecutableSchema } from 'graphql-tools';
-import resolvers from './resolvers';
+import { gql } from 'apollo-server-express';
 
-const typeDefs = `
+const typeDefs = gql`
 type DishType {
   _id: ID
   name: String!
@@ -53,4 +52,4 @@ schema {
 }
 `;
 
-export default makeExecutableSchema({ typeDefs, resolvers });
+export default typeDefs;

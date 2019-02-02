@@ -107,7 +107,7 @@ export default class DishDialog extends Component {
             <Mutation mutation={this.props._id ? UPDATE : ADD}>
               {(addOrUpdate) =>
                 <DialogButton action="accept" onClick={() => {
-                  addOrUpdate({ variables: { id: this.props._id, name: this.state.name, type: this.state.type, cost: this.state.cost } })}}>Save</DialogButton>
+                  addOrUpdate({ variables: { id: this.props._id, name: this.state.name, type: this.state.type, cost: parseFloat(this.state.cost) } })}}>Save</DialogButton>
               }
             </Mutation>
           </DialogActions>
