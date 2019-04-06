@@ -37,7 +37,7 @@ export default class OrderDetails extends Component {
         }`} variables={{ id }}>
       {({ loading, error, data }) => {
 
-        if (loading) return <LinearProgress determinate={false}></LinearProgress>;
+        if (loading) return <LinearProgress />;
         if (error) return <p>Error :(</p>; 
 
         return <DetailContent order={data.orders[0]} dishes={dishes} id history={this.props.history} />
@@ -73,7 +73,7 @@ export default class OrderDetails extends Component {
               }
             }`}>
           {({ loading, error, data }) => {
-            if (loading) return <LinearProgress determinate={false}></LinearProgress>;
+            if (loading) return <LinearProgress />;
             if (error) {
               return <p>Error :( <br /><br />{error.graphQLErrors.map(({ message }, i) => (
               <span key={i}>{message}</span>))}</p>

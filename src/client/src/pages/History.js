@@ -86,7 +86,7 @@ export default class History extends Component {
               }
             }`}>
           {({ loading, error, data }) => {
-            if (loading) return <LinearProgress determinate={false}></LinearProgress>;
+            if (loading) return <LinearProgress />;
             if (error) return <p>Error :(</p>;
 
             if (id) {

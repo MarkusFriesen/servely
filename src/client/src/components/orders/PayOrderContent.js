@@ -129,7 +129,7 @@ export default class PayOrderContent extends Component {
             if (loading)
               result =
                 <React.Fragment>
-                  <LinearProgress determinate={false}></LinearProgress>
+                  <LinearProgress />
                   {result}
                 </React.Fragment>
             if (error) console.error(error);
