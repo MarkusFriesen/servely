@@ -4,9 +4,7 @@ import { TabBar, Tab } from '@rmwc/tabs';
 import { Chip, ChipSet } from '@rmwc/chip';
 import {
   List,
-  ListItem,
-  ListItemText,
-  ListItemGraphic
+  SimpleListItem
 } from '@rmwc/list';
 import { TextField } from '@rmwc/textfield';
 import { Button } from '@rmwc/button';
@@ -92,15 +90,18 @@ export default class DetailContent extends Component {
     }
   }
 
-  removeDish(id){
-    return () => {
-      let dishes = this.state.dishes
-      if (dishes.length === 1)
-        dishes = []
-      else 
-        dishes.splice(id, 1)
-      this.setState({ dishes: dishes})
-    }
+  removeDish(e){
+    const id = e.target
+    let dishes = this.state.dishes
+
+    if (dishes.length < id) return
+    if (dishes[id].hasPayed || dishes[id].made) return
+
+    if (dishes.length === 1)
+      dishes = []
+    else 
+      dishes.splice(id, 1)
+    this.setState({ dishes: dishes})
   }
 
   changeTextField(field){
@@ -113,13 +114,14 @@ export default class DetailContent extends Component {
 
   render() {
     const keys = Object.keys(this.state.dishTypes)
+    const { state, props, removeDish } = this
     return (
       <React.Fragment>
       <Grid className="order-details">
         <GridCell span="12">
           { keys.length === 0 ? String() : 
               <TabBar
-                activeTabIndex={this.state.activeTabIndex}
+                activeTabIndex={state.activeTabIndex}
                 onActivate={evt => {
                   this.setState({ 'activeTabIndex': evt.detail.index })
                 }}
@@ -129,9 +131,9 @@ export default class DetailContent extends Component {
           }
             <ChipSet>
               {
-                (this.state.dishTypes[keys[this.state.activeTabIndex]] || []).sort((a, b) => a.name < b.name ? -1 : 1).map((v, i) =>
+                (state.dishTypes[keys[state.activeTabIndex]] || []).sort((a, b) => a.name < b.name ? -1 : 1).map((v, i) =>
                 <Chip key={i} onClick={this.addDish(v._id, v.name)} label={v.name} checkmark selected={
-                  this.state.dishes.some(d => d.dish.id === v._id)
+                  state.dishes.some(d => d.dish.id === v._id)
                 }/>
               )}
             </ChipSet>  
@@ -140,37 +142,33 @@ export default class DetailContent extends Component {
       </Grid>
       <Grid className="order-details">
         <GridCell span="6">
-          <List>
-              {this.state.dishes.map((v, i) => {
-                if (v.hasPayed || v.made)
-                  return (<ListItem key={i} ripple={false}>
-                    <ListItemGraphic icon={v.hasPayed ? "attach_money" : "done"} />
-                    <ListItemText>{v.dish.name}</ListItemText>
-                  </ListItem>)
-                return (
-                <ListItem key={i} onClick={this.removeDish(i)}>
-                  <ListItemGraphic icon="remove" />
-                  <ListItemText>{v.dish.name}</ListItemText>
-                </ListItem>)
-              }
-              )}
+          <List onAction={removeDish}>
+            {state.dishes.map((v, i) => 
+                <SimpleListItem
+                  key={i}
+                  text={v.dish.name}
+                  graphic={v.hasPayed ? "attach_money" : v.made ? "done" : "remove"}
+                  ripple={false}
+                  activated={false}
+                />              
+            )}
           </List>
         </GridCell>
         <GridCell span="6">
-            <TextField icon="event_seat" label="Table" type="number" min="0" inputMode="numeric" pattern="\d*" value={this.state.table} onChange={this.changeTextField("table")} />
-            <TextField icon="account_circle" label="Name" value={this.state.name} onChange={this.changeTextField("name")} />
-            <TextField textarea fullwidth label="Notes" type="number" value={this.state.notes} onChange={this.changeTextField("notes")} />
+            <TextField icon="event_seat" label="Table" type="number" min="0" inputMode="numeric" pattern="\d*" value={state.table} onChange={this.changeTextField("table")} />
+            <TextField icon="account_circle" label="Name" value={state.name} onChange={this.changeTextField("name")} />
+            <TextField textarea fullwidth label="Notes" type="number" value={state.notes} onChange={this.changeTextField("notes")} />
         </GridCell>
       </Grid>
-      <Mutation mutation={this.props.id ? UpdateOrder : AddOrder}>
+      <Mutation mutation={props.id ? UpdateOrder : AddOrder}>
       {(addOrUpdate, {data, loading, error}) => {
           let result = <Button onClick={() => addOrUpdate({
             variables: {
-              id: this.state.id,
-              table: this.state.table,
-              name: this.state.name,
-              notes: this.state.notes,
-              dishes: this.state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed} }).filter(d => d && d.id)
+              id: state.id,
+              table: state.table,
+              name: state.name,
+              notes: state.notes,
+              dishes: state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed} }).filter(d => d && d.id)
             }
           })} theme="secondary">Save</Button>
 
@@ -182,7 +180,7 @@ export default class DetailContent extends Component {
             </React.Fragment>
           if (error) console.error(error);
 
-          if (data) this.props.history.goBack()
+          if (data) props.history.goBack()
 
           return result
         }}
