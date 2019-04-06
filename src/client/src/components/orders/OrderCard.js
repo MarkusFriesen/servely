@@ -17,7 +17,7 @@ import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { Link } from 'react-router-dom'
 
-import { Typography } from 'rmwc/Typography';
+import { Typography } from '@rmwc/typography';
 
 import JoinOrder from './JoinDialog'
 

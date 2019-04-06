@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import {  ToolbarIcon } from 'rmwc/Toolbar';
+import {  ToolbarIcon } from '@rmwc/toolbar';
 import {
   Dialog,
   DialogTitle,
@@ -9,11 +9,11 @@ import {
   DialogActions,
   DialogButton
 } from '@rmwc/dialog';
-import { TextField } from 'rmwc/TextField';
+import { TextField } from '@rmwc/textfield';
 import {
   ListItem,
   ListItemText,
-  ListItemMeta } from 'rmwc/List';
+  ListItemMeta } from '@rmwc/list';
 
 const ADD = gql` mutation add($name: String!){
  addDishType(name: $name){

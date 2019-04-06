@@ -128,8 +128,11 @@ export default class DetailContent extends Component {
               </TabBar>
           }
             <ChipSet>
-              {(this.state.dishTypes[keys[this.state.activeTabIndex]] || []).map((v, i) =>
-                <Chip key={i} onClick={this.addDish(v._id, v.name)} text={v.name}/>
+              {
+                (this.state.dishTypes[keys[this.state.activeTabIndex]] || []).sort((a, b) => a.name < b.name ? -1 : 1).map((v, i) =>
+                <Chip key={i} onClick={this.addDish(v._id, v.name)} label={v.name} checkmark selected={
+                  this.state.dishes.some(d => d.dish.id === v._id)
+                }/>
               )}
             </ChipSet>  
 
@@ -154,8 +157,8 @@ export default class DetailContent extends Component {
           </List>
         </GridCell>
         <GridCell span="6">
-            <TextField withLeadingIcon="event_seat" label="Table" type="number" min="0" inputMode="numeric" pattern="\d*" value={this.state.table} onChange={this.changeTextField("table")} />
-            <TextField withLeadingIcon="account_circle" label="Name" value={this.state.name} onChange={this.changeTextField("name")} />
+            <TextField icon="event_seat" label="Table" type="number" min="0" inputMode="numeric" pattern="\d*" value={this.state.table} onChange={this.changeTextField("table")} />
+            <TextField icon="account_circle" label="Name" value={this.state.name} onChange={this.changeTextField("name")} />
             <TextField textarea fullwidth label="Notes" type="number" value={this.state.notes} onChange={this.changeTextField("notes")} />
         </GridCell>
       </Grid>
