@@ -6,7 +6,7 @@ import {
   SimpleDialog
 } from '@rmwc/dialog';
 import {
-  CardAction
+  CardActionButton
 } from '@rmwc/card';
 
 import JoinDialogSurface from "./JoinDialogSurface"
@@ -46,11 +46,11 @@ export default class JoinOrder extends Component {
 
           }}
         </Query>
-      <CardAction
+      <CardActionButton
           onClick={evt => this.setState({ standardDialogOpen: true })}
         >
           Join
-      </CardAction>
+      </CardActionButton>
     </React.Fragment>)
   }
 }

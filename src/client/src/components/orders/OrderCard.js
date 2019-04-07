@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   Card,
   CardPrimaryAction,
-  CardAction,
+  CardActionIcon,
   CardActions,
   CardActionButtons,
   CardActionIcons
@@ -75,7 +75,7 @@ export default class OrderCard extends Component {
         <div style={{ padding: '0 1rem 1rem 1rem' }}>
           <Mutation mutation={MADE}>
             {(made) => 
-                <Typography use="body1" tag="div" theme="text-secondary-on-background">
+                <Typography use="body1" tag="div" theme="textSecondaryOnBackground">
                 <List>
                   {props.dishes.map((v, i) =>
                     <ListItem key={i} onClick={this.handleDishMade(props._id, i, made)}>
@@ -92,7 +92,7 @@ export default class OrderCard extends Component {
           use="subtitle1"
           tag="div"
           style={{ padding: '0.5rem 1rem' }}
-          theme="text-secondary-on-background"
+          theme="textSecondaryOnBackground"
         >
           {this.props.notes}
         </Typography>
@@ -102,7 +102,7 @@ export default class OrderCard extends Component {
           </CardActionButtons>
           <CardActionIcons>
             <Link to={`/payOrder/${props._id}`}>
-              <CardAction icon="credit_card" />
+              <CardActionIcon icon = "credit_card" />
             </Link>
           </CardActionIcons>
         </CardActions>

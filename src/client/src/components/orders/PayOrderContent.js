@@ -111,9 +111,9 @@ export default class PayOrderContent extends Component {
         </List>
         <Grid>
           <GridCell span="12">
-            <TextField withLeadingIcon="euro_symbol" disabled label="Total" value={total.toFixed(2)} />
-            <TextField withLeadingIcon="euro_symbol" label="Difference" value={(this.state.paying - total).toFixed(2)} onChange={() => {}} invalid={this.state.paying - total < 0} />
-            <TextField withLeadingIcon="euro_symbol" label="Paying" type="number" inputMode="numeric" pattern="\d*.*,*\d*" value={this.state.paying} onChange={this.changePayment()}/>
+            <TextField icon="euro_symbol" disabled label="Total" value={total.toFixed(2)} />
+            <TextField icon="euro_symbol" label="Difference" value={(this.state.paying - total).toFixed(2)} onChange={() => {}} invalid={this.state.paying - total < 0} />
+            <TextField icon="euro_symbol" label="Paying" type="number" inputMode="numeric" pattern="\d*.*,*\d*" value={this.state.paying} onChange={this.changePayment()}/>
           </GridCell>
         </Grid>
         <Mutation mutation={PAY}>
