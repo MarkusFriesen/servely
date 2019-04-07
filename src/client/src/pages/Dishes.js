@@ -1,14 +1,19 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import Masonry from 'react-masonry-component';
+import { Fab } from '@rmwc/fab';
 
-import DishCard from '../components/dishes/DishCard'
-import DishDialog from '../components/dishes/DishDialog'
+import DishCard from '../components/dishes/DishCard';
+import DishDialog from '../components/dishes/DishDialog';
 import { LinearProgress } from '@rmwc/linear-progress';
-import { observer, inject } from "mobx-react"
+import { observer, inject } from "mobx-react";
 
 class Dishes extends Component {
+  state = {
+    openDialog: false
+  }
+
   groupBy(xs, func) {
     return xs.reduce(function (rv, x) {
       (rv[func(x)] = rv[func(x)] || []).push(x);
@@ -68,14 +73,18 @@ class Dishes extends Component {
                     </div>)
                   }
 
-                  let result = <Masonry id="masonry-layout">
-                    {groupedDishes}
-                  </Masonry>
+                  let result = 
+                  <React.Fragment>
+                    <Masonry id="masonry-layout">
+                      {groupedDishes}
+                    </Masonry>
+                    <Fab className="floating-right" icon="add"  onClick={() => this.setState({openDialog: true})} />
+                  </React.Fragment>
 
                   if (loading) result =
                     <React.Fragment>
                       <LinearProgress />
-                      {result}
+                      { result }
                     </React.Fragment>
                   if (error) return <p>Error :(</p>;
 
@@ -83,7 +92,7 @@ class Dishes extends Component {
 
                 }}
               </Query>
-              <DishDialog dishTypes={dishTypes} />
+              <DishDialog dishTypes={dishTypes} open={this.state.openDialog} onClose={() => this.setState({openDialog: false})}/>
               <div className="bottomSpacer" />
             </React.Fragment>
           )

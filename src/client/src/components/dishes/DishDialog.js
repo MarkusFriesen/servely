@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import { Fab } from '@rmwc/fab';
 import {
   Dialog,
   DialogTitle,
@@ -10,9 +9,6 @@ import {
   DialogButton
 } from '@rmwc/dialog'
 import { TextField } from '@rmwc/textfield';
-import {
-  SimpleListItem
-} from '@rmwc/list'; 
 import { Select } from '@rmwc/select';
 
 const ADD = gql` mutation add($name: String!, $cost: Float!, $type: ID!){
@@ -37,7 +33,7 @@ const REMOVE = gql`mutation remove($id: ID!){
 export default class DishDialog extends Component {
   constructor(props) {
     super(props)
-    this.state = { name: '', cost: 0.00, type: '', standardDialogOpen: false }
+    this.state = { name: '', cost: 0.00, type: '' }
 
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleCostChange = this.handleCostChange.bind(this)
@@ -77,8 +73,8 @@ export default class DishDialog extends Component {
     return (
     <React.Fragment>
       <Dialog
-        open={this.state.standardDialogOpen}
-        onClose={evt => this.setState({ standardDialogOpen: false })}
+        open={this.props.open}
+        onClose={this.props.onClose}
       >
           <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New dish"}</DialogTitle>
    
@@ -112,11 +108,6 @@ export default class DishDialog extends Component {
             </Mutation>
           </DialogActions>
       </Dialog>
-      {
-        this.props._id ?
-          <SimpleListItem key={this.props._id} onClick={this.toggleDialog()} text={this.props.name} secondaryText={`€ ${this.props.cost.toFixed(2)}`} meta="edit" />:
-          <Fab className="floating-right" icon="add"  onClick={this.toggleDialog()} />
-      }
     </React.Fragment>)
   }
 }
