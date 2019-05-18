@@ -34,6 +34,7 @@ class Order extends Component {
                     }
                   },
                   made,
+                  delivered,
                   hasPayed
                 }
               }

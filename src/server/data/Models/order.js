@@ -11,6 +11,10 @@ const OrderSchema = Mongoose.Schema({
       type: Boolean,
       default: false
     },
+    delivered: {
+      type: Boolean,
+      default: false
+    },
     hasPayed: {
       type: Boolean,
       default: false

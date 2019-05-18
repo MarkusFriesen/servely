@@ -9,19 +9,19 @@ import {
 } from '@rmwc/card';
 import {
   List,
-  ListItem,
-  ListItemText,
-  ListItemGraphic
+  SimpleListItem
 } from '@rmwc/list';
 import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+
+import { observer, inject } from "mobx-react";
 
 import { Typography } from '@rmwc/typography';
 
-import JoinOrder from './JoinDialog'
+import JoinOrder from './JoinDialog';
 
-import './card.css'
+import './card.css';
 
 const MADE = gql`
   mutation updateOrder($id: ID!, $dishes: [orderDishMutation]!){
@@ -37,21 +37,30 @@ const MADE = gql`
           cost
         },
         made,
+        delivered,
         hasPayed
       }
     }
   }`
 
-export default class OrderCard extends Component {
+class OrderCard extends Component {
   constructor(){
     super()
-    this.handleDishMade = this.handleDishMade.bind(this)
+    this.handleDishClick = this.handleDishClick.bind(this)
   }
 
-  handleDishMade(id, i, made){
+  handleDishClick(id, i, made){
     return () => {
-      const dishes = this.props.dishes.map(d => {return {id: d.dish._id, made: d.made, hasPayed: d.hasPayed}})
-      dishes[i].made = !dishes[i].made
+      const dishes = this.props.dishes.map(d => {return {id: d.dish._id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered}})
+
+      if (this.props.store.kitchenMode){
+        if (dishes[i].delivered) return;
+        dishes[i].made = !dishes[i].made;
+      } else {
+        if (!dishes[i].made) return;
+        dishes[i].delivered = !dishes[i].delivered;
+      }
+
       made({variables: {
         id: id, 
         dishes: dishes
@@ -77,12 +86,19 @@ export default class OrderCard extends Component {
             {(made) => 
                 <Typography use="body1" tag="div" theme="textSecondaryOnBackground">
                 <List>
-                  {props.dishes.map((v, i) =>
-                    <ListItem key={i} onClick={this.handleDishMade(props._id, i, made)}>
-                      <ListItemGraphic icon={v.made ? "radio_button_checked" : "radio_button_unchecked"}/>
-                      <ListItemText>{v.dish.name}</ListItemText>
-                    </ListItem>
-                  )}
+                  {props.dishes.map((v, i) =>{
+                    const disabledKitchen = this.props.store.kitchenMode && v.delivered;
+                    const disabledServer = !this.props.store.kitchenMode && !v.made;
+                    return (
+                    <SimpleListItem key={i} 
+                      graphic = {
+                        v.made ? (v.delivered ? "done_all" : "done") : "check_box_outline_blank"
+                      }
+                      onClick={this.handleDishClick(props._id, i, made)} 
+                      disabled = {disabledKitchen || disabledServer}
+                      text={v.dish.name}
+                      ripple={v.made} />)}
+                    )}
                 </List>
               </Typography>
             }
@@ -109,3 +125,5 @@ export default class OrderCard extends Component {
       </Card>)
   }
 }
+
+export default inject("store")(observer(OrderCard))

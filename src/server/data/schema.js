@@ -15,6 +15,7 @@ type Dish {
 type OrderDish {
   dish: Dish!
   made: Boolean
+  delivered: Boolean
   hasPayed: Boolean
 }
 type Order {
@@ -35,6 +36,7 @@ input orderDishMutation {
   id: ID!
   made: Boolean
   hasPayed: Boolean
+  delivered: Boolean
 }
 type Mutation {
   addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
