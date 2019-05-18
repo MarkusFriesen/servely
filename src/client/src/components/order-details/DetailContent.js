@@ -129,7 +129,7 @@ export default class DetailContent extends Component {
                 {keys.map((v, i) => <Tab key={i}>{v}</Tab>)}
               </TabBar>
           }
-            <ChipSet>
+            <ChipSet choice>
               {
                 (state.dishTypes[keys[state.activeTabIndex]] || []).sort((a, b) => a.name < b.name ? -1 : 1).map((v, i) =>
                 <Chip key={i} onClick={this.addDish(v._id, v.name)} label={v.name} checkmark selected={
