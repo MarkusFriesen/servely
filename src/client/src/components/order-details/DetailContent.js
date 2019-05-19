@@ -69,7 +69,7 @@ export default class DetailContent extends Component {
         name: this.props.order.name,
         table: this.props.order.table,
         notes: this.props.order.notes,
-        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name, typeName: d.dish.type.name }, made: d.made, hasPayed: d.hasPayed, extras: d.extras}})
+        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name, typeName: d.dish.type.name }, made: d.made, hasPayed: d.hasPayed, extras: d.extras, delivered: d.delivered}})
       })
       
     const dishTypes = this.state.dishTypes
@@ -126,20 +126,20 @@ export default class DetailContent extends Component {
     }
   }
 
-  selectDish(e){
+  selectDish(id){
     const { dishes } = this.state
 
-    if (!dishes || dishes.length < e.target) return;
-    const dish = dishes[e.target].dish;
+    if (!dishes || dishes.length < id) return;
+    const dish = dishes[id].dish;
 
     if (dish.hasPayed || dish.made) return;
 
     this.setState({
       openDialog: true,
       selectedDish: dish,
-      selectedDishId: e.target,
-      selectableExtras: this.state.extras[dishes[e.target].dish.typeName],
-      dishExtras: dishes[e.target].extras
+      selectedDishId: id,
+      selectableExtras: this.state.extras[dishes[id].dish.typeName],
+      dishExtras: dishes[id].extras
     })
   }
 
@@ -185,15 +185,20 @@ export default class DetailContent extends Component {
       </Grid>
       <Grid className="order-details">
         <GridCell span="6">
-          <List onAction={selectDish}>
+          <List>
             {state.dishes.map((v, i) => 
                 <SimpleListItem
+                  onClick={() => {
+                    if (v.hasPayed || v.made || v.delivered) return;
+                    selectDish(i)
+                  }}
                   key={i}
                   text={v.dish.name}
                   secondaryText={(v.extras || []).map(e => e.name).join(", ")}
-                  graphic={v.hasPayed ? "done_all" : v.made ? "done" : "close"}
+                  graphic={v.hasPayed ? "euro_symbol" : v.delivered ? "done_all" : v.made ? "done" : "remove"}
                   ripple={false}
                   activated={false}
+                  disabled={v.hasPayed || v.made || v.delivered}
                 />  
             )}
           </List>
@@ -212,7 +217,7 @@ export default class DetailContent extends Component {
               table: state.table,
               name: state.name,
               notes: state.notes,
-              dishes: state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed, extras: (d.extras|| []).map(e => e._id)} }).filter(d => d && d.id)
+              dishes: state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered, extras: (d.extras|| []).map(e => e._id)} }).filter(d => d && d.id)
             }
           })} theme="secondary">Save</Button>
 

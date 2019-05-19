@@ -36,6 +36,7 @@ export default class OrderDetails extends Component {
               }, 
               made,
               hasPayed,
+              delivered,
               extras {
                 _id,
                 name,

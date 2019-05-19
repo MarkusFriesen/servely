@@ -44,6 +44,7 @@ export default class PayOrder extends Component{
                       },
                       hasPayed,
                       made,
+                      delivered,
                       extras {
                         _id,
                         cost,
@@ -62,7 +63,17 @@ export default class PayOrder extends Component{
               id={id} 
               payedDishes={data.orders[0].dishes.filter(d => d.hasPayed)} 
               dishesToPay={data.orders[0].dishes.filter(d => !d.hasPayed)
-                .map(d => { return { dish: d.dish, made: d.made, paying: true, extras: d.extras } })} />
+                .map(d => {
+                  return {
+                    dish: d.dish,
+                    made: d.made,
+                    paying: true,
+                    delivered: d.delivered,
+                    extras: d.extras
+                  }
+                })
+                }
+                />
 
           }}
 

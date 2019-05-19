@@ -90,9 +90,9 @@ class OrderCard extends Component {
                     const disabledKitchen = this.props.store.kitchenMode && v.delivered;
                     const disabledServer = !this.props.store.kitchenMode && !v.made;
                     return (
-                    <SimpleListItem key={i} 
+                    <SimpleListItem key={i} className={v.delivered ? "done" : ""} 
                       graphic = {
-                        v.made ? (v.delivered ? "done_all" : "done") : "check_box_outline_blank"
+                        v.made ? (v.delivered ? "done_all" : "done") : "change_history"
                       }
                       onClick={this.handleDishClick(props._id, i, made)} 
                       disabled = {disabledKitchen || disabledServer}

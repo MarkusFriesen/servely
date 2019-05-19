@@ -28,6 +28,11 @@ export default class DetailExtraDialog extends Component {
     this.props.onDelete()
   }
 
+  onCancel = () => {
+    this.setState({ selectedExtras: []})
+    this.props.onClose()
+  }
+
   onSave = () => {
     this.props.onSave(this.state.selectedExtras.map(e => Object.create(e)))
     this.setState({ selectedExtras: []})
@@ -35,8 +40,7 @@ export default class DetailExtraDialog extends Component {
 
   addExtra = (e) => {
     const { selectedExtras } = this.state
-    selectedExtras.push(e)
-    this.setState({selectedExtras: selectedExtras})
+    this.setState({selectedExtras: [e].concat(selectedExtras)})
   }
   render() {
     const {dish, extras} = this.props;
@@ -75,15 +79,17 @@ export default class DetailExtraDialog extends Component {
           <DialogButton 
             theme="secondary" 
             action="close" 
-            isDefaultAction 
             onClick={this.onDelete}>Delete</DialogButton>
-          <DialogButton 
+          <DialogButton
+            theme="primary"
+            action="close"
+            isDefaultAction
+            onClick={this.onCancel}>Cancel</DialogButton>
+          {
+            extras ? < DialogButton
             theme="primary" 
             action="accept"
-            onClick = {this.onSave} > 
-              {
-                extras ? "Save" : "Cancel"
-            } </DialogButton>
+            onClick = {this.onSave} >Save</DialogButton> : <React.Fragment/> }
         </DialogActions>
       </Dialog>
     )
