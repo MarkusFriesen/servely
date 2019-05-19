@@ -209,10 +209,15 @@ const resolvers = {
       })
     },
     extras(orderDish) {
-      return DishExtra.find({
-        _id: {
-          "$in": orderDish.extras.map(d => d)
-        }
+      return new Promise((resolve, reject) => {
+        DishExtra.find({
+          _id: {
+            "$in": orderDish.extras.map(d => d)
+          }
+        }).then( result => {
+          resolve(orderDish.extras.map(e => result.find(r => r._id.equals(e))))
+        }).catch(e => reject(e))
+      
       })
     }
   },

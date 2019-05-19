@@ -29,7 +29,7 @@ export default class DetailExtraDialog extends Component {
   }
 
   onSave = () => {
-    this.props.onSave(this.state.selectedExtras)
+    this.props.onSave(this.state.selectedExtras.map(e => Object.create(e)))
     this.setState({ selectedExtras: []})
   }
 
