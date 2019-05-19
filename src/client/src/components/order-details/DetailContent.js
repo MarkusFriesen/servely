@@ -97,7 +97,7 @@ export default class DetailContent extends Component {
   }
 
   addDish(id, name, typeName){
-    const dishes = [{ dish: { id, name }, made: false, hasPayed: false, typeName: typeName }].concat(this.state.dishes)
+    const dishes = [{ dish: { id, name, typeName }, made: false, hasPayed: false }].concat(this.state.dishes)
     this.setState(
       {
         dishes: dishes
@@ -138,7 +138,7 @@ export default class DetailContent extends Component {
       openDialog: true,
       selectedDish: dish,
       selectedDishId: e.target,
-      selectableExtras: this.state.extras[dishes[e.target].typeName],
+      selectableExtras: this.state.extras[dishes[e.target].dish.typeName],
       dishExtras: dishes[e.target].extras
     })
   }
