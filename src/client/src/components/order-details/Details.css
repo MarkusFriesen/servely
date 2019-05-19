@@ -28,3 +28,7 @@
   margin: 10px;
   font-size: 1rem;
 }
+
+.mdc-list .mdc-list-item {
+  height: 55px;
+}

@@ -3,17 +3,16 @@ import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import Masonry from 'react-masonry-component';
 import { Fab } from '@rmwc/fab';
-
-import DishCard from '../components/dishes/DishCard';
-import DishDialog from '../components/dishes/DishDialog';
 import { LinearProgress } from '@rmwc/linear-progress';
 import { observer, inject } from "mobx-react";
 
-class Dishes extends Component {
+import ExtraCard from "../components/extras/ExtraCard";
+import ExtraDialog from "../components/extras/ExtraDialog";
+class DishExtra extends Component {
   state = {
     openDialog: false
   }
-
+  
   groupBy(xs, func) {
     return xs.reduce(function (rv, x) {
       (rv[func(x)] = rv[func(x)] || []).push(x);
@@ -21,7 +20,7 @@ class Dishes extends Component {
     }, {});
   }
 
-  render() {
+  render(){
     const filter = this.props.store.searchText
     const matchesFilter = new RegExp(filter, "i")
     return (
@@ -32,7 +31,7 @@ class Dishes extends Component {
                 name
                 }
               }`}
-        pollInterval={1000}>
+        pollInterval={5000}>
         {({ data }) => {
           let dishTypes = []
           if (data && data.dishTypes)
@@ -40,43 +39,45 @@ class Dishes extends Component {
           return (
             <React.Fragment>
               <Query
-                query={gql`query dishes {
-                  dishes {
-                    _id,
-                    name,
-                    cost,
-                    type {
-                      _id,
-                      name
+                query = {
+                    gql `{
+                      dishExtras {
+                        _id, 
+                        name, 
+                        cost, 
+                        type {
+                          _id,
+                          name
+                        }
+                      }
                     }
-                  }
-                }`}
+                `}
                 pollInterval={1000}>
                 {({ loading, error, data }) => {
-                  if (!data || !data.dishes)
-                    data = { dishes: [] }
+                  if (!data || !data.dishExtras)
+                    data = { dishExtras: []}
 
-                  const grouped = this.groupBy(data.dishes.filter(o => {
+                  const grouped = this.groupBy(data.dishExtras.filter(o => {
                     return (!filter || matchesFilter.test(o.name) || matchesFilter.test(o.type.name))
                   }), d => d.type.name)
 
-                  const groupedDishes = []
-                  for (const group in grouped) {
-                    groupedDishes.push(<div
+                  const groupedExtras = []
+                  for (const group in grouped){
+                    groupedExtras.push(<div
                       key={grouped[group][0]._id}
                       style={{
                         width: '-webkit-fill-available',
                         maxWidth: '500px',
                         minWidth: '320px'
                       }}>
-                      <DishCard typeName={group} dishes={grouped[group]} dishTypes={dishTypes} />
+                        <ExtraCard typeName={group} extras={grouped[group]} dishTypes={dishTypes} />
                     </div>)
                   }
 
                   let result = 
                   <React.Fragment>
                     <Masonry id="masonry-layout">
-                      {groupedDishes}
+                      {groupedExtras}
                     </Masonry>
                     <Fab className="floating-right" icon="add"  onClick={() => this.setState({openDialog: true})} />
                   </React.Fragment>
@@ -89,17 +90,24 @@ class Dishes extends Component {
                   if (error) return <p>Error :(</p>;
 
                   return result
-
                 }}
-              </Query>
-              <DishDialog dishTypes={dishTypes} open={this.state.openDialog} onClose={() => this.setState({openDialog: false})}/>
-              <div className="bottomSpacer" />
+                </Query>
+                < ExtraDialog dishTypes = {
+                  dishTypes
+                }
+                open = {
+                  this.state.openDialog
+                }
+                onClose = {
+                  () => this.setState({
+                    openDialog: false
+                  })
+                }/>
             </React.Fragment>
-          )
-        }}
+          )}
+        }
       </Query>
     )
   }
 }
-
-export default inject("store")(observer(Dishes))
+export default inject("store")(observer(DishExtra))

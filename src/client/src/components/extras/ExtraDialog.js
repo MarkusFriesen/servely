@@ -12,25 +12,25 @@ import { TextField } from '@rmwc/textfield';
 import { Select } from '@rmwc/select';
 
 const ADD = gql` mutation add($name: String!, $cost: Float!, $type: ID!){
- addDish(name: $name, cost: $cost, type: $type){
+ addDishExtra(name: $name, cost: $cost, type: $type) {
    _id, 
    name
  }
 }`
-const UPDATE = gql`mutation update($id: ID!, $name: String, $cost: Float, $type: ID){
- updateDish(_id: $id, name: $name, cost: $cost, type: $type){
+const UPDATE = gql `mutation update($id: ID!, $name: String!, $cost: Float!, $type: ID!){
+ updateDishExtra(_id: $id, name: $name, cost: $cost, type: $type) {
    _id, 
    name
  }
 }`
 const REMOVE = gql`mutation remove($id: ID!){
- removeDish(_id: $id, ){
+ removeDishExtra(_id: $id, ) {
    _id, 
    name
  }
 }`
 
-export default class DishDialog extends Component {
+export default class ExtraDialog extends Component {
   constructor(props) {
     super(props)
     this.state = { name: '', cost: 0.00, type: '' }
@@ -64,9 +64,7 @@ export default class DishDialog extends Component {
   }
 
   toggleDialog() {
-    return () => {
-      this.setState({ name: this.props.name || "", cost: this.props.cost || 0, type: this.props.type ? this.props.type._id : '', standardDialogOpen: !this.state.standardDialogOpen })
-    }
+    this.setState({ name: this.props.name || "", cost: this.props.cost || 0, type: this.props.type ? this.props.type._id : '', standardDialogOpen: !this.state.standardDialogOpen })
   }
 
   render(){
@@ -74,7 +72,10 @@ export default class DishDialog extends Component {
     <React.Fragment>
       <Dialog
         open={this.props.open}
-        onClose={this.props.onClose}
+        onClose={ () => {
+          this.toggleDialog()
+          this.props.onClose()
+        }}
       >
           <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New dish"}</DialogTitle>
    
@@ -90,7 +91,7 @@ export default class DishDialog extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <DialogButton  theme="secondary" action="close" isDefaultAction>Cancel</DialogButton>
+            <DialogButton  theme="secondary" action="cloase" isDefaultAction>Cancel</DialogButton>
             {
               this.props._id ?
                 <Mutation mutation={REMOVE}>

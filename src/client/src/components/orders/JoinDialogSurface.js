@@ -27,7 +27,11 @@ const JOIN = gql`
           cost
         },
         made,
-        hasPayed
+        hasPayed,
+        extras {
+          _id,
+          name
+        }
       }
     }
   }`

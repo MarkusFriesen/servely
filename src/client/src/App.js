@@ -9,6 +9,7 @@ import PayOrder from './pages/PayOrder'
 import Dishes from './pages/Dishes'
 import Settings from './pages/Settings'
 import Hist from './pages/History'
+import Extras from './pages/DishExtra'
 
 class App extends Component {
   render() {
@@ -25,6 +26,7 @@ class App extends Component {
           <Route path="/dishes" component={Dishes} />
           <Route path="/settings" component={Settings} />
           <Route path="/orderHistory" component={Hist} />
+          <Route path="/dishExtra" component={Extras} />
         </div>
       </div>
     );

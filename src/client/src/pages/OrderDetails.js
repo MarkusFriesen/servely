@@ -16,7 +16,7 @@ import DetailContent from "../components/order-details/DetailContent"
 
 
 export default class OrderDetails extends Component {
-  fetchData(id, dishes){
+  fetchData(id, dishes, extras){
     return <Query
       query={gql`
         query order($id: ID) {
@@ -28,19 +28,34 @@ export default class OrderDetails extends Component {
             dishes {
               dish {
                 _id,
-                name
+                name,
+                type {
+                  _id,
+                  name
+                }
               }, 
               made,
               hasPayed,
+              extras {
+                _id,
+                name,
+                type {
+                  _id, 
+                  name
+                }
+              }
             }
           }
         }`} variables={{ id }}>
       {({ loading, error, data }) => {
 
         if (loading) return <LinearProgress />;
-        if (error) return <p>Error :(</p>; 
+        if (error) {
+          console.error(error)
+          return <p>Error :( </p>;
+          }
 
-        return <DetailContent order={data.orders[0]} dishes={dishes} id history={this.props.history} />
+        return <DetailContent order={data.orders[0]} dishes={dishes} extras={extras} id={id} history={this.props.history} />
       }}
     </Query>      
   }
@@ -70,6 +85,14 @@ export default class OrderDetails extends Component {
                   _id,
                   name
                 }
+              },
+              dishExtras {
+                _id,
+                name,
+                type {
+                  _id,
+                  name
+                }
               }
             }`}>
           {({ loading, error, data }) => {
@@ -80,9 +103,9 @@ export default class OrderDetails extends Component {
             };
 
             if (id){
-              return this.fetchData(id, data.dishes)
+              return this.fetchData(id, data.dishes, data.dishExtras)
             }
-            return <DetailContent dishes={data.dishes} history={this.props.history}/>
+            return <DetailContent dishes={data.dishes} extras={data.dishExtras} history={this.props.history}/>
 
           }} 
 

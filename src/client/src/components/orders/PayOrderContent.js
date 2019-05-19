@@ -14,7 +14,9 @@ import {
   ListItemText,
   ListItemGraphic,
   ListItemMeta,
-  ListDivider
+  ListDivider,
+  ListItemSecondaryText,
+  ListItemPrimaryText
 } from '@rmwc/list';
 
 import FileSaver from "filesaver.js-npm"
@@ -97,14 +99,18 @@ export default class PayOrderContent extends Component {
 
           <ListDivider />
           {this.state.dishes.map((v, i) => {
+            const extraCost = v.extras.reduce((a, e) => a + e.cost, 0);
             if (v.paying)
-              total = v.dish.cost + total 
+              total = v.dish.cost + total + extraCost
           
             return (
             <ListItem key={i} onClick={this.toggleSelection(i)}>
               <ListItemGraphic icon={v.paying ? "radio_button_checked" : "radio_button_unchecked"}/>
-              <ListItemText>{v.dish.name}</ListItemText>
-              <ListItemMeta tag="span" basename="">{v.dish.cost.toFixed(2)}</ListItemMeta>
+              <ListItemText>
+                <ListItemPrimaryText>{v.dish.name}</ListItemPrimaryText>
+                <ListItemSecondaryText>{v.extras.map(e => e.name).join(", ")}</ListItemSecondaryText>
+              </ListItemText>
+              <ListItemMeta tag="span" basename="">{(v.dish.cost + extraCost).toFixed(2)}</ListItemMeta>
             </ListItem>)
           })}
         
@@ -122,7 +128,7 @@ export default class PayOrderContent extends Component {
               pay({
               variables: {
                 id: this.props.id,
-                  dishes: this.state.dishes.map(d => { return { id: d.dish._id, made: d.made, hasPayed: d.paying } }).concat(this.props.payedDishes.map(d => {return { id: d.dish._id, made: d.made, hasPayed: d.hasPayed }}))
+                dishes: this.state.dishes.map(d => { return { id: d.dish._id, made: d.made, hasPayed: d.paying } }).concat(this.props.payedDishes.map(d => {return { id: d.dish._id, made: d.made, hasPayed: d.hasPayed }}))
               }
             })}}>Pay</Button>
 

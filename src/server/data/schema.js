@@ -12,11 +12,18 @@ type Dish {
   cost: Float!
   type: DishType!
 }
+type DishExtra {
+  _id: ID
+  name: String!
+  cost: Float!
+  type: DishType!
+}
 type OrderDish {
   dish: Dish!
   made: Boolean
   delivered: Boolean
   hasPayed: Boolean
+  extras: [DishExtra]
 }
 type Order {
   _id: ID
@@ -31,12 +38,14 @@ type Query {
   orders(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
   dishes(_id:ID, name:String): [Dish]
   dishTypes(_id:ID, name:String): [DishType]
+  dishExtras(_id:ID, name:String, cost:Float, type: ID): [DishExtra]
 }
 input orderDishMutation {
   id: ID!
   made: Boolean
   hasPayed: Boolean
   delivered: Boolean
+  extras: [ID]
 }
 type Mutation {
   addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
@@ -48,6 +57,9 @@ type Mutation {
   addDishType(name: String!): DishType
   updateDishType(_id: ID!, name: String!): DishType
   removeDishType(_id: ID!): DishType
+  addDishExtra(name: String!, cost: Float!, type: ID!): DishExtra
+  updateDishExtra(_id: ID!, name: String!, cost: Float!, type: ID!): DishExtra
+  removeDishExtra(_id: ID!): DishExtra
 }
 schema {
   query: Query

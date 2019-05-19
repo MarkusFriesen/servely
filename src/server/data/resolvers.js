@@ -1,7 +1,8 @@
 import {
   Order,
   Dish,
-  DishType
+  DishType,
+  DishExtra
 } from "./Models"
 
 const resolvers = {
@@ -14,6 +15,9 @@ const resolvers = {
     },
     dishTypes(_, args) {
       return DishType.find(args)
+    },
+    dishExtras(_, args){
+      return DishExtra.find(args)
     }
   },
   Mutation: {
@@ -96,6 +100,53 @@ const resolvers = {
         }).catch(rej)
       })
     },
+    addDishExtra(_, args) {
+      return DishExtra.create(args)
+    },
+    updateDishExtra(_, args) {
+      const id = args._id
+      delete args._id
+
+      console.warn(args)
+      return new Promise((resolve, reject) => {
+        DishExtra.update({
+            _id: id
+          }, args
+          ).then(r => {
+            DishExtra.findOne({
+                _id: id
+              })
+              .then(resolve)
+              .catch(reject)
+          }).catch(reject)
+      })
+    },
+    removeDishExtra(_, args) {
+      return new Promise((res, rej) => {
+        Order.find({
+          "dishes.extras.id": args._id
+        }).then(result => {
+          result.forEach(o => {
+            Order.update({
+                _id: o._id
+              }, {
+                $set: {
+                  dishes: o.dishes.map(d => {
+                    d.extras = d.extras.filter(e => e !== args._id)
+                    return d;
+                  })
+                }
+              })
+              .then(console.info)
+              .catch(console.error)
+          })
+
+          DishExtra.findOneAndRemove({
+            _id: args._id
+          }).then(res).catch(rej)
+        })
+      })
+    },
     updateOrder(_, args) {
       const id = args._id
       delete args._id
@@ -157,10 +208,24 @@ const resolvers = {
         _id: orderDish.id
       })
     },
+    extras(orderDish) {
+      return DishExtra.find({
+        _id: {
+          "$in": orderDish.extras.map(d => d)
+        }
+      })
+    }
   },
   Order: {
     dishes(order) {
       return order.dishes
+    }
+  },
+  DishExtra: {
+    type(extra) {
+      return DishType.findOne({
+        _id: extra.type
+      })
     }
   }
 };

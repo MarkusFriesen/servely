@@ -51,7 +51,7 @@ class OrderCard extends Component {
 
   handleDishClick(id, i, made){
     return () => {
-      const dishes = this.props.dishes.map(d => {return {id: d.dish._id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered}})
+      const dishes = this.props.dishes.map(d => {return {id: d.dish._id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered, extras: d.extras.map(e => e._id)}})
 
       if (this.props.store.kitchenMode){
         if (dishes[i].delivered) return;
@@ -97,6 +97,7 @@ class OrderCard extends Component {
                       onClick={this.handleDishClick(props._id, i, made)} 
                       disabled = {disabledKitchen || disabledServer}
                       text={v.dish.name}
+                      secondaryText={v.extras.map(e => e.name).join(", ")}
                       ripple={v.made} />)}
                     )}
                 </List>

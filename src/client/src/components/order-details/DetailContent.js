@@ -12,6 +12,8 @@ import gql from "graphql-tag";
 import { Mutation } from "react-apollo";
 import { LinearProgress } from '@rmwc/linear-progress';
 
+import DetailExtraDialog from './DetailExtraDialog';
+
 import './Details.css'
 
 const AddOrder = gql`
@@ -43,8 +45,10 @@ export default class DetailContent extends Component {
     this.addDish = this.addDish.bind(this)
     this.removeDish = this.removeDish.bind(this)
     this.changeTextField = this.changeTextField.bind(this)
-  }
+    this.selectDish = this.selectDish.bind(this)
 
+    this.saveExtras = this.saveExtras.bind(this)
+  }
 
   state = {
     id: "",
@@ -53,7 +57,9 @@ export default class DetailContent extends Component {
     notes : "",
     dishes: [],
     activeTabIndex: 0,
-    dishTypes: {}
+    dishTypes: {},
+    extras: {},
+    selectedChip: {}
   } 
 
   componentDidMount(){
@@ -63,11 +69,11 @@ export default class DetailContent extends Component {
         name: this.props.order.name,
         table: this.props.order.table,
         notes: this.props.order.notes,
-        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name }, made: d.made, hasPayed: d.hasPayed}})
+        dishes: this.props.order.dishes.map(d => {return {dish: {id: d.dish._id, name: d.dish.name, typeName: d.dish.type.name }, made: d.made, hasPayed: d.hasPayed, extras: d.extras}})
       })
       
     const dishTypes = this.state.dishTypes
-     this.props.dishes.forEach(d => {
+    this.props.dishes.forEach(d => {
       if (dishTypes[d.type.name]){
         dishTypes[d.type.name].push(d)
       } else {
@@ -75,23 +81,31 @@ export default class DetailContent extends Component {
       }
     });
 
+    const extras = this.state.extras
+    this.props.extras.forEach(e => {
+      if (extras[e.type.name]) {
+        extras[e.type.name].push(e)
+      } else {
+        extras[e.type.name] = [e]
+      }
+    });
+
     this.setState({
-      dishTypes: dishTypes
+      dishTypes: dishTypes,
+      extras: extras
     })
   }
 
-  addDish(id, name){
-    return () => {
-      const dishes = [{ dish: { id, name }, made: false, hasPayed: false }].concat(this.state.dishes)
-      this.setState(
-        {
-          dishes: dishes
-        })
-    }
+  addDish(id, name, typeName){
+    const dishes = [{ dish: { id, name }, made: false, hasPayed: false, typeName: typeName }].concat(this.state.dishes)
+    this.setState(
+      {
+        dishes: dishes
+      })
   }
 
-  removeDish(e){
-    const id = e.target
+  removeDish(){
+    const id = this.state.selectedDishId
     let dishes = this.state.dishes
 
     if (dishes.length < id) return
@@ -112,9 +126,38 @@ export default class DetailContent extends Component {
     }
   }
 
+  selectDish(e){
+    const { dishes } = this.state
+
+    if (!dishes || dishes.length < e.target) return;
+    const dish = dishes[e.target].dish;
+
+    if (dish.hasPayed || dish.made) return;
+
+    this.setState({
+      openDialog: true,
+      selectedDish: dish,
+      selectedDishId: e.target,
+      selectableExtras: this.state.extras[dishes[e.target].typeName],
+      dishExtras: dishes[e.target].extras
+    })
+  }
+
+  saveExtras(extras){
+    const dishes = this.state.dishes;
+    const dish = dishes[this.state.selectedDishId];
+
+    dish.extras = extras
+
+    this.setState({
+      "dishes": dishes,
+    })
+  }
+
   render() {
     const keys = Object.keys(this.state.dishTypes)
-    const { state, props, removeDish } = this
+    const { state, props, selectDish } = this
+
     return (
       <React.Fragment>
       <Grid className="order-details">
@@ -132,7 +175,7 @@ export default class DetailContent extends Component {
             <ChipSet choice>
               {
                 (state.dishTypes[keys[state.activeTabIndex]] || []).sort((a, b) => a.name < b.name ? -1 : 1).map((v, i) =>
-                <Chip key={i} onClick={this.addDish(v._id, v.name)} label={v.name} checkmark selected={
+                <Chip key={i} onClick={_ => this.addDish(v._id, v.name, keys[state.activeTabIndex])} label={v.name} checkmark selected={
                   state.dishes.some(d => d.dish.id === v._id)
                 }/>
               )}
@@ -142,15 +185,16 @@ export default class DetailContent extends Component {
       </Grid>
       <Grid className="order-details">
         <GridCell span="6">
-          <List onAction={removeDish}>
+          <List onAction={selectDish}>
             {state.dishes.map((v, i) => 
                 <SimpleListItem
                   key={i}
                   text={v.dish.name}
-                  graphic={v.hasPayed ? "attach_money" : v.made ? "done" : "remove"}
+                  secondaryText={(v.extras || []).map(e => e.name).join(", ")}
+                  graphic={v.hasPayed ? "done_all" : v.made ? "done" : "close"}
                   ripple={false}
                   activated={false}
-                />              
+                />  
             )}
           </List>
         </GridCell>
@@ -168,7 +212,7 @@ export default class DetailContent extends Component {
               table: state.table,
               name: state.name,
               notes: state.notes,
-              dishes: state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed} }).filter(d => d && d.id)
+              dishes: state.dishes.map(d => { return { id: d.dish.id, made: d.made, hasPayed: d.hasPayed, extras: (d.extras|| []).map(e => e._id)} }).filter(d => d && d.id)
             }
           })} theme="secondary">Save</Button>
 
@@ -185,6 +229,15 @@ export default class DetailContent extends Component {
           return result
         }}
         </Mutation>
+        <DetailExtraDialog 
+          open={this.state.openDialog} 
+          onClose={() => this.setState({openDialog: false})}
+          dish={this.state.selectedDish}
+          onDelete={this.removeDish}
+          onSave={this.saveExtras}
+          extras={this.state.selectableExtras}
+          selectedExtras={this.state.dishExtras}
+        />
       </React.Fragment>
     )
   }

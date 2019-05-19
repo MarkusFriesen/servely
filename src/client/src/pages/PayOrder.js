@@ -43,7 +43,12 @@ export default class PayOrder extends Component{
                         cost
                       },
                       hasPayed,
-                      made
+                      made,
+                      extras {
+                        _id,
+                        cost,
+                        name
+                      }
                     }
                   }
                 }`} variables={{ id }}>
@@ -52,7 +57,12 @@ export default class PayOrder extends Component{
             if (error) return <p>Error :(</p>;
             
             if (data.orders.length !== 1) return String()
-            return <PayOrderContent history={this.props.history} id={id} payedDishes={data.orders[0].dishes.filter(d => d.hasPayed)} dishesToPay={data.orders[0].dishes.filter(d => !d.hasPayed).map(d => { return { dish: d.dish, made: d.made, paying: true } })} />
+            return <PayOrderContent 
+              history={this.props.history} 
+              id={id} 
+              payedDishes={data.orders[0].dishes.filter(d => d.hasPayed)} 
+              dishesToPay={data.orders[0].dishes.filter(d => !d.hasPayed)
+                .map(d => { return { dish: d.dish, made: d.made, paying: true, extras: d.extras } })} />
 
           }}
 

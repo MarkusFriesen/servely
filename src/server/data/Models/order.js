@@ -18,7 +18,8 @@ const OrderSchema = Mongoose.Schema({
     hasPayed: {
       type: Boolean,
       default: false
-    }
+    },
+    extras: [Schema.Types.ObjectId]
   }],
   hasPayed: {
     type: Boolean,

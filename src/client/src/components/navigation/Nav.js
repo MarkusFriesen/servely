@@ -114,6 +114,12 @@ class Nav extends Component {
                 <ListItemText>Dishes</ListItemText>
                 </ListItem>
               </Link>
+              <Link to="/dishExtra">
+              <ListItem onClick={onClick}>
+                <ListItemGraphic icon = "loyalty" />
+                <ListItemText>Extras</ListItemText>
+                </ListItem>
+              </Link>
               <Link to="/settings">
               <ListItem onClick={onClick}>
                 <ListItemGraphic icon="settings" />  
