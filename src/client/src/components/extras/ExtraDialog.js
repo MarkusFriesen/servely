@@ -77,7 +77,7 @@ export default class ExtraDialog extends Component {
           this.props.onClose()
         }}
       >
-          <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New dish"}</DialogTitle>
+          <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New extra for dish type"}</DialogTitle>
    
           <DialogContent>
             <TextField type="text" label="Name" value={this.state.name } onChange={this.handleNameChange} />

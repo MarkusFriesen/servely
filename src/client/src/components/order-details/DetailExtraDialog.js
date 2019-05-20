@@ -44,7 +44,7 @@ export default class DetailExtraDialog extends Component {
   }
   render() {
     const {dish, extras} = this.props;
-    let title = extras ? `Edit ${dish? dish.name : "dish"}` : `Confirm ${dish? dish.name : "dish"} Deletion`;
+    let title = extras ? `Edit ${dish? dish.name : "dish"} extras` : `Confirm ${dish? dish.name : "dish"} Deletion`;
 
     return(
       <Dialog
@@ -56,7 +56,8 @@ export default class DetailExtraDialog extends Component {
         { extras ? 
           < DialogContent >
             <ChipSet>
-              {extras.map(e => <Chip key={e._id} label={e.name} onClick={() => this.addExtra(e)}/>)}
+              {extras.sort((a, b) => a.name < b.name ? -1 : 1)
+                .map(e => <Chip key={e._id} label={e.name} onClick={() => this.addExtra(e)}/>)}
             </ChipSet>
 
             <List>

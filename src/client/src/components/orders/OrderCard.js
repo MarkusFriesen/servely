@@ -92,7 +92,7 @@ class OrderCard extends Component {
                     return (
                     <SimpleListItem key={i} className={v.delivered ? "done" : ""} 
                       graphic = {
-                        v.made ? (v.delivered ? "done_all" : "done") : "change_history"
+                        v.made ? (v.delivered ? "done_all" : "done") : "radio_button_unchecked"
                       }
                       onClick={this.handleDishClick(props._id, i, made)} 
                       disabled = {disabledKitchen || disabledServer}
