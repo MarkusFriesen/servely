@@ -85,7 +85,7 @@ class OrderCard extends Component {
           <Mutation mutation={MADE}>
             {(made) => 
                 <Typography use="body1" tag="div" theme="textSecondaryOnBackground">
-                <List>
+                <List className="extendSecondaryText">
                   {props.dishes.map((v, i) =>{
                     const disabledKitchen = this.props.store.kitchenMode && v.delivered;
                     const disabledServer = !this.props.store.kitchenMode && !v.made;

@@ -185,7 +185,7 @@ export default class DetailContent extends Component {
       </Grid>
       <Grid className="order-details">
         <GridCell span="6">
-          <List>
+          <List className="extendSecondaryText">
             {state.dishes.map((v, i) => 
                 <SimpleListItem
                   onClick={() => {
