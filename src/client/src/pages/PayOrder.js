@@ -52,7 +52,9 @@ export default class PayOrder extends Component{
                       }
                     }
                   }
-                }`} variables={{ id }}>
+                }`} 
+                variables={{ id }}
+                pollInterval={500}>
           {({ loading, error, data }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error :(</p>;
@@ -74,9 +76,7 @@ export default class PayOrder extends Component{
                 })
                 }
                 />
-
           }}
-
         </Query>
       </Elevation>
     )

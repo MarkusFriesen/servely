@@ -24,7 +24,10 @@ import FileSaver from "filesaver.js-npm"
 const PAY = gql`
   mutation pay($id: ID!, $dishes: [orderDishMutation]!){
     updateOrder(_id: $id, dishes: $dishes){
-      _id
+      _id,
+      dishes {
+        hasPayed
+      }
     }
   }`
 
@@ -41,6 +44,18 @@ export default class PayOrderContent extends Component {
     dishes: [],
     paying: 0,
     selectAll: true
+  }
+
+  static getDerivedStateFromProps(prop, state) {
+    if (prop.dishesToPay.length === 0) return null;
+    if (prop.dishesToPay.length === state.dishes.length) return null;
+
+    return({
+      dishes: prop.dishesToPay.map(m => ({
+        ...m,
+        paying: false
+      }))
+    })
   }
 
   toggleSelection(i){
@@ -155,8 +170,9 @@ export default class PayOrderContent extends Component {
                   {result}
                 </React.Fragment>
             if (error) console.error(error);
-
-            if (data) this.props.history.goBack()
+            if (data && data.updateOrder && data.updateOrder.dishes.reduce((a, c) => a && c.hasPayed, true)) {
+               this.props.history.goBack()
+            }
 
             return result
           }}
