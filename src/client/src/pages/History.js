@@ -45,11 +45,11 @@ export default class History extends Component {
   downloadData(data, orders) {
     const blob = new Blob(
       ["\uFEFFid,timestamp,name,type,cost\n",
-        ...data.map(o => `${o.id},${o.timestamp.toISOString()},${o.name},${o.type},${o.cost}\n`)], {encoding: "UTF-8", type: "text/plain;charset=UTF-8"})
+        ...data.map(o => `${o.id},${o.timestamp.toISOString()},${o.name},${o.type},${o.cost}\n`)], {encoding: "UTF-8", type: "text/csv;charset=UTF-8"})
     FileSaver.saveAs(blob, `Dishes sold ${this.state.minOrderTimestamp.toISOString()}-${new Date().toISOString()}.csv`, true)
     const orderBlob = new Blob(
       ["\uFEFFid, timestamp, totalPayed\n",
-        ...orders.map(o => `${o._id},${new Date(o.timestamp).toISOString()},${(o.amountPayed || 0).toFixed(2)}\n`)], {encoding: "UTF-8", type: "text/plain;charset=UTF-8"})
+        ...orders.map(o => `${o._id},${new Date(o.timestamp).toISOString()},${(o.amountPayed || 0).toFixed(2)}\n`)], {encoding: "UTF-8", type: "text/csv;charset=UTF-8"})
     FileSaver.saveAs(orderBlob, `Orders sold ${this.state.minOrderTimestamp.toISOString()} -${new Date().toISOString()}.csv`, true)
   }
 

@@ -155,7 +155,7 @@ export default class DetailContent extends Component {
   }
 
   render() {
-    const keys = Object.keys(this.state.dishTypes)
+    const keys = Object.keys(this.state.dishTypes).sort((a, b) => a < b ? -1: 1)
     const { state, props, selectDish } = this
 
     return (
