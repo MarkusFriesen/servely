@@ -18,7 +18,7 @@ export default class PayOrder extends Component{
     const { id } = this.props.match.params
     return (
       <Elevation className="main-elevation" z={24}>
-        <Toolbar>
+        <Toolbar className="no-print">
           <ToolbarRow>
             <ToolbarSection alignStart>
               <ToolbarTitle>Pay Order</ToolbarTitle>

@@ -74,61 +74,61 @@ class Nav extends Component {
 
     return (
       <React.Fragment>
-      <TopAppBar dense fixed>
-        <TopAppBarRow>
-          <TopAppBarSection alignStart>
-            <TopAppBarNavigationIcon icon="menu" onClick={onClick}/>
-            <TopAppBarTitle>{this.props.store.kitchenMode ? "BIt's Kitchen" : "BIt"}</TopAppBarTitle>
-          </TopAppBarSection>
-          <TopAppBarSection alignEnd>
-            <TopAppBarActionItem aria-label="Search" icon="search" alt="Search this Page" onClick={toggleSearch}/>
-          </TopAppBarSection>
-        </TopAppBarRow>
-      </TopAppBar>
+        <TopAppBar dense fixed className="no-print">
+          <TopAppBarRow>
+            <TopAppBarSection alignStart>
+              <TopAppBarNavigationIcon icon="menu" onClick={onClick}/>
+              <TopAppBarTitle>{this.props.store.kitchenMode ? "BIt's Kitchen" : "BIt"}</TopAppBarTitle>
+            </TopAppBarSection>
+            <TopAppBarSection alignEnd>
+              <TopAppBarActionItem aria-label="Search" icon="search" alt="Search this Page" onClick={toggleSearch}/>
+            </TopAppBarSection>
+          </TopAppBarRow>
+        </TopAppBar>
 
-      <Drawer
-          modal
-          open={this.state.modalOpen}
-          onClose={() => this.setState({ modalOpen: false })}
-        >
-          <DrawerHeader>
-            <DrawerTitle>Menu</DrawerTitle>
-          </DrawerHeader>
-          <DrawerContent>
-            <List>
-              <Link to="/orders">
+        <Drawer
+            modal
+            open={this.state.modalOpen}
+            onClose={() => this.setState({ modalOpen: false })}
+          >
+            <DrawerHeader>
+              <DrawerTitle>Menu</DrawerTitle>
+            </DrawerHeader>
+            <DrawerContent>
+              <List>
+                <Link to="/orders">
+                  <ListItem onClick={onClick}>
+                    <ListItemGraphic icon="shopping_cart" />
+                    <ListItemText>Orders</ListItemText>
+                  </ListItem>
+                </Link>
+                <Link to="/orderHistory">
                 <ListItem onClick={onClick}>
-                  <ListItemGraphic icon="shopping_cart" />
-                  <ListItemText>Orders</ListItemText>
-                </ListItem>
-              </Link>
-              <Link to="/orderHistory">
-              <ListItem onClick={onClick}>
-                <ListItemGraphic icon="history"/>
-                <ListItemText>History</ListItemText>
-                </ListItem>
-              </Link>
-              <Link to="/dishes">
-              <ListItem onClick={onClick}>
-                <ListItemGraphic icon = "shopping_basket" />
-                <ListItemText>Dishes</ListItemText>
-                </ListItem>
-              </Link>
-              <Link to="/dishExtra">
-              <ListItem onClick={onClick}>
-                <ListItemGraphic icon = "loyalty" />
-                <ListItemText>Extras</ListItemText>
-                </ListItem>
-              </Link>
-              <Link to="/settings">
-              <ListItem onClick={onClick}>
-                <ListItemGraphic icon="settings" />  
-                <ListItemText>Settings</ListItemText>
-                </ListItem>
-              </Link>
-            </List>
-          </DrawerContent>
-        </Drawer>
+                  <ListItemGraphic icon="history"/>
+                  <ListItemText>History</ListItemText>
+                  </ListItem>
+                </Link>
+                <Link to="/dishes">
+                <ListItem onClick={onClick}>
+                  <ListItemGraphic icon = "shopping_basket" />
+                  <ListItemText>Dishes</ListItemText>
+                  </ListItem>
+                </Link>
+                <Link to="/dishExtra">
+                <ListItem onClick={onClick}>
+                  <ListItemGraphic icon = "loyalty" />
+                  <ListItemText>Extras</ListItemText>
+                  </ListItem>
+                </Link>
+                <Link to="/settings">
+                <ListItem onClick={onClick}>
+                  <ListItemGraphic icon="settings" />  
+                  <ListItemText>Settings</ListItemText>
+                  </ListItem>
+                </Link>
+              </List>
+            </DrawerContent>
+          </Drawer>
       </React.Fragment>
 
     );

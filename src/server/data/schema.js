@@ -34,11 +34,18 @@ type Order {
   amountPayed: Float
   notes: String
 }
+type Company {
+  name: String!, 
+  street: String!, 
+  postalCode: String!,
+  city: String!
+}
 type Query {
   orders(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
   dishes(_id:ID, name:String): [Dish]
   dishTypes(_id:ID, name:String): [DishType]
   dishExtras(_id:ID, name:String, cost:Float, type: ID): [DishExtra]
+  company: Company
 }
 input orderDishMutation {
   id: ID!
@@ -49,7 +56,7 @@ input orderDishMutation {
 }
 type Mutation {
   addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
-  updateOrder(_id: ID!, name: String, table: Int, dishes: [orderDishMutation], notes: String): Order
+  updateOrder(_id: ID!, name: String, table: Int, dishes: [orderDishMutation], notes: String, amountPayed: Float): Order
   joinOrders(_id: ID!, orderIds: [ID]!) : Order
   addDish(name: String!, cost: Float!, type: ID!): Dish
   updateDish(_id: ID!, name:String, cost: Float, type: ID): Dish

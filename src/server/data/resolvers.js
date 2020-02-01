@@ -5,6 +5,8 @@ import {
   DishExtra
 } from "./Models"
 
+import config from '../config'
+
 const resolvers = {
   Query: {
     orders(_, args) {
@@ -18,6 +20,9 @@ const resolvers = {
     },
     dishExtras(_, args){
       return DishExtra.find(args)
+    }, 
+    company(_, args){
+      return config.COMPANY
     }
   },
   Mutation: {
@@ -155,9 +160,15 @@ const resolvers = {
           args.hasPayed = args.dishes.length === 0 ? (!args.name && !args.table && !args.notes ? true : false) : args.dishes.every(d => d.hasPayed)
         }
 
+        const amountPayed = args.amountPayed || 0
+        delete args.amountPayed
+
         Order.update({
           _id: id
-        }, args).then(r => {
+        }, {
+          $set: args, 
+          $inc: { amountPayed: amountPayed }
+        }).then(r => {
           Order.findOne({
               _id: id
             })

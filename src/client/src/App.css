@@ -18,3 +18,55 @@
 .extendSecondaryText .mdc-list-item__secondary-text {
   white-space: initial;
 }
+
+.print {
+  display: none;
+}
+
+.receipt {
+  text-align: center;
+}
+
+.receipt .header p {
+  font-weight: 500;
+  margin: 0.1rem;
+}
+
+table.receipt {
+  min-width: 15rem;
+  padding: 1rem;
+}
+
+table.receipt>tbody>tr>:nth-child(1) {
+  padding-right: 10px;
+  text-align: left;
+}
+table.receipt>tbody>tr>:nth-child(2) {
+  padding-left: 10px;
+  text-align: right;
+}
+
+table td.bill-split{
+  border-bottom: 1px dashed black;
+}
+
+table td.bill-payment {
+  padding-top: 15px;
+}
+
+@media print {
+  body {
+    background-color: #fff !important;  
+  }
+  .no-print {
+    display: none;
+  }
+
+  .main-elevation {
+    box-shadow: none;
+  }
+
+  .print {
+    display: block;
+  }
+}

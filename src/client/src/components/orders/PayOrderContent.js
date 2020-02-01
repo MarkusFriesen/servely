@@ -19,11 +19,9 @@ import {
   ListItemPrimaryText
 } from '@rmwc/list';
 
-import FileSaver from "filesaver.js-npm"
-
 const PAY = gql`
-  mutation pay($id: ID!, $dishes: [orderDishMutation]!){
-    updateOrder(_id: $id, dishes: $dishes){
+  mutation pay($id: ID!, $dishes: [orderDishMutation]!, $amountPayed: Float!){
+    updateOrder(_id: $id, dishes: $dishes, amountPayed: $amountPayed){
       _id,
       dishes {
         hasPayed
@@ -38,8 +36,8 @@ export default class PayOrderContent extends Component {
     this.changePayment = this.changePayment.bind(this)
     this.toggleSelection = this.toggleSelection.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
-    this.saveFile = this.saveFile.bind(this)
   }
+
   state = {
     dishes: [],
     paying: 0,
@@ -95,25 +93,20 @@ export default class PayOrderContent extends Component {
     })
   }
 
-  saveFile(data){
-    const blob = new Blob([CreateReceipt(data)], {
-        type: "text/plain;charset=utf-8"
-      })
-    FileSaver.saveAs(blob, `Receipt ${new Date().toUTCString()}.html`, true)
-  }
-
   render(){
+    const { id } = this.props
+    const { paying, dishes, selectAll } = this.state
     let total = 0
     return (
       <React.Fragment>
-        <List>
+        <List className="no-print">
           <ListItem key={-1} onClick={this.toggleAll}>
-            <ListItemGraphic icon={this.state.selectAll ? "radio_button_checked" : "radio_button_unchecked"}/>
+            <ListItemGraphic icon={selectAll ? "radio_button_checked" : "radio_button_unchecked"}/>
             <ListItemText>Everything</ListItemText>
           </ListItem>
 
           <ListDivider />
-          {this.state.dishes.map((v, i) => {
+          {dishes.map((v, i) => {
             const extraCost = v.extras.reduce((a, e) => a + e.cost, 0);
             if (v.paying)
               total = v.dish.cost + total + extraCost
@@ -130,54 +123,61 @@ export default class PayOrderContent extends Component {
           })}
         
         </List>
-        <Grid>
+        < Grid className = "no-print">
           <GridCell span="12">
             <TextField icon="euro_symbol" disabled label="Total" value={total.toFixed(2)} />
-            <TextField icon="euro_symbol" label="Difference" value={(this.state.paying - total).toFixed(2)} onChange={() => {}} invalid={this.state.paying - total < 0} />
-            <TextField icon="euro_symbol" label="Paying" type="number" inputMode="numeric" pattern="\d*.*,*\d*" value={this.state.paying} onChange={this.changePayment()}/>
+            <TextField icon="euro_symbol" label="Difference" value={(paying - total).toFixed(2)} onChange={() => {}} invalid={paying - total < 0} />
+            <TextField icon="euro_symbol" label="Paying" type="number" inputMode="numeric" pattern="\d*.*,*\d*" value={paying} invalid={!paying} onChange={this.changePayment()}/>
           </GridCell>
         </Grid>
-        <Mutation mutation={PAY}>
-          {(pay, { data, loading, error }) => {
-            let result = <Button onClick={() => {
-              pay({
-              variables: {
-                id: this.props.id,
-                dishes: this.state.dishes.map(d => {
-                  return {
-                    id: d.dish._id,
-                    made: d.made,
-                    hasPayed: d.paying,
-                    delivered: d.delivered,
-                    extras: d.extras.map(e => e._id)
-                   }
-                }).concat(this.props.payedDishes.map(d => {
-                  return {
-                    id: d.dish._id,
-                    made: d.made,
-                    hasPayed: d.hasPayed,
-                    delivered: d.delivered,
-                    extras: d.extras.map(e => e._id)
-                  }
-                }))
+        <div  className="no-print">
+          <Mutation mutation={PAY}>
+            {(pay, { data, loading, error }) => {
+              let result = <Button onClick={() => {
+                pay({
+                variables: {
+                  id: this.props.id,
+                  dishes: dishes.map(d => {
+                    return {
+                      id: d.dish._id,
+                      made: d.made,
+                      hasPayed: d.paying,
+                      delivered: d.delivered,
+                      extras: d.extras.map(e => e._id)
+                    }
+                  }).concat(this.props.payedDishes.map(d => {
+                    return {
+                      id: d.dish._id,
+                      made: d.made,
+                      hasPayed: d.hasPayed,
+                      delivered: d.delivered,
+                      extras: d.extras.map(e => e._id)
+                    }
+                  })), 
+                  amountPayed: paying
+                }
+              })
               }
-            })}}>Pay</Button>
+              } disabled={!paying } > Pay </Button>
 
-            if (loading)
-              result =
-                <React.Fragment>
-                  <LinearProgress />
-                  {result}
-                </React.Fragment>
-            if (error) console.error(error);
-            if (data && data.updateOrder && data.updateOrder.dishes.reduce((a, c) => a && c.hasPayed, true)) {
-               this.props.history.goBack()
-            }
+              if (loading)
+                result =
+                  <React.Fragment>
+                    <LinearProgress />
+                    {result}
+                  </React.Fragment>
+              if (error) console.error(error);
+              if (data && data.updateOrder && data.updateOrder.dishes.reduce((a, c) => a && c.hasPayed, true)) {
+                this.props.history.goBack()
+              }
 
-            return result
-          }}
-        </Mutation>
-        <Button theme="secondary" onClick={() => this.saveFile(this.state.dishes.filter(d => d.paying).map(d => d.dish))}><ButtonIcon icon="cloud_download" />Download</Button>
+              return result
+            }}
+          </Mutation>
+
+          <Button theme="secondary" onClick={window.print}><ButtonIcon icon="receipt"/>Print</Button>
+        </div>
+        <div className="print">{CreateReceipt(dishes.filter(d => d.paying), id)}</div>
     </React.Fragment>)
   }
 }
