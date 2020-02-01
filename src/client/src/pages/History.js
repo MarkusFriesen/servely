@@ -1,37 +1,38 @@
-import React, { Component } from 'react'
-import { Query } from "react-apollo";
+import React, {Component} from 'react'
+import {Query} from "react-apollo";
 import gql from "graphql-tag";
 
-import { Elevation } from '@rmwc/elevation';
+import {Elevation} from '@rmwc/elevation';
 import {
   Toolbar,
   ToolbarRow,
   ToolbarSection,
   ToolbarTitle,
   ToolbarIcon
-} from '@rmwc/toolbar'; 
+} from '@rmwc/toolbar';
 import {
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryText,
-  ListItemMeta
+  ListItemMeta,
+  ListDivider
 } from '@rmwc/list';
-import { LinearProgress } from '@rmwc/linear-progress';
-import { Menu, MenuItem, MenuSurfaceAnchor } from '@rmwc/menu';
+import {LinearProgress} from '@rmwc/linear-progress';
+import {Menu, MenuItem, MenuSurfaceAnchor} from '@rmwc/menu';
 import FileSaver from "filesaver.js-npm"
 
 export default class History extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.setHistoryFilter = this.setHistoryFilter.bind(this)
     this.getMonday = this.getMonday.bind(this)
   }
 
-  state={
+  state = {
     menuIsOpen: false,
-    minOrderTimestamp: new Date("0"),
-    header: "History"
+    minOrderTimestamp: new Date(new Date().toDateString()),
+    header: "Todays History"
   }
 
   getMonday(d) {
@@ -41,39 +42,46 @@ export default class History extends Component {
     return new Date(d.setDate(diff));
   }
 
-  downloadData(data){
+  downloadData(data, orders) {
     const blob = new Blob(
-      data.map(o => `${o.timestamp.toISOString()},${o.name},${o.type},${o.cost}\n`), { type: "text/plain;charset=utf-8" })
-    FileSaver.saveAs(blob, `Orders.csv`, true)
+      ["\uFEFFid,timestamp,name,type,cost\n",
+        ...data.map(o => `${o.id},${o.timestamp.toISOString()},${o.name},${o.type},${o.cost}\n`)], {encoding: "UTF-8", type: "text/plain;charset=UTF-8"})
+    FileSaver.saveAs(blob, `Dishes sold ${this.state.minOrderTimestamp.toISOString()}-${new Date().toISOString()}.csv`, true)
+    const orderBlob = new Blob(
+      ["\uFEFFid, timestamp, totalPayed\n",
+        ...orders.map(o => `${o._id},${new Date(o.timestamp).toISOString()},${(o.amountPayed || 0).toFixed(2)}\n`)], {encoding: "UTF-8", type: "text/plain;charset=UTF-8"})
+    FileSaver.saveAs(orderBlob, `Orders sold ${this.state.minOrderTimestamp.toISOString()} -${new Date().toISOString()}.csv`, true)
   }
 
-  setHistoryFilter(evt){
-      let tmsp = new Date("0");
-      let title = "History"
+  setHistoryFilter(evt) {
+    let tmsp = new Date("0");
+    let title = "History"
 
-      if (evt.detail.index === 1){
-        tmsp = this.getMonday(new Date(new Date().toDateString()))
-        title = "This weeks History"
-      } else if (evt.detail.index === 2) {
-        tmsp = new Date(new Date().toDateString())
-        title = "Todays History"
-      }
+    if (evt.detail.index === 1) {
+      tmsp = this.getMonday(new Date(new Date().toDateString()))
+      title = "This weeks History"
+    } else if (evt.detail.index === 2) {
+      tmsp = new Date(new Date().toDateString())
+      title = "Todays History"
+    }
 
-      this.setState({
-        minOrderTimestamp: tmsp,
-        header: title
-      })
+    this.setState({
+      minOrderTimestamp: tmsp,
+      header: title
+    })
   }
 
   render() {
-    const { id } = this.props.match.params
+    const {id} = this.props.match.params
     return (
       <Elevation className="main-elevation" z={24}>
         <Query
           query={gql`
             {
               orders(hasPayed: true) {
-                timestamp
+                _id,
+                timestamp,
+                amountPayed,
                 dishes {
                   dish {
                     name,
@@ -85,7 +93,7 @@ export default class History extends Component {
                 }
               }
             }`}>
-          {({ loading, error, data }) => {
+          {({loading, error, data}) => {
             if (loading) return <LinearProgress />;
             if (error) return <p>Error :(</p>;
 
@@ -93,19 +101,26 @@ export default class History extends Component {
               return this.fetchData(id, data.dishes)
             }
 
-            var ordered = []
+            let ordered = []
+            let total = 0
+            let totalWithTips = 0
+            let ordersInRange = []
+
             if (data && data.orders)
-              data.orders.forEach(o => {
+              ordersInRange = data.orders.filter(o => new Date(o.timestamp) >= this.state.minOrderTimestamp)
+              ordersInRange.forEach(o => {
+                const timestamp = new Date(o.timestamp)
                 o.dishes.forEach(d => {
-                  const timestamp = new Date(o.timestamp)
-                  if (timestamp >= this.state.minOrderTimestamp)
                     ordered.push({
                       timestamp: timestamp,
                       name: d.dish.name,
                       cost: d.dish.cost.toFixed(2),
-                      type: d.dish.type.name
+                      type: d.dish.type.name,
+                      id: o._id
                     })
+                  total = total + d.dish.cost
                 })
+                totalWithTips = totalWithTips + o.amountPayed || 0
               })
 
             return (
@@ -113,7 +128,7 @@ export default class History extends Component {
                 <Toolbar>
                   <ToolbarRow>
                     <ToolbarSection alignStart>
-                      <ToolbarTitle>{ this.state.header }</ToolbarTitle>
+                      <ToolbarTitle>{this.state.header}</ToolbarTitle>
                     </ToolbarSection>
                     <ToolbarSection alignEnd>
                       <MenuSurfaceAnchor>
@@ -127,16 +142,16 @@ export default class History extends Component {
                           <MenuItem>Today</MenuItem>
                         </Menu>
 
-                        < ToolbarIcon icon = "filter_list"
+                        < ToolbarIcon icon="filter_list"
                           onClick={evt => this.setState({'menuIsOpen': !this.state.menuIsOpen})}
                         />
-                        </MenuSurfaceAnchor>
-                        <ToolbarIcon icon="cloud_download" onClick={() => this.downloadData(ordered)} />
+                      </MenuSurfaceAnchor>
+                      <ToolbarIcon icon="cloud_download" onClick={() => this.downloadData(ordered, ordersInRange)} />
                     </ToolbarSection>
                   </ToolbarRow>
                 </Toolbar>
                 <List>{
-                  ordered.map((o, i) => 
+                  ordered.map((o, i) =>
                     <ListItem key={i} >
                       <ListItemText>{o.name}
                         <ListItemSecondaryText> {o.timestamp.toDateString()} </ListItemSecondaryText>
@@ -144,6 +159,15 @@ export default class History extends Component {
                       <ListItemMeta tag="span" basename="" >{`€ ${o.cost}`}</ListItemMeta>
                     </ListItem>
                   )}
+
+                  <ListDivider />
+
+                  <ListItem>
+                    <ListItemText>Total
+                      <ListItemSecondaryText>with tip: {`€ ${totalWithTips.toFixed(2)}`} </ListItemSecondaryText>
+                    </ListItemText>
+                    <ListItemMeta tag="span" basename="" >{`€ ${total.toFixed(2)}`}</ListItemMeta>
+                  </ListItem>
                 </List>
               </React.Fragment>
             )
