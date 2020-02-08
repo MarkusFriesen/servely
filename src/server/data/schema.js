@@ -38,7 +38,9 @@ type Company {
   name: String!, 
   street: String!, 
   postalCode: String!,
-  city: String!
+  city: String!,
+  website: String, 
+  taxId: String
 }
 type Query {
   orders(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]

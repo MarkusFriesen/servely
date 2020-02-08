@@ -11,18 +11,22 @@ function CreateReceipt(dishes, id) {
                     name,
                     street, 
                     postalCode,
-                    city
+                    city, 
+                    website,
+                    taxId
                   }
                 }`}>
       {({loading, error, data}) => {
         if (!loading && !error && data){
-          const  {name, street, postalCode, city} = data.company
+          const {name, street, postalCode, city, website, taxId} = data.company
           const dateTime = new Date().toLocaleString("de").split(',')
           return (<div className="receipt">
             <div className="header">
               <h2>{name}</h2>
               <p>{street}</p>
               <p>{postalCode} {city}</p>
+              <p>{website}</p>
+              <p>{taxId}</p>
             </div>
             <table className="receipt" align="center">
               <tbody>
