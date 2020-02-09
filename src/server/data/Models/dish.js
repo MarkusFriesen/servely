@@ -5,7 +5,8 @@ const DishSchema = Mongoose.Schema({
   name: String,
   cost: Number,
   type: Schema.Types.ObjectId,
-  description: String
+  description: String,
+  deselectedExtras: [Schema.Types.ObjectId]
 })
 
 const Dish = Mongoose.model('dish', DishSchema);

@@ -11,6 +11,7 @@ type Dish {
   name: String!
   cost: Float!
   type: DishType!
+  deselectedExtras: [DishExtra]
 }
 type DishExtra {
   _id: ID
@@ -60,8 +61,8 @@ type Mutation {
   addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
   updateOrder(_id: ID!, name: String, table: Int, dishes: [orderDishMutation], notes: String, amountPayed: Float): Order
   joinOrders(_id: ID!, orderIds: [ID]!) : Order
-  addDish(name: String!, cost: Float!, type: ID!): Dish
-  updateDish(_id: ID!, name:String, cost: Float, type: ID): Dish
+  addDish(name: String!, cost: Float!, type: ID!, deselectedExtras: [ID] ): Dish
+  updateDish(_id: ID!, name:String, cost: Float, type: ID, deselectedExtras: [ID]): Dish
   removeDish(_id: ID!) : Dish
   addDishType(name: String!): DishType
   updateDishType(_id: ID!, name: String!): DishType

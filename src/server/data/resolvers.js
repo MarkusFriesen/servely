@@ -112,7 +112,6 @@ const resolvers = {
       const id = args._id
       delete args._id
 
-      console.warn(args)
       return new Promise((resolve, reject) => {
         DishExtra.update({
             _id: id
@@ -212,6 +211,18 @@ const resolvers = {
         _id: dish.type
       })
     },
+    deselectedExtras(dish) {
+      return new Promise((resolve, reject) => {
+        DishExtra.find({
+          _id: {
+            "$in": dish.deselectedExtras.map(d => d)
+          }
+        }).then(result => {
+          resolve(dish.deselectedExtras.map(e => result.find(r => r._id.equals(e))))
+        }).catch(e => reject(e))
+
+      })
+    }
   },
   OrderDish: {
     dish(orderDish) {

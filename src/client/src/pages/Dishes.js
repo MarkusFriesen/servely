@@ -48,6 +48,9 @@ class Dishes extends Component {
                     type {
                       _id,
                       name
+                    }, 
+                    deselectedExtras {
+                      _id
                     }
                   }
                 }`}

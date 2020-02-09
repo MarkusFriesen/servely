@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {Grid, GridCell} from '@rmwc/grid';
 import {TabBar, Tab} from '@rmwc/tabs';
-import {Chip, ChipSet} from '@rmwc/chip';
 import {
   List,
   SimpleListItem
@@ -134,11 +133,12 @@ export default class DetailContent extends Component {
 
     if (dish.hasPayed || dish.made) return;
 
+    var currentDish = this.props.dishes.find(d => d._id === dish.id)
     this.setState({
       openDialog: true,
       selectedDish: dish,
       selectedDishId: id,
-      selectableExtras: this.state.extras[dishes[id].dish.typeName],
+      selectableExtras: this.state.extras[dishes[id].dish.typeName].filter(e => !currentDish.deselectedExtras.some(d => d._id === e._id)),
       dishExtras: dishes[id].extras
     })
   }

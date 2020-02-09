@@ -85,6 +85,9 @@ export default class OrderDetails extends Component {
                 type {
                   _id,
                   name
+                }, 
+                deselectedExtras {
+                  _id
                 }
               },
               dishExtras {
