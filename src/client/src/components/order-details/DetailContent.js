@@ -138,7 +138,7 @@ export default class DetailContent extends Component {
       openDialog: true,
       selectedDish: dish,
       selectedDishId: id,
-      selectableExtras: this.state.extras[dishes[id].dish.typeName].filter(e => !currentDish.deselectedExtras.some(d => d._id === e._id)),
+      selectableExtras: (this.state.extras[dishes[id].dish.typeName] || []).filter(e => !currentDish.deselectedExtras.some(d => d._id === e._id)),
       dishExtras: dishes[id].extras
     })
   }
