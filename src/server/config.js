@@ -1,5 +1,5 @@
 const config = {
-  GRAPHQL_PORT: 80,
+  GRAPHQL_PORT: 3000,
   MONGO_DB: 'mongodb://localhost:27017/reach', 
   COMPANY: {
     name: 'REACH CAFÉ',
