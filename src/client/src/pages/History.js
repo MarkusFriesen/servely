@@ -72,7 +72,6 @@ export default class History extends Component {
   }
 
   render() {
-    const {id} = this.props.match.params
     return (
       <Elevation className="main-elevation" z={24}>
         <Query
@@ -96,10 +95,6 @@ export default class History extends Component {
           {({loading, error, data}) => {
             if (loading) return <LinearProgress />;
             if (error) return <p>Error :(</p>;
-
-            if (id) {
-              return this.fetchData(id, data.dishes)
-            }
 
             let ordered = []
             let total = 0
