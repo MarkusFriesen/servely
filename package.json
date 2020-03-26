@@ -9,20 +9,20 @@
   "author": "Markus Friesen",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-express": "^1.2.0",
-    "body-parser": "^1.18.2",
-    "cors": "^2.8.4",
-    "express": "^4.16.2",
-    "graphql": "^0.11.7",
-    "graphql-tools": "^2.12.0",
-    "lodash": "^4.17.11",
-    "mongoose": "^4.13.6",
-    "node-cron": "^1.2.1"
+    "apollo-server-express": "^2.11.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "graphql": "^14.6.0",
+    "graphql-tools": "^4.0.7",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.6",
+    "node-cron": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.18.9"
+    "nodemon": "^2.0.2"
   },
   "babel": {
     "presets": [

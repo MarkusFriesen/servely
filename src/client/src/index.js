@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { HashRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from "mobx-react"
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
@@ -27,9 +27,9 @@ ReactDOM.render(
   } >
     <ApolloProvider client={client}>
       <Provider {...stores}>
-      <Router>
-        <App />
-      </Router>
+        <Router>
+          <App />
+        </Router>
       </Provider>
     </ApolloProvider>
   </ThemeProvider>, document.getElementById('root'));
