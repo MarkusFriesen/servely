@@ -11,8 +11,8 @@ import {
   ListItemText,
   ListItemGraphic,
 } from '@rmwc/list';
-import gql from "graphql-tag";
-import {Mutation} from "react-apollo";
+import gql from 'graphql-tag';
+import {useMutation} from '@apollo/react-hooks';
 
 const JOIN = gql`
   mutation join($id: ID!, $ids: [ID]!){
@@ -44,6 +44,7 @@ function handleJoin(i, people, setPeople) {
 function joinOrders(join, people, id) {
   return () => {
     const ordersToJoin = people.filter(s => s.selected).map(s => s.id)
+    debugger
     join({variables: {id: id, ids: ordersToJoin}})
   }
 }
@@ -56,6 +57,9 @@ const JoinOrderSurface = (props) => {
       setPeople(props.data.map((o, i) => {return {id: o._id, name: o.name, selected: (people.length > i ? people[i].selected : false)}}))
     }
   }, [props.data, people.length, people])
+
+
+  const [join] = useMutation(JOIN);
 
   return (
     <React.Fragment>
@@ -74,11 +78,7 @@ const JoinOrderSurface = (props) => {
       </DialogContent>
       <DialogActions>
         <DialogButton action="close">Cancel</DialogButton >
-        <Mutation mutation={JOIN}>
-          {(join) =>
-            <DialogButton action="accept" onClick={joinOrders(join, people, props.id)} isDefaultAction>Join</DialogButton >
-          }
-        </Mutation>
+        <DialogButton action="accept" onClick={joinOrders(join, people, props._id)} isDefaultAction>Join</DialogButton >
       </DialogActions>
     </React.Fragment>)
 }

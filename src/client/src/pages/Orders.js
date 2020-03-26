@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useQuery} from '@apollo/react-hooks';
 import {gql} from 'apollo-boost';
 import {Fab} from '@rmwc/fab';
@@ -8,7 +8,7 @@ import {Link} from 'react-router-dom'
 import OrderCard from '../components/orders/OrderCard'
 import {observer, inject} from "mobx-react"
 import {LinearProgress} from '@rmwc/linear-progress'
-
+import JoinDialog from '../components/orders/JoinDialog'
 const GET_ORDERS =
   gql`query order($hasPayed: Boolean) {
   orders(hasPayed: $hasPayed) {
@@ -39,7 +39,7 @@ const GET_ORDERS =
 
 const getLoadingBar = (loading) => loading ? <LinearProgress /> : <></>;
 
-const getFilteredOrders = (orders, filter, props) => {
+const getFilteredOrders = (orders, filter, props, setJoinProps, setDialogState) => {
 
   const matchesFilter = new RegExp(filter, "i")
 
@@ -54,12 +54,18 @@ const getFilteredOrders = (orders, filter, props) => {
         maxWidth: '500px',
         minWidth: '320px'
       }}>
-      <OrderCard key={order._id} {...order} {...props} />
+      <OrderCard key={order._id} {...order} {...props} openJoinCard={(joinProps) => {
+        setJoinProps(joinProps)
+        setDialogState(true)
+      }}/>
     </div>))
 }
 
 const Order = inject("store")(observer((props) => {
   const filter = props.store.searchText
+
+  const [joinProps, setJoinProps] = useState({table: -1})
+  const [dialogOpen, setDialogState] = useState(false)
 
   const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {variables: {hasPayed: false}, pollInterval: 500})
 
@@ -72,8 +78,9 @@ const Order = inject("store")(observer((props) => {
     <React.Fragment>
       {getLoadingBar(loading)}
       <Masonry id="masonry-layout">
-        {getFilteredOrders(data.orders, filter, props)}
+        {getFilteredOrders(data.orders, filter, props, setJoinProps, setDialogState)}
       </Masonry>
+      <JoinDialog dialogOpen={dialogOpen} closeDialog={() => {setDialogState(false)}} {...joinProps} />
       <Link to="/orderDetails">
         <Fab className="floating-right" icon="add" />
       </Link>

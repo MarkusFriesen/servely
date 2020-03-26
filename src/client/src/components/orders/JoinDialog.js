@@ -1,56 +1,41 @@
-import React, { Component } from 'react'
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import React from 'react'
+import {useQuery} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
 import {
   Dialog,
   SimpleDialog
 } from '@rmwc/dialog';
-import {
-  CardActionButton
-} from '@rmwc/card';
 
 import JoinDialogSurface from "./JoinDialogSurface"
 
-export default class JoinOrder extends Component {
-  state = {
-    standardDialogOpen: false
-  }
-  render(){
-    return (
-    <React.Fragment>
-        <Query
-          query={gql`
-                query order($table: Int) {
-                  orders(table: $table, hasPayed: false) {
-                    _id,
-                    name,
-                  }
-                }`} variables={{ table: this.props.table }} pollInterval={5000}>
-          {({ loading, error, data }) => {
-            if (!loading && !error && data && data.orders)
-              return(
-              <Dialog
-                open={this.state.standardDialogOpen}
-                onClose={evt => this.setState({ standardDialogOpen: false })}
-              >
-                  <JoinDialogSurface data={data.orders.filter(o => o._id !== this.props._id)} {...this.props}/>
-              </Dialog>)
-            return (
-              <SimpleDialog
-                title={`Everyone at table ${this.props.table}`}
-                body="Fetching Data"
-                open={this.state.standardDialogOpen}
-                onClose={evt => this.setState({ standardDialogOpen: false })}
-              />
-            )
+const GET_ORDERS = 
+gql`
+  query order($table: Int) {
+    orders(table: $table, hasPayed: false) {
+      _id,
+      name,
+    }
+  }`
 
-          }}
-        </Query>
-      <CardActionButton
-          onClick={evt => this.setState({ standardDialogOpen: true })}
-        >
-          Join
-      </CardActionButton>
-    </React.Fragment>)
-  }
+const JoinOrder = (props) => {
+  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {variables: {table: props.table}, pollInterval: 500})
+  
+  if (!loading && !error)
+    return(
+    <Dialog
+        open={props.dialogOpen}
+        onClose={props.closeDialog}
+    >
+        <JoinDialogSurface data={data.orders.filter(o => o._id !== props._id)} {...props}/>
+    </Dialog>)
+  return (
+    <SimpleDialog
+      title={`Everyone at table ${props.table}`}
+      body={`Fetching Data. ${error ? error.message : ''}`}
+      open={props.dialogOpen}
+      onClose={props.closeDialog}
+    />
+  )
 }
+
+export default JoinOrder
