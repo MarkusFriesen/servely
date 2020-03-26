@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {useState, useEffect} from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -6,93 +6,82 @@ import {
   DialogActions,
   DialogButton
 } from '@rmwc/dialog'
-import { List, SimpleListItem } from '@rmwc/list'
-import { Chip, ChipSet } from '@rmwc/chip';
+import {List, SimpleListItem} from '@rmwc/list'
+import {Chip, ChipSet} from '@rmwc/chip';
 
-export default class DetailExtraDialog extends Component {
-  constructor(props){
-    super(props)
-    this.state = { selectedExtras: [] }
-  }
+const onDelete = (setSelectedExtras, onDelete) => () => {
+  setSelectedExtras([])
+  onDelete()
+}
 
-  componentWillReceiveProps(newProps, oldProps) {
-    if (JSON.stringify(newProps.selectedExtras) !== JSON.stringify(oldProps.selectedExtras)) {
-      this.setState({
-        selectedExtras: newProps.selectedExtras
-      })
-    }
-  }
-  
-  onDelete = () => {
-    this.setState({ selectedExtras: []})
-    this.props.onDelete()
-  }
+const onCancel = (setSelectedExtras, onClose) => () => {
+  setSelectedExtras([])
+  onClose()
+}
 
-  onCancel = () => {
-    this.setState({ selectedExtras: []})
-    this.props.onClose()
-  }
+const onSave = (setSelectedExtras, selectedExtras, onSave) => () => {
+  onSave(selectedExtras.map(e => ({...e})))
+  setSelectedExtras([])
+}
 
-  onSave = () => {
-    this.props.onSave(this.state.selectedExtras.map(e => Object.create(e)))
-    this.setState({ selectedExtras: []})
-  }
+const addExtra = (selectedExtras, setSelectedExtras, e) => () => {
+  setSelectedExtras([e].concat(selectedExtras))
+}
 
-  addExtra = (e) => {
-    const { selectedExtras } = this.state
-    this.setState({selectedExtras: [e].concat(selectedExtras)})
-  }
-  render() {
-    const {dish, extras} = this.props;
-    let title = extras ? `Edit ${dish? dish.name : "dish"} extras` : `Confirm ${dish? dish.name : "dish"} Deletion`;
+const DetailExtraDialog = (props) => {
+  const [selectedExtras, setSelectedExtras] = useState([])
 
-    return(
-      <Dialog
-        open={this.props.open}
-        onClose={this.props.onClose}
-      >
-        <DialogTitle>{title}</DialogTitle>
+  useEffect(() => {
+    setSelectedExtras(props.selectedExtras || [])
+  }, [props.selectedExtras])
 
-        { extras ? 
-          < DialogContent >
-            <ChipSet>
-              {extras.sort((a, b) => a.name < b.name ? -1 : 1)
-                .map(e => <Chip key={e._id} label={e.name} onClick={() => this.addExtra(e)}/>)}
-            </ChipSet>
+  const {dish, extras} = props;
+  const anyExtras = extras && extras.length > 0
+  let title = anyExtras ? `Edit ${dish ? dish.name : "dish"} extras` : `Confirm ${dish ? dish.name : "dish"} Deletion`;
 
-            <List>
-              {this.state.selectedExtras.map((s, id)=> 
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.onClose}
+    >
+      <DialogTitle>{title}</DialogTitle>
+
+      {anyExtras ?
+        < DialogContent >
+          <ChipSet>
+            {extras.sort((a, b) => a.name < b.name ? -1 : 1)
+              .map(e => <Chip key={e._id} label={e.name} onClick={addExtra(selectedExtras, setSelectedExtras, e)} />)}
+          </ChipSet>
+
+          <List>
+            {selectedExtras.map((s, id) =>
               <SimpleListItem
                 key={id}
                 graphic="close"
                 text={s.name}
-                onClick={() => {
-                  this.state.selectedExtras.splice(id, 1) 
-                  this.setState({
-                    selectedExtras: this.state.selectedExtras
-                  })
-                  }}
+                onClick={() => setSelectedExtras(selectedExtras.filter((d, idx) => idx !== id))}
               />)}
-            </List>
-          </DialogContent> : 
-          <React.Fragment/>}
-        <DialogActions>
-          <DialogButton 
-            theme="secondary" 
-            action="close" 
-            onClick={this.onDelete}>Delete</DialogButton>
-          <DialogButton
+          </List>
+        </DialogContent> :
+        <React.Fragment />}
+      <DialogActions>
+        <DialogButton
+          theme="secondary"
+          action="close"
+          onClick={onDelete(setSelectedExtras, props.onDelete)}>Delete</DialogButton>
+        <DialogButton
+          theme="primary"
+          action="close"
+          isDefaultAction
+          onClick={onCancel(setSelectedExtras, props.onClose)}>Cancel</DialogButton>
+        {
+          anyExtras ? < DialogButton
             theme="primary"
-            action="close"
-            isDefaultAction
-            onClick={this.onCancel}>Cancel</DialogButton>
-          {
-            extras ? < DialogButton
-            theme="primary" 
             action="accept"
-            onClick = {this.onSave} >Save</DialogButton> : <React.Fragment/> }
-        </DialogActions>
-      </Dialog>
-    )
-  }
+            onClick={onSave(setSelectedExtras, selectedExtras, props.onSave)} >Save</DialogButton> : <React.Fragment />}
+      </DialogActions>
+    </Dialog>
+  )
 }
+
+export default DetailExtraDialog

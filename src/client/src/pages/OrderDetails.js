@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import React from 'react'
+import {useQuery} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
+import {useHistory, useParams} from 'react-router-dom';
 
 import { Elevation } from '@rmwc/elevation';
 import {
@@ -14,107 +15,94 @@ import { LinearProgress } from '@rmwc/linear-progress';
 
 import DetailContent from "../components/order-details/DetailContent"
 
-
-export default class OrderDetails extends Component {
-  fetchData(id, dishes, extras){
-    return <Query
-      query={gql`
-        query order($id: ID) {
-          orders(_id: $id) {
+const GET_ORDER = gql`
+  query order($id: ID) {
+    orders(_id: $id) {
+      _id,
+      name,
+      table,
+      notes,
+      dishes {
+        dish {
+          _id,
+          name,
+          type {
             _id,
-            name,
-            table,
-            notes,
-            dishes {
-              dish {
-                _id,
-                name,
-                type {
-                  _id,
-                  name
-                }
-              }, 
-              made,
-              hasPayed,
-              delivered,
-              extras {
-                _id,
-                name,
-                type {
-                  _id, 
-                  name
-                }
-              }
-            }
+            name
           }
-        }`} variables={{ id }}>
-      {({ loading, error, data }) => {
-
-        if (loading) return <LinearProgress />;
-        if (error) {
-          console.error(error)
-          return <p>Error :( </p>;
+        }, 
+        made,
+        hasPayed,
+        delivered,
+        extras {
+          _id,
+          name,
+          type {
+            _id, 
+            name
           }
+        }
+      }
+    }
+  }`
 
-        return <DetailContent order={data.orders[0]} dishes={dishes} extras={extras} id={id} history={this.props.history} />
-      }}
-    </Query>      
-  }
+const GET_DISHES = gql`
+  {
+    dishes {
+      _id,
+      name,
+      type {
+        _id,
+        name
+      }, 
+      deselectedExtras {
+        _id
+      }
+    },
+    dishExtras {
+      _id,
+      name,
+      type {
+        _id,
+        name
+      }
+    }
+  }`
 
-  render() {
-    const { id } = this.props.match.params
-    return (
-      <Elevation className="main-elevation" z={24}>
-        <Toolbar>
-          <ToolbarRow>
-            <ToolbarSection alignStart>
-              <ToolbarTitle>Order Details</ToolbarTitle>
-            </ToolbarSection>
-            <ToolbarSection alignEnd>
-              <ToolbarIcon icon="clear" onClick={() => this.props.history.goBack()}/>
-            </ToolbarSection>
-          </ToolbarRow>
-        </Toolbar>
-
-        <Query
-          query={gql`
-            {
-              dishes {
-                _id,
-                name,
-                type {
-                  _id,
-                  name
-                }, 
-                deselectedExtras {
-                  _id
-                }
-              },
-              dishExtras {
-                _id,
-                name,
-                type {
-                  _id,
-                  name
-                }
-              }
-            }`}>
-          {({ loading, error, data }) => {
-            if (loading) return <LinearProgress />;
-            if (error) {
-              return <p>Error :( <br /><br />{error.graphQLErrors.map(({ message }, i) => (
-              <span key={i}>{message}</span>))}</p>
-            };
-
-            if (id){
-              return this.fetchData(id, data.dishes, data.dishExtras)
-            }
-            return <DetailContent dishes={data.dishes} extras={data.dishExtras} history={this.props.history}/>
-
-          }} 
-
-          </Query>
-      </Elevation>
-      )
-  }
+const getDetailContent = ({loading, error, data = {orders: []}, dishes, extras, id}) => { 
+  if (error) console.error(error)
+  return (
+    loading ? <LinearProgress /> :
+    error ? <><p>Error :( </p><span>{error.message}</span></> 
+      : <DetailContent order={data.orders.length === 1 ? data.orders[0] : null } dishes={dishes} extras={extras} id={id}/>)
 }
+
+const OrderDetails = (props) => {
+  const {id} = useParams()
+  const history = useHistory()
+
+  const {loading, error, data} = useQuery(GET_DISHES)
+  const orderResult = useQuery(GET_ORDER, {variables: {id}})
+
+  let result = 
+    loading ? <LinearProgress /> : 
+    error ? <><p>Error :( </p><span>{error.message}</span></> 
+      : getDetailContent({...orderResult, id, dishes: data.dishes, extras: data.dishExtras})
+  return (
+    <Elevation className="main-elevation" z={24}>
+      <Toolbar>
+        <ToolbarRow>
+          <ToolbarSection alignStart>
+            <ToolbarTitle>Order Details</ToolbarTitle>
+          </ToolbarSection>
+          <ToolbarSection alignEnd>
+            <ToolbarIcon icon="clear" onClick={history.goBack}/>
+          </ToolbarSection>
+        </ToolbarRow>
+      </Toolbar>
+      {result}
+    </Elevation>
+    )
+}
+
+export default OrderDetails

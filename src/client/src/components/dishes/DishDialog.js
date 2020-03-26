@@ -39,7 +39,7 @@ export default class DishDialog extends Component {
     this.handleNameChange = this.handleNameChange.bind(this)
     this.handleCostChange = this.handleCostChange.bind(this)
     this.handleTypeChange = this.handleTypeChange.bind(this)
-    this.hanldeDeselectedExtraChange = this.hanldeDeselectedExtraChange.bind(this)
+    this.hanldeDeselectedExtraChange = this.handleDeselectedExtraChange.bind(this)
   }
 
   componentWillReceiveProps(newProps, oldProps) {
@@ -65,7 +65,7 @@ export default class DishDialog extends Component {
     this.setState({type: e.target.value})
   }
 
-  hanldeDeselectedExtraChange(e){
+  handleDeselectedExtraChange(e){
     const id = this.state.deselectedExtras.indexOf(e.target.chipId)
     if (id > -1) {
       const deselectedExtras = [...this.state.deselectedExtras]
@@ -112,7 +112,7 @@ export default class DishDialog extends Component {
                   options={this.props.dishTypes}
                 />
                 <ChipSet>
-                  {(data.dishExtras || []).map(e => <Chip key={e._id} label={e.name} checkmark selected={!this.state.deselectedExtras.some(de => de === e._id)} onInteraction={this.hanldeDeselectedExtraChange}/>)}
+                  {(data.dishExtras || []).map(e => <Chip key={e._id} label={e.name} checkmark selected={!this.state.deselectedExtras.some(de => de === e._id)} onInteraction={this.handleDeselectedExtraChange}/>)}
                 </ChipSet>
               </DialogContent>
               <DialogActions>

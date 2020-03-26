@@ -48,6 +48,7 @@ function joinOrders(join, people, id) {
     join({variables: {id: id, ids: ordersToJoin}})
   }
 }
+
 const JoinOrderSurface = (props) => {
 
   const [people, setPeople] = useState(props.data.map(o => ({id: o._id, name: o.name, selected: false})))
@@ -57,7 +58,6 @@ const JoinOrderSurface = (props) => {
       setPeople(props.data.map((o, i) => {return {id: o._id, name: o.name, selected: (people.length > i ? people[i].selected : false)}}))
     }
   }, [props.data, people.length, people])
-
 
   const [join] = useMutation(JOIN);
 
