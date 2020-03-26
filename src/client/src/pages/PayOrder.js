@@ -1,10 +1,9 @@
-import React, { Component } from 'react'
-import { Query } from "react-apollo";
-import gql from "graphql-tag";
-
-import PayOrderContent from "../components/orders/PayOrderContent"
-
-import { Elevation } from '@rmwc/elevation';
+import React from 'react';
+import {useQuery} from '@apollo/react-hooks';
+import {useHistory, useParams} from 'react-router-dom';
+import {gql} from 'apollo-boost';
+import {Elevation} from '@rmwc/elevation';
+import {LinearProgress} from '@rmwc/linear-progress';
 import {
   Toolbar,
   ToolbarRow,
@@ -12,73 +11,75 @@ import {
   ToolbarTitle,
   ToolbarIcon
 } from '@rmwc/toolbar';
+import PayOrderContent from "../components/orders/PayOrderContent"
 
-export default class PayOrder extends Component{
-  render() {
-    const { id } = this.props.match.params
-    return (
-      <Elevation className="main-elevation" z={24}>
-        <Toolbar className="no-print">
-          <ToolbarRow>
-            <ToolbarSection alignStart>
-              <ToolbarTitle>Pay Order</ToolbarTitle>
-            </ToolbarSection>
-            <ToolbarSection alignEnd>
-              <ToolbarIcon icon="clear" onClick={() => this.props.history.goBack()} />
-            </ToolbarSection>
-          </ToolbarRow>
-        </Toolbar>
+const GET_ORDER = gql`
+  query order($id: ID) {
+    orders(_id: $id) {
+      _id,
+      name,
+      table,
+      dishes {
+        dish {
+          _id,
+          name,
+          cost
+        },
+        hasPayed,
+        made,
+        delivered,
+        extras {
+          _id,
+          cost,
+          name
+        }
+      }
+    }
+  }`
 
-        <Query
-          query={gql`
-                query order($id: ID) {
-                  orders(_id: $id) {
-                    _id,
-                    name,
-                    table,
-                    dishes {
-                      dish {
-                        _id,
-                        name,
-                        cost
-                      },
-                      hasPayed,
-                      made,
-                      delivered,
-                      extras {
-                        _id,
-                        cost,
-                        name
-                      }
-                    }
-                  }
-                }`} 
-                variables={{ id }}
-                pollInterval={500}>
-          {({ loading, error, data }) => {
-            if (loading) return <p>Loading...</p>;
-            if (error) return <p>Error :(</p>;
-            
-            if (data.orders.length !== 1) return String()
-            return <PayOrderContent 
-              history={this.props.history} 
-              id={id} 
-              payedDishes={data.orders[0].dishes.filter(d => d.hasPayed)} 
-              dishesToPay={data.orders[0].dishes.filter(d => !d.hasPayed)
-                .map(d => {
-                  return {
-                    dish: d.dish,
-                    made: d.made,
-                    paying: true,
-                    delivered: d.delivered,
-                    extras: d.extras
-                  }
-                })
-                }
-                />
-          }}
-        </Query>
-      </Elevation>
-    )
-  }
+const getOrderDetails = (id, loading, error, data) => {
+  if (loading) return <LinearProgress />;
+  if (error) return <><p>Error :(</p><span>{error.message}</span></>;
+
+  if (data.orders.length !== 1) return String()
+  return <PayOrderContent
+    id={id}
+    payedDishes={data.orders[0].dishes.filter(d => d.hasPayed)}
+    dishesToPay={data.orders[0].dishes.filter(d => !d.hasPayed)
+      .map(d => {
+        return {
+          dish: d.dish,
+          made: d.made,
+          paying: true,
+          delivered: d.delivered,
+          extras: d.extras
+        }
+      })
+    }
+  />
+}
+
+const PayOrder = () => {
+  const {id} = useParams()
+  const {loading, error, data = {orders: []}} = useQuery(GET_ORDER, {variables: {id}, pollInterval: 1000})
+  const history = useHistory()
+  const name = data.orders[0] && data.orders[0].name ? `${data.orders[0].name}'s` : ''
+  return (
+    <Elevation className="main-elevation" z={24}>
+      <Toolbar className="no-print">
+        <ToolbarRow>
+          <ToolbarSection alignStart>
+            <ToolbarTitle>Pay {name} order</ToolbarTitle>
+          </ToolbarSection>
+          <ToolbarSection alignEnd>
+            <ToolbarIcon icon="clear" onClick={() => history.goBack()} />
+          </ToolbarSection>
+        </ToolbarRow>
+      </Toolbar>
+      {getOrderDetails(id, loading, error, data)}          
+    </Elevation>
+  )
+  
 } 
+
+export default PayOrder
