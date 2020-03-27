@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
-import { Mutation } from "react-apollo";
-import gql from "graphql-tag";
-import {  ToolbarIcon } from '@rmwc/toolbar';
+import React, {useState, useEffect} from 'react'
+import {useMutation} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
 import {
   Dialog,
   DialogTitle,
@@ -9,11 +8,7 @@ import {
   DialogActions,
   DialogButton
 } from '@rmwc/dialog';
-import { TextField } from '@rmwc/textfield';
-import {
-  ListItem,
-  ListItemText,
-  ListItemMeta } from '@rmwc/list';
+import {TextField} from '@rmwc/textfield';
 
 const ADD = gql` mutation add($name: String!){
  addDishType(name: $name){
@@ -34,74 +29,40 @@ const REMOVE = gql`mutation remove($id: ID!){
  }
 }`
 
-export default class DishTypeDialog extends Component{
-  constructor(props){
-    super(props)
-    this.state = {name: ""}
+const DishTypeDialog = (props) => {
+  const [name, setName] = useState(props.name || '')
+  const {isDialogOpen, setIsDialogOpen} = props
 
-    this.handleNameChange = this.handleNameChange.bind(this)
-  }
-  
+  useEffect(() => {
+    setName(props.name || '')
+  }, [props.name])
 
-  componentWillReceiveProps(newProps, oldProps){
-    if (newProps.name && newProps.name !== oldProps.name ){
-      this.setState({ name: newProps.name })
-    }
-  }
+  const isNewDishType = !props._id
+  const [remove] = useMutation(REMOVE)
+  const [addOrUpdate] = useMutation(isNewDishType ? ADD : UPDATE)
 
-  componentDidMount(){
-    if (this.props.name)
-      this.setState({ name: this.props.name })
-  }
-
-  toggleDialog(){
-    return () => {
-      this.setState({name: this.props.name, standardDialogOpen: !this.state.standardDialogOpen})
-    }
-  }
-
-  handleNameChange(e){
-    this.setState({name: e.target.value || ''})
-  }
-
-  render(){
-    return (
-      <React.Fragment>
-        <Dialog
-          open={this.state.standardDialogOpen}
-          onClose={evt => this.setState({ standardDialogOpen: false })}
-        >
-          <DialogTitle>{this.props._id ? "Edit dish type" : "New dish type"}</DialogTitle>
-            <DialogContent>
-              <TextField type="text" label="Name" value={this.state.name || ''} onChange={this.handleNameChange} />
-            </DialogContent>
-            <DialogActions >
-              <DialogButton  theme="secondary" action="cancel" isDefaultAction >Cancel</DialogButton>
-              {
-                this.props._id ?
-                  <Mutation mutation={REMOVE}>
-                    {(remove) =>
-                      <DialogButton action="accept" onClick={() => remove({ variables: { id: this.props._id } })}>Delete</DialogButton>
-                    }
-                  </Mutation>
-                : String()
-              }
-              <Mutation mutation={this.props._id ? UPDATE : ADD}>
-                {(addOrUpdate) =>
-                  <DialogButton action="accept" onClick={() => addOrUpdate({variables: { id: this.props._id, name: this.state.name}})}>Save</DialogButton>
-                }
-              </Mutation>
-            </DialogActions>
-        </Dialog>
-        {
-          this.props._id ?
-            <ListItem onClick={this.toggleDialog()}>
-              <ListItemText>{this.props.name}</ListItemText>
-              <ListItemMeta icon="edit" />
-            </ListItem> :
-            <ToolbarIcon icon="add" onClick={this.toggleDialog()} />
-        }
-      </React.Fragment>
-    )
-  }
+  return (
+    <Dialog
+      open={isDialogOpen}
+      onClose={() => setIsDialogOpen(false)}
+    >
+      <DialogTitle>{isNewDishType ? "Edit dish type" : "New dish type"}</DialogTitle>
+      <DialogContent>
+        <TextField type="text" label="Name" value={name} onChange={(e) => setName(e.target.value || '')} />
+      </DialogContent>
+      <DialogActions >
+        <DialogButton theme="secondary" action="cancel" isDefaultAction >
+          Cancel
+          </DialogButton>
+        <DialogButton action="accept" onClick={() => remove({variables: {id: props._id}})} disabled={isNewDishType} >
+          Delete
+          </DialogButton>
+        <DialogButton action="accept" onClick={() => addOrUpdate({variables: {id: props._id, name: name}})}>
+          Save
+          </DialogButton>
+      </DialogActions>
+    </Dialog>
+  )
 }
+
+export default DishTypeDialog

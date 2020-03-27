@@ -107,8 +107,8 @@ const DetailContent = (props) => {
 
   const {id} = useParams()
   const history = useHistory()
+  
   const [addOrUpdate, {data, loading, error}] = useMutation(id ? UPDATE_ORDER : ADD_ORDER);
-
   let result = <Button onClick={() => addOrUpdate({
     variables: {
       id: id,
@@ -136,7 +136,6 @@ const DetailContent = (props) => {
           <List>
             {getDishesForType(dishTypes, keys, activeTabIndex, dishes, setDishes)}
           </List>
-
         </GridCell>
       </Grid>
       <Grid className="order-details">
