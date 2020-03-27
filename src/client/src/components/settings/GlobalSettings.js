@@ -24,7 +24,7 @@ const GlobalSettings = (props) =>
       </ToolbarRow>
     </Toolbar>
     <List>
-      <ListItem onClick={() => props.store.setKitchenMode(!this.props.store.kitchenMode)}>
+      <ListItem onClick={() => props.store.setKitchenMode(!props.store.kitchenMode)}>
         <ListItemGraphic icon={ props.store.kitchenMode ? "radio_button_checked" : "radio_button_unchecked"}/>
         <ListItemText>Kitchen Mode</ListItemText>
       </ListItem>
