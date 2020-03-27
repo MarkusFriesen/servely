@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {TextField} from '@rmwc/textfield';
 import {Button, ButtonIcon} from '@rmwc/button';
-import gql from 'graphql-tag';
+import {gql} from 'apollo-boost';
 import {useMutation} from '@apollo/react-hooks';
 import {LinearProgress} from '@rmwc/linear-progress';
 import {Grid, GridCell} from '@rmwc/grid';

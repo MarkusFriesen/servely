@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Query } from "react-apollo";
-import gql from "graphql-tag";
+import {gql} from 'apollo-boost';
 import Masonry from 'react-masonry-component';
 import { Fab } from '@rmwc/fab';
 

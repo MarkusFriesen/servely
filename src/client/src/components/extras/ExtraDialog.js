@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
-import { Mutation } from "react-apollo";
-import gql from "graphql-tag";
+import React, {useState, useEffect} from 'react';
+import {useMutation} from '@apollo/react-hooks';
+import {gql} from 'apollo-boost';
 import {
   Dialog,
   DialogTitle,
@@ -8,8 +8,8 @@ import {
   DialogActions,
   DialogButton
 } from '@rmwc/dialog'
-import { TextField } from '@rmwc/textfield';
-import { Select } from '@rmwc/select';
+import {TextField} from '@rmwc/textfield';
+import {Select} from '@rmwc/select';
 
 const ADD = gql` mutation add($name: String!, $cost: Float!, $type: ID!){
  addDishExtra(name: $name, cost: $cost, type: $type) {
@@ -17,7 +17,7 @@ const ADD = gql` mutation add($name: String!, $cost: Float!, $type: ID!){
    name
  }
 }`
-const UPDATE = gql `mutation update($id: ID!, $name: String!, $cost: Float!, $type: ID!){
+const UPDATE = gql`mutation update($id: ID!, $name: String!, $cost: Float!, $type: ID!){
  updateDishExtra(_id: $id, name: $name, cost: $cost, type: $type) {
    _id, 
    name
@@ -30,85 +30,60 @@ const REMOVE = gql`mutation remove($id: ID!){
  }
 }`
 
-export default class ExtraDialog extends Component {
-  constructor(props) {
-    super(props)
-    this.state = { name: '', cost: 0.00, type: '' }
-
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleCostChange = this.handleCostChange.bind(this)
-    this.handleTypeChange = this.handleTypeChange.bind(this)
-  }
-
-  componentWillReceiveProps(newProps, oldProps) {
-    if (newProps._id && (newProps.name !== oldProps.name || newProps.cost !== oldProps.cost || newProps.type._id !== oldProps.type._id)) {
-      this.setState({ name: newProps.name, cost: newProps.cost.toFixed(2), type: newProps.type._id })
-    }
-  }
-
-  componentDidMount() {
-    if (this.props._id)
-      this.setState({ name: this.props.name, cost: this.props.cost.toFixed(2), type: this.props.type._id })
-  }
-
-  handleNameChange(e) {
-    this.setState({ name: e.target.value || '' })
-  }
-
-  handleCostChange(e) {
-    this.setState({ cost: e.target.value })
-  }
-
-  handleTypeChange(e) {
-    this.setState({ type: e.target.value })
-  }
-
-  toggleDialog() {
-    this.setState({ name: this.props.name || "", cost: this.props.cost || 0, type: this.props.type ? this.props.type._id : '', standardDialogOpen: !this.state.standardDialogOpen })
-  }
-
-  render(){
-    return (
-    <React.Fragment>
-      <Dialog
-        open={this.props.open}
-        onClose={ () => {
-          this.toggleDialog()
-          this.props.onClose()
-        }}
-      >
-          <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New extra for dish type"}</DialogTitle>
-   
-          <DialogContent>
-            <TextField type="text" label="Name" value={this.state.name } onChange={this.handleNameChange} />
-            <TextField type="number" inputMode="numeric" label="Cost" invalid={false} value={this.state.cost} onChange={this.handleCostChange} />
-            <Select
-              value={this.state.type}
-              onChange={this.handleTypeChange}
-              placeholder=""
-              label="Dish type"
-              options={this.props.dishTypes}
-            />
-          </DialogContent>
-          <DialogActions>
-            <DialogButton  theme="secondary" action="cloase" isDefaultAction>Cancel</DialogButton>
-            {
-              this.props._id ?
-                <Mutation mutation={REMOVE}>
-                  {(remove) =>
-                    <DialogButton action="accept" onClick={() => remove({ variables: { id: this.props._id } }) }>Delete</DialogButton >
-                  }
-                </Mutation>
-                : String()
-            }
-            <Mutation mutation={this.props._id ? UPDATE : ADD}>
-              {(addOrUpdate) =>
-                <DialogButton action="accept" onClick={() => {
-                  addOrUpdate({ variables: { id: this.props._id, name: this.state.name, type: this.state.type, cost: this.state.cost } })}}>Save</DialogButton>
-              }
-            </Mutation>
-          </DialogActions>
-      </Dialog>
-    </React.Fragment>)
-  }
+function toggleDialog(setName, setCost, setType, props) {
+  setName(props.name || '')
+  setCost(props.cost || 0)
+  setType(props.type ? props.type._id : '')
 }
+
+const ExtraDialog = (props) => {
+  const [name, setName] = useState(props.name || '')
+  const [cost, setCost] = useState(props.cost ? props.cost.toFixed(2) : 0)
+  const [type, setType] = useState(props.type ? props.type._id : '')
+
+  useEffect(() => {
+    setName(props.name || '')
+    setCost(props.cost ? props.cost.toFixed(2) : 0)
+    setType(props.type ? props.type._id : '')
+  }, [props.name, props.cost, props.type])
+
+  const isNewExtra = !props._id
+  const [remove] = useMutation(REMOVE)
+  const [addOrUpdate] = useMutation(isNewExtra ? ADD : UPDATE)
+  return (
+    <Dialog
+      open={props.open}
+      onClose={() => {
+        toggleDialog(setName, setCost, setType, props)
+        props.onClose()
+      }}
+    >
+      <DialogTitle>{!isNewExtra ? `Edit ${props.name}` : "New extra for dish type"}</DialogTitle>
+      <DialogContent>
+        <TextField type="text" label="Name" value={name} onChange={(e) => setName(e.target.value || '')} />
+        <TextField type="number" inputMode="numeric" label="Cost" invalid={false} value={cost} onChange={(e) => setCost(e.target.value)} />
+        <Select value={type} onChange={(e) => setType(e.target.value)} placeholder="" label="Dish type" options={props.dishTypes} />
+      </DialogContent>
+      <DialogActions>
+        <DialogButton theme="secondary" action="cloase" isDefaultAction>Cancel</DialogButton>
+        <DialogButton action="accept" onClick={() => remove({variables: {id: props._id}})} disabled={isNewExtra}>
+          Delete
+        </DialogButton >
+        <DialogButton action="accept" onClick={() => {
+          addOrUpdate({
+            variables: {
+              id: props._id,
+              name: name,
+              type: type,
+              cost: parseFloat(cost)
+            }
+          })
+        }}>
+          Save
+        </DialogButton>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+export default ExtraDialog

@@ -54,8 +54,7 @@ const getOrderDetails = (id, loading, error, data) => {
           delivered: d.delivered,
           extras: d.extras
         }
-      })
-    }
+      })}
   />
 }
 
@@ -79,7 +78,6 @@ const PayOrder = () => {
       {getOrderDetails(id, loading, error, data)}          
     </Elevation>
   )
-  
 } 
 
 export default PayOrder

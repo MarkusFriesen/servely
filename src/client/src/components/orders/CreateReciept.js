@@ -1,6 +1,6 @@
 import React from "react"
 import {Query} from "react-apollo";
-import gql from "graphql-tag";
+import {gql} from 'apollo-boost';
 
 function CreateReceipt(dishes, id) {
   const totalCosts = dishes.reduce((a, c) => a + (c.extras || []).reduce((f, e) => f + e.cost, 0) + c.dish.cost, 0).toFixed(2)

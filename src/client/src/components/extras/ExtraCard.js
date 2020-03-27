@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Elevation } from '@rmwc/elevation'; 
+import React from 'react';
+import {Elevation} from '@rmwc/elevation';
 import {
   Toolbar,
   ToolbarRow,
@@ -10,62 +10,30 @@ import {
   List
 } from '@rmwc/list';
 
-import { SimpleListItem } from '@rmwc/list';
-import ExtraDialog from './ExtraDialog';
+import {SimpleListItem} from '@rmwc/list';
 
-export default class DishCard extends Component {
-  state = {
-    extra : {},
-    openDialog: false
-  }
-  render(){
-    return (
-      <Elevation className="main-elevation" z={24} style={{margin: "1rem"}}>
-        <Toolbar>
-          <ToolbarRow>
-            <ToolbarSection alignStart>
-              <ToolbarTitle>{this.props.typeName}</ToolbarTitle>
-            </ToolbarSection>
-          </ToolbarRow>
-        </Toolbar>
-        <List twoLine>
-          {this.props.extras.map(d => 
-            <SimpleListItem key = {
-              d._id
-            }
-            onClick = {
-              () => this.setState({
-                extra: d,
-                openDialog: true
-              })
-            }
-            text = {
-              d.name
-            }
-            secondaryText = {
-              `€ ${d.cost.toFixed(2)}`
-            }
-            metaIcon = "edit" />
-          )}
-        </List>
-        < ExtraDialog {
-          ...this.state.extra
-        }
-        open = {
-          this.state.openDialog
-        }
-        dishTypes = {
-          this.props.dishTypes
-        }
-        onClose = {
-          () => {
-            this.setState({
-              openDialog: false
-            })
-          }
-        }
-        />
-      </Elevation>
-    )
-  }
+const ExtraCard = (props) => {
+  const {openDialog} = props
+  return (
+    <Elevation className="main-elevation" z={24} style={{margin: "1rem"}}>
+      <Toolbar>
+        <ToolbarRow>
+          <ToolbarSection alignStart>
+            <ToolbarTitle>{props.typeName}</ToolbarTitle>
+          </ToolbarSection>
+        </ToolbarRow>
+      </Toolbar>
+      <List twoLine>
+        {props.extras.map(d =>
+          <SimpleListItem key={d._id}
+            onClick={() => openDialog(d)}
+            text={d.name}
+            secondaryText={`€ ${d.cost.toFixed(2)}`}
+            metaIcon="edit" />
+        )}
+      </List>
+    </Elevation>
+  )
 }
+
+export default ExtraCard

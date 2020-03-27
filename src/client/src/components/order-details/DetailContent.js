@@ -7,7 +7,7 @@ import {
 } from '@rmwc/list';
 import {TextField} from '@rmwc/textfield';
 import {Button} from '@rmwc/button';
-import gql from 'graphql-tag';
+import {gql} from 'apollo-boost';
 import {useMutation} from '@apollo/react-hooks';
 import {LinearProgress} from '@rmwc/linear-progress';
 import {useHistory, useParams} from 'react-router-dom';
@@ -107,7 +107,7 @@ const DetailContent = (props) => {
 
   const {id} = useParams()
   const history = useHistory()
-  
+
   const [addOrUpdate, {data, loading, error}] = useMutation(id ? UPDATE_ORDER : ADD_ORDER);
   let result = <Button onClick={() => addOrUpdate({
     variables: {

@@ -11,7 +11,7 @@ import {
   ListItemText,
   ListItemGraphic,
 } from '@rmwc/list';
-import gql from 'graphql-tag';
+import {gql} from 'apollo-boost';
 import {useMutation} from '@apollo/react-hooks';
 
 const JOIN = gql`
