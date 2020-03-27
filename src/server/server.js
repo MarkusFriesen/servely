@@ -16,13 +16,13 @@ server.applyMiddleware({app});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 app.listen(config.GRAPHQL_PORT, () => console.log(
   `GraphiQL is now running on http://localhost:${config.GRAPHQL_PORT}/graphiql`
 ));
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 Mongoose.connect(config.MONGO_DB, {useUnifiedTopology: true, useNewUrlParser: true})
 Mongoose.Promise = global.Promise
