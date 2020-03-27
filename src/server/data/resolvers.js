@@ -64,7 +64,7 @@ const resolvers = {
 
           Dish.findOneAndRemove({
             _id: args._id
-          }).then(res).catch(rej)
+          }, {useFindAndModify: false}).then(res).catch(rej)
         })
       })
     },
@@ -101,7 +101,7 @@ const resolvers = {
 
           DishType.findOneAndRemove({
             _id: args._id
-          }).then(res).catch(rej)
+          }, {useFindAndModify: false}).then(res).catch(rej)
         }).catch(rej)
       })
     },
@@ -147,7 +147,7 @@ const resolvers = {
 
           DishExtra.findOneAndRemove({
             _id: args._id
-          }).then(res).catch(rej)
+          }, {useFindAndModify: false}).then(res).catch(rej)
         })
       })
     },
