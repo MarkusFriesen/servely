@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Mutation, Query} from "react-apollo";
+import React, {useState, useEffect} from 'react'
+import {useQuery, useMutation} from '@apollo/react-hooks';
 import {gql} from 'apollo-boost';
 import {
   Dialog,
@@ -31,111 +31,94 @@ const REMOVE = gql`mutation remove($id: ID!){
  }
 }`
 
-export default class DishDialog extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {name: '', cost: 0.00, type: '', deselectedExtras: []}
-
-    this.handleNameChange = this.handleNameChange.bind(this)
-    this.handleCostChange = this.handleCostChange.bind(this)
-    this.handleTypeChange = this.handleTypeChange.bind(this)
-    this.hanldeDeselectedExtraChange = this.handleDeselectedExtraChange.bind(this)
+const GET_DISH_EXTRAS = gql`
+query dishExtras($typeId: ID) {
+  dishExtras(type: $typeId) {
+    _id,
+    name
   }
+}`
 
-  componentWillReceiveProps(newProps, oldProps) {
-    if (newProps._id && (newProps.name !== oldProps.name || newProps.cost !== oldProps.cost || newProps.type._id !== oldProps.type._id || newProps.deselectedExtras.length !== oldProps.deselectedExtras.length)) {
-      this.setState({name: newProps.name, cost: newProps.cost.toFixed(2), type: newProps.type._id, deselectedExtras: newProps.deselectedExtras.map(de => de._id)})
-    }
-  }
-
-  componentDidMount() {
-    if (this.props._id)
-      this.setState({name: this.props.name, cost: this.props.cost.toFixed(2), type: this.props.type._id, deselectedExtras: this.props.deselectedExtras.map(de => de._id)})
-  }
-
-  handleNameChange(e) {
-    this.setState({name: e.target.value || ''})
-  }
-
-  handleCostChange(e) {
-    this.setState({cost: e.target.value})
-  }
-
-  handleTypeChange(e) {
-    this.setState({type: e.target.value})
-  }
-
-  handleDeselectedExtraChange(e){
-    const id = this.state.deselectedExtras.indexOf(e.target.chipId)
-    if (id > -1) {
-      const deselectedExtras = [...this.state.deselectedExtras]
-      deselectedExtras.splice(id, 1)
-      this.setState({deselectedExtras: deselectedExtras})
-    } else {
-      this.setState({deselectedExtras: [...this.state.deselectedExtras, e.target.chipId]})
-    }
-  }
-
-  toggleDialog() {
-    return () => {
-      this.setState({name: this.props.name || "", cost: this.props.cost || 0, type: this.props.type ? this.props.type._id : '', standardDialogOpen: !this.state.standardDialogOpen})
-    }
-  }
-
-  render() {
-    return (
-      <Query
-        query={gql`query dishExtras($typeId: ID) {
-              dishExtras(type: $typeId) {
-                _id,
-                name
-              }
-            }`}
-        variables={{typeId: this.state.type ? this.state.type :  null}}>
-        {({loading, error, data}) => {
-          
-          return (
-            <Dialog
-              open={this.props.open}
-              onClose={this.props.onClose}
-            >
-              <DialogTitle>{this.props._id ? `Edit ${this.props.name}` : "New dish"}</DialogTitle>
-
-              <DialogContent>
-                <TextField type="text" label="Name" value={this.state.name} onChange={this.handleNameChange} />
-                <TextField type="number" inputMode="numeric" label="Cost" invalid={false} value={this.state.cost} onChange={this.handleCostChange} />
-                <Select
-                  value={this.state.type}
-                  onChange={this.handleTypeChange}
-                  placeholder=""
-                  label="Dish type"
-                  options={this.props.dishTypes}
-                />
-                <ChipSet>
-                  {(data.dishExtras || []).map(e => <Chip key={e._id} label={e.name} checkmark selected={!this.state.deselectedExtras.some(de => de === e._id)} onInteraction={this.handleDeselectedExtraChange}/>)}
-                </ChipSet>
-              </DialogContent>
-              <DialogActions>
-                <DialogButton theme="secondary" action="close" isDefaultAction>Cancel</DialogButton>
-                {
-                  this.props._id ?
-                    <Mutation mutation={REMOVE}>
-                      {(remove) =>
-                        <DialogButton action="accept" onClick={() => remove({variables: {id: this.props._id}})}>Delete</DialogButton >
-                      }
-                    </Mutation>
-                    : String()
-                }
-                <Mutation mutation={this.props._id ? UPDATE : ADD}>
-                  {(addOrUpdate) =>
-                    <DialogButton action="accept" onClick={() => {
-                      addOrUpdate({variables: {id: this.props._id, name: this.state.name, type: this.state.type, cost: this.state.cost, deselectedExtras: this.state.deselectedExtras}})
-                    }}>Save</DialogButton>
-                  }
-                </Mutation>
-              </DialogActions>
-            </Dialog>)
-        }}
-      </Query>)
+const handleDeselectedExtraChange = (deselectedExtras, setDeselectedExtras) => (e) => {
+  const id = deselectedExtras.indexOf(e.target.chipId)
+  if (id > -1) {
+    setDeselectedExtras(deselectedExtras.filter((_, idx) => idx !== id))
+  } else {
+    setDeselectedExtras([...deselectedExtras, e.target.chipId])
   }
 }
+
+const DishDialog = (props) => {
+  const [name, setName] = useState(props.name || '')
+  const [cost, setCost] = useState(props.cost || 0)
+  const [type, setType] = useState(props.type ? props.type._id : '')
+  const [deselectedExtras, setDeselectedExtras] = useState((props.deselectedExtras || []).map(de => de._id))
+
+  useEffect(() => {
+    setName(props.name || '')
+    setCost(props.cost || 0)
+    setType(props.type ? props.type._id : '')
+    setDeselectedExtras((props.deselectedExtras || []).map(de => de._id))
+  }, [props.name, props.cost, props.type, props.deselectedExtras])
+
+  const [remove] = useMutation(REMOVE)
+  const [addOrUpdate] = useMutation(props._id ? UPDATE : ADD)
+  const {data = {dishExtras: []}} = useQuery(GET_DISH_EXTRAS, {variables: {typeId: type || null}})
+
+  return (
+    <Dialog
+      open={props.open}
+      onClose={props.onClose}
+    >
+      <DialogTitle>{props._id ? `Edit ${props.name}` : "New dish"}</DialogTitle>
+      <DialogContent>
+        <TextField type="text" label="Name" value={name} onChange={(e) => setName(e.target.value || '')} />
+        <TextField 
+          type="number"
+          inputMode="numeric"
+          label="Cost"
+          invalid={false}
+          value={cost} 
+          onChange={(e) => setCost(e.target.value)} />
+        <Select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          placeholder=""
+          label="Dish type"
+          options={props.dishTypes}
+        />
+        <ChipSet>
+          {(data.dishExtras).map(e => 
+            <Chip 
+              key={e._id} 
+              label={e.name} 
+              checkmark 
+              selected={!deselectedExtras.some(de => de === e._id)} 
+              onInteraction={handleDeselectedExtraChange(deselectedExtras, setDeselectedExtras)} />)
+          }
+        </ChipSet>
+      </DialogContent>
+      <DialogActions>
+        <DialogButton theme="secondary" action="close" isDefaultAction>
+          Cancel
+        </DialogButton>
+        <DialogButton action="accept" onClick={() => remove({variables: {id: props._id}})} disabled={!props._id}>
+          Delete
+        </DialogButton >
+        <DialogButton action="accept" onClick={() => {
+          const floatCost = parseFloat(cost)
+          addOrUpdate({variables: {
+              id: props._id, 
+              name: name, 
+              type: type,
+              cost: floatCost,
+              deselectedExtras: deselectedExtras
+            }})
+        }}>
+          Save
+        </DialogButton>
+      </DialogActions>
+    </Dialog>)
+}
+
+export default DishDialog
