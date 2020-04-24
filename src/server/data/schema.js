@@ -58,7 +58,7 @@ input orderDishMutation {
   extras: [ID]
 }
 type Mutation {
-  addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String): Order
+  addOrder(table: Int!, name:String, dishes: [orderDishMutation]!, notes: String, timestamp: String): Order
   updateOrder(_id: ID!, name: String, table: Int, dishes: [orderDishMutation], notes: String, amountPayed: Float): Order
   joinOrders(_id: ID!, orderIds: [ID]!) : Order
   addDish(name: String!, cost: Float!, type: ID!, deselectedExtras: [ID] ): Dish

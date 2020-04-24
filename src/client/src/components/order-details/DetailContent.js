@@ -17,8 +17,8 @@ import DetailExtraDialog from './DetailExtraDialog';
 import './Details.css'
 
 const ADD_ORDER = gql`
-  mutation addOrder($name: String, $table: Int!, $notes: String, $dishes: [orderDishMutation]!){
-    addOrder(table: $table, name: $name, dishes: $dishes, notes: $notes){
+  mutation addOrder($name: String, $table: Int!, $notes: String, $dishes: [orderDishMutation]!, $timestamp: String){
+    addOrder(table: $table, name: $name, dishes: $dishes, notes: $notes, timestamp: $timestamp){
       _id, 
       name,
       table,
@@ -115,7 +115,8 @@ const DetailContent = (props) => {
       table: table ? parseInt(table) : 0,
       name: name,
       notes: notes,
-      dishes: dishes.map(d => {return {id: d.dish.id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered, extras: (d.extras || []).map(e => e._id)}}).filter(d => d && d.id)
+      dishes: dishes.map(d => {return {id: d.dish.id, made: d.made, hasPayed: d.hasPayed, delivered: d.delivered, extras: (d.extras || []).map(e => e._id)}}).filter(d => d && d.id),
+      timestamp: (new Date()).toISOString()
     }
   })} theme="secondary">Save</Button>
   if (error) console.error(error);
