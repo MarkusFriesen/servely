@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "react-scripts build && rm -rf ../server/public/**/* && cp ./build/**/* ../server/public"
+    "deploy": "react-scripts build && rm -rf ../server/public/ && mkdir ../server/public && cp -r ./build/* ../server/public"
   },
   "eslintConfig": {
     "extends": "react-app"
