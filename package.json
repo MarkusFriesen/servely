@@ -4,9 +4,9 @@
   "description": "Order dishes from a web app to manage customer orders",
   "main": "index.js",
   "scripts": {
-    "start": "rm -rf lib && babel src/server -d lib && cp -r src/server/public lib/public && node lib/server.js",
-    "startWindows": "rmdir lib /Q/S && babel src/server -d lib && xcopy src\\server\\public lib\\public /E/I/Y && node lib/server.js",
-    "build": "babel src/server -d lib",
+    "start": "node lib/server.js",
+    "buildWindows": "rmdir lib /Q/S && babel src/server -d lib && xcopy src\\server\\public lib\\public /E/I/Y && node lib/server.js",
+    "build": "rm -rf lib && babel src/server -d lib && cp -r src/server/public lib/public",
     "dev": "nodemon src/server/server.js --exec babel-node"
   },
   "author": "Markus Friesen",
