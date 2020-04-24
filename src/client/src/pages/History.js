@@ -56,9 +56,8 @@ const setHistoryFilter = (setMinOrderTimestamp, setHeader) => evt => {
   setHeader(title)
 }
 
-const ORDERS = gql`
-{
-  orders(hasPayed: true) {
+const ORDERS = gql`query getOrdersInRange($from: String){
+  orders(hasPayed: true, fromTimestamp: $from) {
     _id,
     timestamp,
     amountPayed,
@@ -81,17 +80,13 @@ const History = () => {
   const [page, setPage] = useState(0)
   const [itemsPerPage] = useState(10)
 
-  const {loading, error, data} = useQuery(ORDERS)
+  const {loading, error, data = {}} = useQuery(ORDERS, {variables: {from: minOrderTimestamp}})
 
   let ordered = []
   let total = 0
   let totalWithTips = 0
-  let ordersInRange = []
-
-  if (data && data.orders)
-    ordersInRange = data.orders.filter(o => new Date(parseInt(o.timestamp)) >= minOrderTimestamp)
-
-  ordersInRange.forEach(o => {
+  const {orders = [] } =  data
+  orders.forEach(o => {
     o.dishes.forEach(d => {
       ordered.push({
         timestamp: new Date(parseInt(o.timestamp)),
@@ -129,7 +124,7 @@ const History = () => {
                 onClick={_ => setMenuIsOpen(!menuIsOpen)}
               />
             </MenuSurfaceAnchor>
-            <ToolbarIcon icon="cloud_download" onClick={() => downloadData(ordered, ordersInRange, minOrderTimestamp)} />
+            <ToolbarIcon icon="cloud_download" onClick={() => downloadData(ordered, orders, minOrderTimestamp)} />
           </ToolbarSection>
         </ToolbarRow>
       </Toolbar>

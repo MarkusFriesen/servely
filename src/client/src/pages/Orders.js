@@ -10,8 +10,8 @@ import {observer, inject} from "mobx-react"
 import {LinearProgress} from '@rmwc/linear-progress'
 import JoinDialog from '../components/orders/JoinDialog'
 const GET_ORDERS =
-  gql`query order($hasPayed: Boolean) {
-  orders(hasPayed: $hasPayed) {
+  gql`{
+  orders(hasPayed: false) {
     _id,
     name,
     table,
@@ -67,7 +67,7 @@ const Order = inject("store")(observer((props) => {
   const [joinProps, setJoinProps] = useState({table: -1})
   const [dialogOpen, setDialogState] = useState(false)
 
-  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {variables: {hasPayed: false}, pollInterval: 500})
+  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {pollInterval: 500})
 
   if (error) {
     console.warn(error)

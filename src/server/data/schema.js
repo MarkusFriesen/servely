@@ -44,7 +44,7 @@ type Company {
   taxId: String
 }
 type Query {
-  orders(_id:ID, table: Int, name: String, hasPayed: Boolean): [Order]
+  orders(_id:ID, table: Int, name: String, hasPayed: Boolean, fromTimestamp: String, toTimestamp: String): [Order]
   dishes(_id:ID, name:String): [Dish]
   dishTypes(_id:ID, name:String): [DishType]
   dishExtras(_id:ID, name:String, cost:Float, type: ID): [DishExtra]

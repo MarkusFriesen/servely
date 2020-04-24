@@ -10,6 +10,21 @@ import config from '../config'
 const resolvers = {
   Query: {
     orders(_, args) {
+      if (args.fromTimestamp || args.toTimestamp) {
+        const {
+          fromTimestamp = new Date(0).toISOString(),
+          toTimestamp = new Date().toISOString()
+        } = args
+
+        delete args.fromTimestamp
+        delete args.toTimestamp
+
+        args.timestamp = {
+          $lte: new Date(toTimestamp),
+          $gte: new Date(fromTimestamp)
+        }
+      }
+
       return Order.find(args)
     },
     dishes(_, args) {
@@ -18,10 +33,10 @@ const resolvers = {
     dishTypes(_, args) {
       return DishType.find(args)
     },
-    dishExtras(_, args){
+    dishExtras(_, args) {
       return DishExtra.find(args)
-    }, 
-    company(_, args){
+    },
+    company(_, args) {
       return config.COMPANY
     }
   },
@@ -52,12 +67,12 @@ const resolvers = {
         }).then(result => {
           result.forEach(o => {
             Order.updateOne({
-                _id: o._id
-              }, {
-                $set: {
-                  dishes: o.dishes.filter(d => d.id != args._id)
-                }
-              })
+              _id: o._id
+            }, {
+              $set: {
+                dishes: o.dishes.filter(d => d.id != args._id)
+              }
+            })
               .then(console.info)
               .catch(console.error)
           })
@@ -76,14 +91,14 @@ const resolvers = {
       delete args._id
       return new Promise((resolve, reject) => {
         DishType.updateOne({
-            _id: id
-          }, {
-            name: args.name
-          })
+          _id: id
+        }, {
+          name: args.name
+        })
           .then(r => {
             DishType.findOne({
-                _id: id
-              })
+              _id: id
+            })
               .then(resolve)
               .catch(reject)
           }).catch(reject)
@@ -114,15 +129,15 @@ const resolvers = {
 
       return new Promise((resolve, reject) => {
         DishExtra.updateOne({
+          _id: id
+        }, args
+        ).then(r => {
+          DishExtra.findOne({
             _id: id
-          }, args
-          ).then(r => {
-            DishExtra.findOne({
-                _id: id
-              })
-              .then(resolve)
-              .catch(reject)
-          }).catch(reject)
+          })
+            .then(resolve)
+            .catch(reject)
+        }).catch(reject)
       })
     },
     removeDishExtra(_, args) {
@@ -132,15 +147,15 @@ const resolvers = {
         }).then(result => {
           result.forEach(o => {
             Order.updateOne({
-                _id: o._id
-              }, {
-                $set: {
-                  dishes: o.dishes.map(d => {
-                    d.extras = d.extras.filter(e => e !== args._id)
-                    return d;
-                  })
-                }
-              })
+              _id: o._id
+            }, {
+              $set: {
+                dishes: o.dishes.map(d => {
+                  d.extras = d.extras.filter(e => e !== args._id)
+                  return d;
+                })
+              }
+            })
               .then(console.info)
               .catch(console.error)
           })
@@ -165,12 +180,12 @@ const resolvers = {
         Order.updateOne({
           _id: id
         }, {
-          $set: args, 
-          $inc: { amountPayed: amountPayed }
+          $set: args,
+          $inc: {amountPayed: amountPayed}
         }).then(r => {
           Order.findOne({
-              _id: id
-            })
+            _id: id
+          })
             .then(resolve)
             .catch(reject) //TODO: Rollback here!!
         }).catch(reject)
@@ -236,10 +251,10 @@ const resolvers = {
           _id: {
             "$in": orderDish.extras.map(d => d)
           }
-        }).then( result => {
+        }).then(result => {
           resolve(orderDish.extras.map(e => result.find(r => r._id.equals(e))))
         }).catch(e => reject(e))
-      
+
       })
     }
   },
