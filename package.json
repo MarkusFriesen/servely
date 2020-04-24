@@ -4,29 +4,33 @@
   "description": "Order dishes from a web app to manage customer orders",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server/server.js --exec babel-node"
+    "start": "babel src/server -d lib && node lib/server.js",
+    "dev": "nodemon src/server/server.js --exec babel-node"
   },
   "author": "Markus Friesen",
   "license": "ISC",
   "dependencies": {
-    "apollo-server-express": "^2.11.0",
+    "apollo-server-express": "^2.12.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "graphql": "^14.6.0",
-    "graphql-tools": "^4.0.7",
+    "graphql": "^15.0.0",
+    "graphql-tools": "^5.0.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.9.6",
+    "mongoose": "^5.9.10",
     "node-cron": "^2.0.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.3"
   },
   "babel": {
     "presets": [
-      "env"
+      "@babel/preset-env"
     ]
   }
 }

@@ -22,3 +22,6 @@ dist/*
 
 #Secret stuff
 server/config/auth.js
+
+#Build output
+lib
