@@ -1,6 +1,6 @@
 const config = {
   GRAPHQL_PORT: 3000,
-  MONGO_DB: 'mongodb://localhost:27017/reach', 
+  LOWDB_PATH: '/data/orders.json', 
   COMPANY: {
     name: 'REACH CAFÉ',
     street: 'Marktplatz 18/1',
@@ -8,6 +8,12 @@ const config = {
     city: 'Trossingen',
     website: 'www.reach-cafe.com',
     taxId: ''
+  },
+  tables: {
+    orders: 'orders',
+    dishes: 'dishes',
+    dishTypes: 'dishTypes',
+    dishExtras: 'dishExtras'
   }
 }
 export default config;

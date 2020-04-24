@@ -1,12 +1,9 @@
-import Mongoose from 'mongoose';
-const Schema = Mongoose.Schema
+import {generateUUID} from '../../utils/helpers'
 
-const dishExtraSchema = Mongoose.Schema({
-  name: String,
-  cost: Number,
-  type: Schema.Types.ObjectId
+const getDishExtra = (item) => ({
+  _id: generateUUID(),
+  name: item.name,
+  cost: item.cost,
+  type: item.type
 })
-
-const dishExtra = Mongoose.model('dishExtras', dishExtraSchema);
-
-export default dishExtra
+export {getDishExtra}

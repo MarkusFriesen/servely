@@ -1,6 +1,5 @@
 import express from 'express';
 import {ApolloServer} from 'apollo-server-express';
-import Mongoose from 'mongoose'
 import path from 'path';
 
 import schema from './data/schema';
@@ -24,9 +23,3 @@ app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-Mongoose.connect(config.MONGO_DB, {useUnifiedTopology: true, useNewUrlParser: true})
-Mongoose.Promise = global.Promise
-
-Mongoose.connection.on('open', () => {
-  console.log('MongoDB connected.')
-})

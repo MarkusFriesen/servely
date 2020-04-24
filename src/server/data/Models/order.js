@@ -1,34 +1,22 @@
-import Mongoose from 'mongoose';
-const Schema = Mongoose.Schema
+import { generateUUID } from '../../utils/helpers'
 
-const OrderSchema = Mongoose.Schema({
-  table: Number,
-  name: String,
-  timestamp: { type: Date, default: Date.now },
-  dishes: [{
-    id: Schema.Types.ObjectId,
-    made: {
-      type: Boolean,
-      default: false
-    },
-    delivered: {
-      type: Boolean,
-      default: false
-    },
-    hasPayed: {
-      type: Boolean,
-      default: false
-    },
-    extras: [Schema.Types.ObjectId]
-  }],
-  hasPayed: {
-    type: Boolean,
-    default: false
-  },
-  amountPayed: Number,
-  notes: String
+const getOrder = (item) => ({
+  _id: generateUUID(),
+  table: item.table,
+  name: item.name,
+  notes: item.notes,
+  timestamp: item.timestamp ? new Date(item.timestamp) : new Date(),
+  hasPayed: result.hasPayed || false,
+  amountPayed: item.amountPayed || 0,
+  dishes: (result.dishes || []).map(d => ({
+    id: d.id, 
+    made: d.made || false, 
+    delivered: d.delivered || false,
+    hasPayed: d.hasPayed || false,
+    extras: d.extras
+  })) 
 })
 
-const Order = Mongoose.model('order', OrderSchema);
-
-export default Order
+export {
+  getOrder
+}

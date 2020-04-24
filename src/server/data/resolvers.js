@@ -1,15 +1,24 @@
 import {
-  Order,
-  Dish,
-  DishType,
-  DishExtra
-} from "./Models"
-
+  getOrder,
+  getDish,
+  getDishType,
+  getDishExtra
+} from './Models'
 import config from '../config'
+import low from 'lowdb';
+import FileSync from 'lowdb/adapter/FileSync'
+import {enableExperimentalFragmentVariables} from 'graphql-tag';
+
+const adapter = new FileSync(config.LOWDB_PATH)
+const db = low(adapter)
+db.defaults({})
+
 
 const resolvers = {
   Query: {
     orders(_, args) {
+
+      let items = db.get(config.tables.order)
       if (args.fromTimestamp || args.toTimestamp) {
         const {
           fromTimestamp = new Date(0).toISOString(),
@@ -19,72 +28,63 @@ const resolvers = {
         delete args.fromTimestamp
         delete args.toTimestamp
 
-        args.timestamp = {
-          $lte: new Date(toTimestamp),
-          $gte: new Date(fromTimestamp)
-        }
+        const from = new Date(fromTimestamp)
+        const to = new Date(toTimestamp)
+        let items = items.find(o => o.timestamp >= from && o.timestamp >= to)
       }
 
-      return Order.find(args)
+      return items.find(args).value()
     },
     dishes(_, args) {
-      return Dish.find(args)
+      return db.get(config.tables.dishes).find(args)
     },
     dishTypes(_, args) {
-      return DishType.find(args)
+      return db.get(config.tables.dishTypes).find(args)
     },
     dishExtras(_, args) {
-      return DishExtra.find(args)
+      return db.get(config.tables.dishExtras).find(args)
     },
-    company(_, args) {
+    company(_, _) {
       return config.COMPANY
     }
   },
   Mutation: {
     addOrder(_, args) {
-      return Order.create(args)
+      const newOrder = getOrder(args)
+      db.get(config.tables.orders).push(newOrder).write()
+      return newOrder
     },
     addDish(_, args) {
-      return Dish.create(args)
+      const newDish = getDish(args)
+      db.get(config.tables.dishes).push(newDish).write()
+      return newDish
     },
     updateDish(_, args) {
       const id = args._id
       delete args._id
-      return new Promise((resolve, reject) => {
-        Dish.updateOne({
-          _id: id
-        }, args).then(r => {
-          Dish.findOne({
-            _id: id
-          }).then(resolve).catch(reject)
-        }).catch(reject)
-      })
+
+      return db.get(config.tables.dishes)
+        .find({_id: id})
+        .assign(args)
+        .write()
+        .find((d) => d._id === id)
     },
     removeDish(_, args) {
-      return new Promise((res, rej) => {
-        Order.find({
-          "dishes.id": args._id
-        }).then(result => {
-          result.forEach(o => {
-            Order.updateOne({
-              _id: o._id
-            }, {
-              $set: {
-                dishes: o.dishes.filter(d => d.id != args._id)
-              }
-            })
-              .then(console.info)
-              .catch(console.error)
-          })
+      var orders = db.get(config.tables.orders).find({"dishes.id": args._id}).value()
 
-          Dish.findOneAndRemove({
-            _id: args._id
-          }, {useFindAndModify: false}).then(res).catch(rej)
-        })
+      orders.forEach(o => {
+        db.get(config.tables.orders).find({_id: o._id}).assign({...o, dishes: o.dishes.filter(d => d.id != args._id)}).write()
       })
+
+      var dish = db.get(config.tables.dishes).find(args).value()
+      db.get(config.tables.dishes).remove(args).write()
+
+      return dish
     },
     addDishType(_, args) {
-      return DishType.create(args)
+      const newDishType = getDishType(args)
+      db.get(config.tables.dishTypes).push(newDishType).write()
+      return newDishType
     },
     updateDishType(_, args) {
       const id = args._id
@@ -121,7 +121,9 @@ const resolvers = {
       })
     },
     addDishExtra(_, args) {
-      return DishExtra.create(args)
+      const newDishExtra = getDishExtra(args)
+      db.get(config.tables.dishExtras).push(newDishExtra).write()
+      return newDishExtra
     },
     updateDishExtra(_, args) {
       const id = args._id

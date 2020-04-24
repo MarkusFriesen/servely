@@ -1,9 +1,7 @@
-import Mongoose from 'mongoose';
+import {generateUUID} from '../../utils/helpers'
 
-const DishTypeSchema = Mongoose.Schema({
-  name: String
+const getDishType = (item) => ({
+  _id: generateUUID(),
+  name: item.name
 })
-
-const DishType = Mongoose.model('dishTypes', DishTypeSchema);
-
-export default DishType
+export { getDishType }
