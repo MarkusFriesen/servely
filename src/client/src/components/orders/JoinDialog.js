@@ -17,8 +17,8 @@ gql`
     }
   }`
 
-const JoinOrder = (props) => {
-  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {variables: {table: props.table}, pollInterval: 500})
+const JoinDialog = (props) => {
+  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {variables: {table: props.table}, pollInterval: 2000})
   
   if (!loading && !error)
     return(
@@ -38,4 +38,4 @@ const JoinOrder = (props) => {
   )
 }
 
-export default JoinOrder
+export default JoinDialog
