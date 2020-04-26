@@ -3,7 +3,8 @@ import config from './config'
 
 const startCronjob = (db) => {
   cron.schedule("* */2 * * *", async () => {
-    const date = new Date()
+    
+    const date = await db.get(config.tables.orders).maxBy( o => o.timestamp)
     date.setDate(date.getDate() - 240)
 
     const deletedItems = await db.get(config.tables.orders).remove(o =>  o.timestamp < date && o.hasPayed ).write()
