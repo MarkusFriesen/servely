@@ -1,6 +1,6 @@
 import {generateUUID} from '../../utils/helpers'
 
-const getDish = (item) => ({
+const createDish = (item) => ({
   _id: generateUUID(),
   name: item.name, 
   cost: item.cost, 
@@ -10,5 +10,5 @@ const getDish = (item) => ({
 })
 
 export {
-  getDish
+  createDish
 }

@@ -1,5 +1,5 @@
 import { makeExecutableSchema } from 'graphql-tools';
-import resolvers from './resolvers';
+import { getResolvers } from './resolvers';
 
 const typeDefs = `
 type DishType {
@@ -77,4 +77,8 @@ schema {
 }
 `;
 
-export default makeExecutableSchema({ typeDefs, resolvers });
+const getSchema = (db) => makeExecutableSchema({typeDefs, resolvers: getResolvers(db) });
+
+export {
+  getSchema
+}

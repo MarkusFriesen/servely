@@ -1,7 +1,7 @@
 import {generateUUID} from '../../utils/helpers'
 
-const getDishType = (item) => ({
+const createDishType = (item) => ({
   _id: generateUUID(),
   name: item.name
 })
-export { getDishType }
+export { createDishType }

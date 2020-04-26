@@ -1,11 +1,11 @@
-import {getDishType} from './dishType'
-import {getDish} from './dish'
-import {getOrder} from './order'
-import {getDishExtra} from "./dishExtra"
+import {createDishType} from './dishType'
+import {createDish} from './dish'
+import {createOrder} from './order'
+import {createDishExtra} from "./dishExtra"
 
 export {
-  getOrder,
-  getDish,
-  getDishType,
-  getDishExtra
+  createOrder,
+  createDish,
+  createDishType,
+  createDishExtra
 }

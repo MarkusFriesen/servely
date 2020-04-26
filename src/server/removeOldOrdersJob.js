@@ -1,13 +1,17 @@
-let cron = require('node-cron'),
-    Models = require('./data/Models')
- 
-cron.schedule("* */2 * * *", function(){
-  const date = new Date()
-  date.setDate(date.getDate() - 240)
-  Models.Order.deleteMany({ "timestamp" : { $lt : date}, "hasPayed": true }, (err, order) => {
-      if (err){
-        console.error(err)
-      }
-      console.info("Deleted orders:", order.deletedCount)
-    })
-});
+import cron from 'node-cron'
+import config from './config'
+
+const startCronjob = (db) => {
+  cron.schedule("* */2 * * *", async () => {
+    const date = new Date()
+    date.setDate(date.getDate() - 240)
+
+    const deletedItems = await db.get(config.tables.orders).remove(o =>  o.timestamp < date && o.hasPayed ).write()
+
+    console.info("Deleted orders:", deletedItems.length)
+  });
+}
+
+export {
+   startCronjob
+  }
