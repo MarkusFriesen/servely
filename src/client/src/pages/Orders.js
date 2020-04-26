@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import {useQuery} from '@apollo/react-hooks';
 import {gql} from 'apollo-boost';
 import {Fab} from '@rmwc/fab';
@@ -80,7 +80,7 @@ const Order = inject("store")(observer((props) => {
       <Masonry id="masonry-layout">
         {getFilteredOrders(data.orders, filter, props, setJoinProps, setDialogState)}
       </Masonry>
-      {joinProps.table != -1 ? <JoinDialog dialogOpen={dialogOpen} closeDialog={() => {setDialogState(false)}} {...joinProps} /> : <></>}
+      {joinProps.table !== -1 ? <JoinDialog dialogOpen={dialogOpen} closeDialog={() => {setDialogState(false)}} {...joinProps} /> : <></>}
       <Link to="/orderDetails">
         <Fab className="floating-right" icon="add" />
       </Link>
