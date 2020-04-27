@@ -27,11 +27,15 @@ npm run build
 npm start
 ```
 
+Open your browser to `http://localhost:8080`. 
+
 #### Server
-The server is initialized in ```src\server\server.js``` 
+The server is initialized in `src\server\server.js` 
+
+To change any configurations, edit `src\server\config.js`, 
 
 #### Client side
-The client is initialized in ```src\client\js``` and was build with create-react-app
+The client is initialized in `src\client\js` and was build with create-react-app
 
 ## Known limitations
 LowDb is used since the app needs to run on a RaspberryPi. This measns the db shouldn't exceed a size of 200mb. 

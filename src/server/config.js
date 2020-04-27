@@ -1,5 +1,5 @@
 const config = {
-  GRAPHQL_PORT: 5000,
+  GRAPHQL_PORT: 8080,
   LOWDB_PATH: '/data/orders.json', 
   COMPANY: {
     name: 'REACH CAFÉ',
