@@ -62,7 +62,7 @@ const Nav = (props) => {
         <TopAppBarRow>
           <TopAppBarSection alignStart>
             <TopAppBarNavigationIcon icon="menu" onClick={() => setIsModalOpen(true)} />
-            <TopAppBarTitle>{props.store.kitchenMode ? "BIt's Kitchen" : "BIt"}</TopAppBarTitle>
+            <TopAppBarTitle>{props.store.kitchenMode ? "Servely's Kitchen" : "Servely"}</TopAppBarTitle>
           </TopAppBarSection>
           <TopAppBarSection alignEnd>
             <TopAppBarActionItem aria-label="Search" icon="search" alt="Search this Page" onClick={() => toggleSearch(props, setSearchText, searching, setSearching)} />

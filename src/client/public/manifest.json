@@ -1,6 +1,6 @@
 {
-  "short_name": "BIt",
-  "name": "Bestell It",
+  "short_name": "Servely",
+  "name": "Servely",
   "icons": [{
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
@@ -34,6 +34,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#4b2c20",
-  "background_color": "#ffffff"
+  "theme_color": "#252a34",
+  "background_color": "#252a34"
 }

@@ -5,11 +5,6 @@
   z-index: 2;
 }
 
-.main-elevation {
-  background: #fff;
-}
-
-
 /* Show whole content of seconday text*/
 .mdc-list.extendSecondaryText .mdc-list-item {
   height: initial !important;

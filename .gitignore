@@ -25,3 +25,4 @@ server/config/auth.js
 
 #Build output
 lib
+src/server/tests/data/testDb.json

@@ -20,9 +20,8 @@ const stores = {
 ReactDOM.render(  
   <ThemeProvider options = {
     {
-      primary: '#795548',
-      secondary: '#486c79',
-      background: '#fff'
+      primary: '#252a34',
+      secondary: '#ff2e63',
     }
   } >
     <ApolloProvider client={client}>
