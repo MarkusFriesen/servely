@@ -20,6 +20,11 @@
       "src": "mstile-150x150.png",
       "sizes": "150x150",
       "type": "image/png"
+    }, 
+    {
+      "src": "apple-touch-icon",
+      "sizes": "180x180",
+      "type": "image/png"
     },
     {
       "src": "android-chrome-192x192.png",
@@ -34,6 +39,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#252a34",
   "background_color": "#252a34"
 }
