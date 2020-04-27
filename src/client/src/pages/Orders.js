@@ -67,7 +67,7 @@ const Order = inject("store")(observer((props) => {
   const [joinProps, setJoinProps] = useState({table: -1})
   const [dialogOpen, setDialogState] = useState(false)
 
-  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {pollInterval: 2000})
+  const {loading, error, data = {orders: []}} = useQuery(GET_ORDERS, {pollInterval: 1000})
 
   if (error) {
     console.warn(error)
