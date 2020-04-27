@@ -7,21 +7,24 @@ import {
 import config from '../config'
 
 const getQueries = (db) => ({
-  orders(_, args) {
-    let items = db.get(config.tables.orders).filter(args).value()
+  async orders(_, args) {
+    const minTimestamp = new Date(0).toISOString()
+    const maxTimestamp = new Date().toISOString()
 
-    if (args.fromTimestamp || args.toTimestamp) {
-      const {
-        fromTimestamp = new Date(0).toISOString(),
-        toTimestamp = new Date().toISOString()
-      } = args
+    const {
+      fromTimestamp = minTimestamp,
+      toTimestamp = maxTimestamp
+    } = args
 
-      delete args.fromTimestamp
-      delete args.toTimestamp
+    delete args.fromTimestamp
+    delete args.toTimestamp
 
+    const items = await db.get(config.tables.orders).filter(args).value()
+
+    if (fromTimestamp !== minTimestamp || toTimestamp !== maxTimestamp) {
       const from = new Date(fromTimestamp)
       const to = new Date(toTimestamp)
-      items = db.get(config.tables.order).filter(o => o.timestamp >= from && o.timestamp >= to)
+      return items.filter(o => o.timestamp && o.timestamp >= from && o.timestamp <= to)
     }
 
     return items

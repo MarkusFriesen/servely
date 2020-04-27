@@ -8,18 +8,17 @@ const adapter = new FileAsync('src/server/tests/data/testDb.json')
 
 let db = {}
 let resolvers = getResolvers(db)
-const defaults = {orders: [], dishes: [], dishExtras: [], dishTypes: []}
 
 before(async () => {
   db = await low(adapter)
 
-  await db.defaults(defaults).write()
+  await db.defaults({orders: [], dishes: [], dishExtras: [], dishTypes: []}).write()
   resolvers = getResolvers(db)
 });
 
 describe('Resolvers', function () {
   beforeEach(async () => {
-    db.setState(defaults)
+    db.setState({orders: [], dishes: [], dishExtras: [], dishTypes: []})
   })
 
   describe('DishType', function () {
@@ -277,6 +276,9 @@ describe('Resolvers', function () {
     });
   });
   describe('Order', function () {
+    beforeEach(async () => {
+      await db.setState({orders: [], dishes: [], dishExtras: [], dishTypes: []})
+    })
     it('should be creatable', async () => {
       //set up
       const order = {
@@ -458,6 +460,54 @@ describe('Resolvers', function () {
       assert.equal(items[0].dishes[1].made, false)
       assert.equal(items[0].dishes[1].delivered, false)
       assert.equal(items[0].dishes[2].id, order2.dishes[1].id)
+    });
+
+    describe('Query', function () {
+      it('should return only orders in range', async () => {
+        //set up
+        const order1 = {
+          table: 1.0,
+          name: "Joined Order 1",
+          timestamp: new Date("2020-01-01").toISOString()
+        }
+        const order2 = {
+          table: 2.0,
+          name: "Joined Order 2",
+          timestamp: new Date("2019-01-01").toISOString()
+        }
+        const order3 = {
+          table: 3.0,
+          name: "Joined Order 3",
+          timestamp: new Date("2018-01-01").toISOString()
+        }
+
+        const createdOrder1 = {...await resolvers.Mutation.addOrder(null, order1)}
+        const createdOrder2 = {...await resolvers.Mutation.addOrder(null, order2)}
+        const createdOrder3 = {...await resolvers.Mutation.addOrder(null, order3)}
+
+        //act
+        const withFrom = await resolvers.Query.orders(null, {
+          fromTimestamp: new Date("2019-05-05").toISOString()
+        })
+
+        const withTo = await resolvers.Query.orders(null, {
+          toTimestamp: new Date("2018-05-05").toISOString()
+        })
+
+        const withBoth = await resolvers.Query.orders(null, {
+          fromTimestamp: new Date("2018-05-05").toISOString(),
+          toTimestamp: new Date("2019-05-05").toISOString()
+        })
+
+        //Verify
+        assert.equal(withFrom.length, 1)
+        assert.equal(withTo.length, 1)
+        assert.equal(withBoth.length, 1)
+
+        assert.equal(withFrom[0]._id, createdOrder1._id)
+        assert.equal(withTo[0]._id, createdOrder3._id)
+        assert.equal(withBoth[0]._id, createdOrder2._id)
+      });
     });
   });
 
