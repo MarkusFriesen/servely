@@ -6,8 +6,9 @@
   "scripts": {
     "start": "node lib/server.js",
     "startDev": "node src/server/server.js",
-    "test": "npm run buildWindows && mocha lib/tests",
-    "buildWindows": "(if exist \"lib\" rmdir lib /Q/S) && babel src/server -d lib && xcopy src\\server\\public lib\\public /E/I/Y/Q",
+    "test": "npm run build && mocha lib/tests",
+    "testW": "npm run buildW && mocha lib/tests",
+    "buildW": "(if exist \"lib\" rmdir lib /Q/S) && babel src/server -d lib && xcopy src\\server\\public lib\\public /E/I/Y/Q",
     "build": "rm -rf lib && babel src/server -d lib && cp -r src/server/public lib/public"
   },
   "author": "Markus Friesen",
