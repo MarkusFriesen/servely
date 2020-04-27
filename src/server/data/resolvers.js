@@ -8,7 +8,7 @@ import config from '../config'
 
 const getQueries = (db) => ({
   async orders(_, args) {
-    const minTimestamp = new Date(0).toISOString()
+    const minTimestamp = new Date(-8640000000000000).toISOString()
     const maxTimestamp = new Date().toISOString()
 
     const {
@@ -22,8 +22,9 @@ const getQueries = (db) => ({
     const items = await db.get(config.tables.orders).filter(args).value()
 
     if (fromTimestamp !== minTimestamp || toTimestamp !== maxTimestamp) {
-      const from = new Date(fromTimestamp)
-      const to = new Date(toTimestamp)
+      const from = new Date(fromTimestamp).toISOString()
+      const to = new Date(toTimestamp).toISOString()
+      
       return items.filter(o => o.timestamp && o.timestamp >= from && o.timestamp <= to)
     }
 

@@ -5,7 +5,7 @@ const createOrder = (item) => ({
   table: item.table,
   name: item.name,
   notes: item.notes,
-  timestamp: item.timestamp ? new Date(item.timestamp) : new Date(),
+  timestamp: item.timestamp ? new Date(item.timestamp).toISOString() : new Date().toISOString(),
   hasPayed: item.hasPayed || false,
   amountPayed: item.amountPayed || 0,
   dishes: (item.dishes || []).map(d => ({
