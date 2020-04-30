@@ -12,8 +12,7 @@ npm-debug.log
 
 #Compiled sources
 build
-src/server/public/reach
-src/server/public/upload
+src/server/public
 
 src/client/client.min.js
 src/server/public/OrderMe/client.min.js
