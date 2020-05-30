@@ -258,8 +258,9 @@ describe('Resolvers', function () {
     });
     it('should delete all extras from orders and when delete', async () => {
       //set up 
-      var dish = await resolvers.Mutation.addDish(null, {name: "dishWithExtra"})
-      var extra = await resolvers.Mutation.addDishExtra(null, {name: "extra for dish", type: dish._id})
+      var type = await resolvers.Mutation.addDishType(null, {name: "dishWithExtra"})
+      var dish = await resolvers.Mutation.addDish(null, {name: "dishWithExtra", type: type._id})
+      var extra = await resolvers.Mutation.addDishExtra(null, {name: "extra for dish", type: type._id})
       var order = await resolvers.Mutation.addOrder(null, {name: "extra for dish", dishes: [{id: dish._id, extras: [extra._id]}]})
 
       //act
@@ -274,6 +275,22 @@ describe('Resolvers', function () {
       assert.equal(items[0].dishes[0].extras.length, 0)
 
     });
+    it('should delete all deselected extras from dishes when deleted', async () => {
+      //Set up
+      var type = await resolvers.Mutation.addDishType(null, {name: "dishWithExtra"})
+      var extra = await resolvers.Mutation.addDishExtra(null, {name: "extra for dish", type: type._id})
+      var dish = await resolvers.Mutation.addDish(null, {name: "dishWithExtra", deselectedExtras: [extra._id], type: type._id})
+
+      //act
+      const deletedExtra = await resolvers.Mutation.removeDishExtra(null, {_id: extra._id})
+      assert.equal(deletedExtra.length, 1)
+      assert.equal(deletedExtra[0]._id, extra._id)
+
+      //verify
+      const dishes = await resolvers.Query.dishes(null, {_id: dish._id})
+      assert.equal(dishes.length, 1)
+      assert.equal(dishes[0].deselectedExtras.length, 0)
+    })
   });
   describe('Order', function () {
     beforeEach(async () => {

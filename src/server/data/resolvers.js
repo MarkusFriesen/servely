@@ -121,6 +121,7 @@ const getMutations = (db) => ({
   },
   removeDishType(_, args) {
     return new Promise(async (res, rej) => {
+
       var dishes = await db.get(config.tables.dishes).find({type: args._id}).value()
       if (dishes) {
         rej("Some dishes with this dish type still exist. Remove those dishes first, before removing the dish type.")
@@ -160,6 +161,17 @@ const getMutations = (db) => ({
         .write()
     })
 
+    const dishes = await db.get(config.tables.dishes).filter(d => (d.deselectedExtras || []).some(e => e === args._id)).value()
+
+    dishes.forEach(async d=> {
+      await db.get(config.tables.dishes)
+        .find({_id: d._id})
+        .assign({
+          ...d, deselectedExtras: d.deselectedExtras.filter(e => e !== args._id)
+        })
+        .write()
+    });
+    
     return await db.get(config.tables.dishExtras).remove(args).write()
   }
 })
