@@ -81,7 +81,7 @@ const OrderDetails = (props) => {
   const {id} = useParams()
   const history = useHistory()
 
-  const {loading, error, data} = useQuery(GET_DISHES)
+  const {loading, error, data} = useQuery(GET_DISHES, {pollInterval: 10000})
   const orderResult = useQuery(GET_ORDER, {variables: {id}})
 
   let result = 
