@@ -54,11 +54,14 @@ const DishDialog = (props) => {
   const [type, setType] = useState(props.type ? props.type._id : '')
   const [deselectedExtras, setDeselectedExtras] = useState((props.deselectedExtras || []).map(de => de._id))
 
+  const resetState = (name, cost, type, deselectedExtras) => {
+    setName(name || '')
+    setCost(cost || 0)
+    setType(type ? type._id : '')
+    setDeselectedExtras((deselectedExtras || []).map(de => de._id))
+  }
   useEffect(() => {
-    setName(props.name || '')
-    setCost(props.cost || 0)
-    setType(props.type ? props.type._id : '')
-    setDeselectedExtras((props.deselectedExtras || []).map(de => de._id))
+    resetState(props.name, props.cost, props.type, props.deselectedExtras)
   }, [props.name, props.cost, props.type, props.deselectedExtras])
 
   const [remove] = useMutation(REMOVE)
@@ -68,17 +71,20 @@ const DishDialog = (props) => {
   return (
     <Dialog
       open={props.open}
-      onClose={props.onClose}
+      onClose={() => {
+        resetState(props.name, props.cost, props.type, props.deselectedExtras)
+        props.onClose()
+      }}
     >
       <DialogTitle>{props._id ? `Edit ${props.name}` : "New dish"}</DialogTitle>
       <DialogContent>
         <TextField type="text" label="Name" value={name} onChange={(e) => setName(e.target.value || '')} />
-        <TextField 
+        <TextField
           type="number"
           inputMode="numeric"
           label="Cost"
           invalid={false}
-          value={cost} 
+          value={cost}
           onChange={(e) => setCost(e.target.value)} />
         <Select
           value={type}
@@ -88,12 +94,12 @@ const DishDialog = (props) => {
           options={props.dishTypes}
         />
         <ChipSet>
-          {(data.dishExtras).map(e => 
-            <Chip 
-              key={e._id} 
-              label={e.name} 
-              checkmark 
-              selected={!deselectedExtras.some(de => de === e._id)} 
+          {(data.dishExtras).map(e =>
+            <Chip
+              key={e._id}
+              label={e.name}
+              checkmark
+              selected={!deselectedExtras.some(de => de === e._id)}
               onInteraction={handleDeselectedExtraChange(deselectedExtras, setDeselectedExtras)} />)
           }
         </ChipSet>
@@ -107,13 +113,15 @@ const DishDialog = (props) => {
         </DialogButton >
         <DialogButton action="accept" onClick={() => {
           const floatCost = parseFloat(cost)
-          addOrUpdate({variables: {
-              id: props._id, 
-              name: name, 
+          addOrUpdate({
+            variables: {
+              id: props._id,
+              name: name,
               type: type,
               cost: floatCost,
               deselectedExtras: deselectedExtras
-            }})
+            }
+          })
         }}>
           Save
         </DialogButton>
