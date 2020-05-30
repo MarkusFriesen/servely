@@ -104,7 +104,9 @@ const getMutations = (db) => ({
       db.get(config.tables.orders).find({_id: o._id}).assign({...o, dishes: o.dishes.filter(d => d.id != args._id)}).write()
     })
 
-    return await db.get(config.tables.dishes).remove(args).write()
+    var removeResult = await db.get(config.tables.dishes).remove(args).write()
+
+    return removeResult.length === 1 ? removeResult[0] : removeResult
   },
   async addDishType(_, args) {
     const newDishType = createDishType(args)
@@ -128,8 +130,8 @@ const getMutations = (db) => ({
         return
       }
 
-      const removedITems = await db.get(config.tables.dishTypes).remove(args).write()
-      res(removedITems)
+      const removedItems = await db.get(config.tables.dishTypes).remove(args).write()
+      res(removedItems.length === 1 ? removedItems[0] : removedItems)
     })
   },
   async addDishExtra(_, args) {
@@ -172,7 +174,8 @@ const getMutations = (db) => ({
         .write()
     });
     
-    return await db.get(config.tables.dishExtras).remove(args).write()
+    const removedResult = await db.get(config.tables.dishExtras).remove(args).write()
+    return removedResult.length === 1 ? removedResult[0] : removedResult
   }
 })
 

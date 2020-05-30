@@ -67,8 +67,7 @@ describe('Resolvers', function () {
 
       //act
       const deletedItem = await resolvers.Mutation.removeDishType(null, {_id: item._id})
-      assert.equal(deletedItem.length, 1)
-      assert.equal(deletedItem[0]._id, item._id)
+      assert.equal(deletedItem._id, item._id)
 
       //verify
       items = await resolvers.Query.dishTypes(null, {_id: item._id})
@@ -162,8 +161,7 @@ describe('Resolvers', function () {
 
       //act
       const deletedItem = await resolvers.Mutation.removeDish(null, {_id: item._id})
-      assert.equal(deletedItem.length, 1)
-      assert.equal(deletedItem[0]._id, item._id)
+      assert.equal(deletedItem._id, item._id)
 
       //verify
       items = await resolvers.Query.dishes(null, {_id: item._id})
@@ -179,8 +177,7 @@ describe('Resolvers', function () {
       const deletedDish = await resolvers.Mutation.removeDish(null, {_id: dish._id})
 
       //verify
-      assert.equal(deletedDish.length, 1)
-      assert.equal(deletedDish[0]._id, dish._id)
+      assert.equal(deletedDish._id, dish._id)
 
       const allOrders = await resolvers.Query.orders(null, {_id: order._id})
       assert.equal(allOrders.length, 1)
@@ -249,8 +246,7 @@ describe('Resolvers', function () {
 
       //act
       const deletedItem = await resolvers.Mutation.removeDishExtra(null, {_id: item._id})
-      assert.equal(deletedItem.length, 1)
-      assert.equal(deletedItem[0]._id, item._id)
+      assert.equal(deletedItem._id, item._id)
 
       //verify
       items = await resolvers.Query.dishExtras(null, {_id: item._id})
@@ -265,8 +261,7 @@ describe('Resolvers', function () {
 
       //act
       const deletedExtra = await resolvers.Mutation.removeDishExtra(null, {_id: extra._id})
-      assert.equal(deletedExtra.length, 1)
-      assert.equal(deletedExtra[0]._id, extra._id)
+      assert.equal(deletedExtra._id, extra._id)
 
       //verify
       const items = await resolvers.Query.orders(null, {_id: order._id})
@@ -283,8 +278,7 @@ describe('Resolvers', function () {
 
       //act
       const deletedExtra = await resolvers.Mutation.removeDishExtra(null, {_id: extra._id})
-      assert.equal(deletedExtra.length, 1)
-      assert.equal(deletedExtra[0]._id, extra._id)
+      assert.equal(deletedExtra._id, extra._id)
 
       //verify
       const dishes = await resolvers.Query.dishes(null, {_id: dish._id})
