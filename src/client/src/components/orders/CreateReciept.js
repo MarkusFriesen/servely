@@ -13,12 +13,14 @@ function CreateReceipt(dishes, id) {
                     postalCode,
                     city, 
                     website,
-                    taxId
+                    taxId,
+                    vat
                   }
                 }`}>
       {({loading, error, data}) => {
         if (!loading && !error && data){
-          const {name, street, postalCode, city, website, taxId} = data.company
+          const {name, street, postalCode, city, website, taxId, vat} = data.company
+          const taxRate = vat > 0 && vat < 100 ? vat : 19;
           const dateTime = new Date().toLocaleString("de").split(',')
           return (<div className="receipt">
             <div className="header">
@@ -68,8 +70,8 @@ function CreateReceipt(dishes, id) {
                   <td className="bill-payment">ANZAHL DER ARTIKEL {dishes.length}</td>
                 </tr>
                 <tr>
-                  <td>davon MwSt. (19%)</td>
-                  <td>{(totalCosts - (totalCosts / 1.19)).toFixed(2)}</td>
+                  <td>davon MwSt. ({taxRate}%)</td>
+                  <td>{(totalCosts - (totalCosts / (1 + (taxRate/100)))).toFixed(2)}</td>
                 </tr>
                 <tr>
                   <td className="bill-payment"><h5>TOTAL</h5></td>

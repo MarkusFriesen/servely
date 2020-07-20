@@ -7,7 +7,8 @@ const config = {
     postalCode: '78647',
     city: 'Trossingen',
     website: 'www.reach-cafe.com',
-    taxId: ''
+    taxId: '',
+    vat: 19
   },
   tables: {
     orders: 'orders',
